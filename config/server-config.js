@@ -4,7 +4,7 @@ module.exports =
 
 	oauth2 :
 	{
-		clientID  			: 'aaa',
+		clientID  			: 'CHANGE_ME',
 		clientSecret	: '',
 		callbackURL 	: 'https://mYDomainName:port/auth-callback'
 	},
@@ -31,8 +31,7 @@ module.exports =
 	mediasoup :
 	{
 		// mediasoup Server settings.
-		//logLevel : 'warn',
-		logLevel : 'debug',
+		logLevel : 'warn',
 		logTags  :
 		[
 			'info',
@@ -65,10 +64,10 @@ module.exports =
 			},
 			{
 				kind      : 'video',
-				name      : 'VP8',
+		        		name      : 'VP8',
 				clockRate : 90000
-			}
-			// {
+			},
+			//{
 			// 	kind       : 'video',
 			// 	name       : 'H264',
 			// 	clockRate  : 90000,
@@ -76,7 +75,7 @@ module.exports =
 			// 	{
 			// 		'packetization-mode' : 1
 			// 	}
-			// }
+			//}
 		],
 		// mediasoup per Peer max sending bitrate (in bps).
 		maxBitrate : 500000

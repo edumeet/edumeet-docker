@@ -5,7 +5,7 @@ This is the container, or a "dockerized" version of the [multiparty meeting](htt
 and like MM is shortcut, this container is a simillar shortcut that saves time.
 :)
 
-# Run it in few easy step.
+## Run it in few easy step.
 1. git clone this code to your docker machine.
 2. copy your cert in cert/cert.pem and cert/privkey.pem
 2. configure your app side configs
@@ -13,11 +13,12 @@ and like MM is shortcut, this container is a simillar shortcut that saves time.
 3. configure your server side configs
    e.g. Set TURN server and credential in config/server-config.js
 
-## run:
+## Run:
 
 ```
   docker-compose up --detach
 ```
+##Rebuild
 
 If you change app-config.js or or something in .env then you have to rebuild the image.
 ```
