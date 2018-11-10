@@ -1,0 +1,24 @@
+version: "3.7"
+
+services:
+# multiparty-meeting
+  mm:
+    env_file: .env
+    build:
+      args:
+        - BASEDIR=${BASEDIR}
+        - MM=${MM}
+        - NODE_ENV=${NODE_ENV}
+        - SERVER_DEBUG=${SERVER_DEBUG}
+      context: ./
+    restart: always
+    volumes:
+      - ${PWD}/config/server-config.js:${BASEDIR}/${MM}/server/config.js
+      - ${PWD}/config/app-config.js:${BASEDIR}/${MM}/app/config.js
+      - ${PWD}/cert/privkey.pem:${BASEDIR}/${MM}/server/certs/privkey.pem
+      - ${PWD}/cert/cert.pem:${BASEDIR}/${MM}/server/certs/cert.pem
+    ports:
+      - "80:80"
+      - "443:443"
+      - "40000-49999:40000-49999/udp"
+    network_mode: "host"
