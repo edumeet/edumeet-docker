@@ -1,10 +1,10 @@
 FROM node:11
 
 # Args
-ARG BASEDIR
-ARG MM
-ARG NODE_ENV
-ARG SERVER_DEBUG
+ARG BASEDIR=/opt
+ARG MM=multiparty-meeting
+ARG NODE_ENV=production
+ARG SERVER_DEBUG=''
 
 WORKDIR ${BASEDIR}
 
