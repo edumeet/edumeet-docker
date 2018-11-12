@@ -25,7 +25,7 @@ Just use a simple docker run command
 ```
   docker-compose up --detach
 ```
-##Rebuild
+## Rebuild
 
 If you change app-config.js or or something in .env then you have to rebuild the image.
 ```
