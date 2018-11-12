@@ -16,7 +16,10 @@ and like MM is shortcut, this container is a simillar shortcut that saves time.
 ## Run:
 1. 
 
-Just use ./run.sh
+Just use a simple docker run command
+```
+./run.sh
+```
 
 2.
 ```
