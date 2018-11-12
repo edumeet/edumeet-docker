@@ -14,7 +14,11 @@ and like MM is shortcut, this container is a simillar shortcut that saves time.
    e.g. Set TURN server and credential in config/server-config.js
 
 ## Run:
+1. 
 
+Just use ./run.sh
+
+2.
 ```
   docker-compose up --detach
 ```
