@@ -33,10 +33,9 @@ If you change app-config.js or or something in .env then you have to rebuild the
 ```
 
 ## Docker networking
-Container works in "host" network mode, because of the following issue
+Container works in "host" network mode, because birdge mode has the following issue
 
-Docker - Docker hangs when attempting to bind a large number of ports
-`https://success.docker.com/article/docker-compose-and-docker-run-hang-when-binding-a-large-port-range`
+[Docker - Docker hangs when attempting to bind a large number of ports] (https://success.docker.com/article/docker-compose-and-docker-run-hang-when-binding-a-large-port-range)
 
 
 ## Further Informations 
