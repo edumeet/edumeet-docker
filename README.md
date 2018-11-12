@@ -21,7 +21,7 @@ There is two ways
 ```
 
 2. or with `docker-compose` 
-[install docker compose](https://docs.docker.com/compose/install/)
+/ [install docker compose](https://docs.docker.com/compose/install/) /
 ```
   docker-compose up --detach
 ```
