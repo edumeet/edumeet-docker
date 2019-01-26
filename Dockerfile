@@ -9,6 +9,7 @@ ARG SERVER_DEBUG=''
 WORKDIR ${BASEDIR}
 
 RUN git clone https://github.com/havfo/${MM}.git
+RUN git checkout tags/1.1
 
 #install server dep
 WORKDIR ${BASEDIR}/${MM}/server
