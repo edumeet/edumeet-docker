@@ -22,3 +22,5 @@ services:
       - "443:443"
       - "40000-49999:40000-49999/udp"
     network_mode: "host"
+    stdin_open: true
+    tty: true
