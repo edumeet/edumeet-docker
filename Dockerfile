@@ -41,5 +41,3 @@ ENV DEBUG ${SERVER_DEBUG}
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
-#WORKDIR ${BASEDIR}/${MM}/server
-#CMD node ${BASEDIR}/${MM}/server/server.js
