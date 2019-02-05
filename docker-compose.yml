@@ -13,10 +13,9 @@ services:
       context: ./
     restart: always
     volumes:
-      - ${PWD}/config/server-config.js:${BASEDIR}/${MM}/server/config.js
-      - ${PWD}/config/app-config.js:${BASEDIR}/${MM}/app/config.js
-      - ${PWD}/cert/privkey.pem:${BASEDIR}/${MM}/server/certs/privkey.pem
-      - ${PWD}/cert/cert.pem:${BASEDIR}/${MM}/server/certs/cert.pem
+      - ${PWD}/configs/server:${BASEDIR}/${MM}/server/config
+      - ${PWD}/configs/app:${BASEDIR}/${MM}/app/config
+      - ${PWD}/certs:${BASEDIR}/${MM}/server/certs
     ports:
       - "80:80"
       - "443:443"

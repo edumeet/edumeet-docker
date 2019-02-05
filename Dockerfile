@@ -8,10 +8,11 @@ ARG SERVER_DEBUG=''
 
 WORKDIR ${BASEDIR}
 
-RUN git clone https://github.com/havfo/${MM}.git
+RUN git clone --single-branch --branch feat/move-config-for-docker https://github.com/havfo/${MM}.git
 
 #install server dep
 WORKDIR ${BASEDIR}/${MM}/server
+
 RUN yarn
 
 # install gulp-cli
@@ -22,7 +23,7 @@ WORKDIR ${BASEDIR}/${MM}/app
 RUN yarn install --production=false
 
 # copy app config
-ADD config/app-config.js config.js
+ADD configs/app/config.js config/config.js
 
 # set app in producion mode/minified/.
 ENV NODE_ENV ${NODE_ENV}
