@@ -10,5 +10,5 @@ docker run \
 	--name mm \
 	--detach \
       misi/mm
-docker exec -t mm sed -r -i -e "s|<img src='.+'>|<img src='https://up2university.eu/wp-content/uploads/2017/03/Logo_UP2U_120x120.png'>|g" public/chooseRoom.html
+docker exec -t mm sed -r -i -e "s|<img src='.+'>|<img src='https://up2university.eu/wp-content/uploads/2017/03/Logo_UP2U_120x120.png'>|g" chooseRoom.html
 
