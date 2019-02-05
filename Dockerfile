@@ -1,4 +1,4 @@
-FROM node:11
+FROM node:lts
 
 # Args
 ARG BASEDIR=/opt
@@ -38,5 +38,7 @@ EXPOSE 40000-49999/udp
 
 ## run server 
 ENV DEBUG ${SERVER_DEBUG}
-WORKDIR ${BASEDIR}/${MM}/server
-CMD node ${BASEDIR}/${MM}/server/server.js
+
+COPY docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
