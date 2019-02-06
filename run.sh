@@ -7,6 +7,7 @@ docker run \
         -v ${PWD}/cert/cert.pem:${BASEDIR}/${MM}/server/certs/cert.pem \
 	-e BASEDIR=${BASEDIR} -e MM=${MM} \
 	--network host \
+	--restart unless-stopped \
 	--name mm \
 	--detach \
       misi/mm
