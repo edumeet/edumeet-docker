@@ -13,8 +13,8 @@ module.exports =
 	domain : 'localhost',
 	tls    :
 	{
-		cert : `${__dirname}/certs/cert.pem`,
-		key  : `${__dirname}/certs/privkey.pem`
+		cert : `${__dirname}/../certs/cert.pem`,
+		key  : `${__dirname}/../certs/privkey.pem`
 	},
 	// Listening port for https server.
 	listeningPort : 443,
