@@ -8,4 +8,4 @@ docker run \
 	-e BASEDIR=${BASEDIR} -e MM=${MM} \
 	--network host \
 	--detach \
-      misi/mm:dev
+      misi/mm
