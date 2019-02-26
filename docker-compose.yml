@@ -16,6 +16,7 @@ services:
       - ${PWD}/configs/server:${BASEDIR}/${MM}/server/config
       - ${PWD}/configs/app:${BASEDIR}/${MM}/app/config
       - ${PWD}/certs:${BASEDIR}/${MM}/server/certs
+      - ${PWD}/logo/logo.svg:${BASEDIR}/${MM}/app/resources/images/logo.svg
     ports:
       - "80:80"
       - "443:443"
