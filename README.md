@@ -12,6 +12,7 @@ and like MM is shortcut, this container is a simillar shortcut that saves time.
    e.g. Set TURN server and credential in `configs/app/config.js`
 3. configure your server side configs
    e.g. Set TURN server and credential in `configs/server/config.js`
+4. replace logo/logo.svg with your company logo svg.
 
 ## Run:
 There is two ways
