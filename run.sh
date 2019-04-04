@@ -7,5 +7,7 @@ docker run \
 	-v ${PWD}/logo/logo.svg:${BASEDIR}/${MM}/app/resources/images/logo.svg \
 	-e BASEDIR=${BASEDIR} -e MM=${MM} \
 	--network host \
+	--restart unless-stopped \
+	--name mm \
 	--detach \
       misi/mm
