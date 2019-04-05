@@ -6,7 +6,7 @@ docker run \
 	-v ${PWD}/certs:${BASEDIR}/${MM}/server/certs \
 	-v ${PWD}/logo/logo.svg:${BASEDIR}/${MM}/app/resources/images/logo.svg \
 	-e BASEDIR=${BASEDIR} -e MM=${MM} \
-	--network host \	
+	--network host \
 	--restart unless-stopped \
 	--name mm \
 	--detach \
