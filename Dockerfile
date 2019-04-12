@@ -23,7 +23,7 @@ RUN yarn install --production=false
 ENV NODE_ENV ${NODE_ENV}
 
 # package web app
-RUN yarn run dist
+RUN yarn run build
 
 # Web PORTS
 EXPOSE 80 443 
