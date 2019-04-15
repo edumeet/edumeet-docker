@@ -13,6 +13,6 @@ docker run \
       misi/mm
 
 docker cp style/logo-white.jpg mm:${BASEDIR}/${MM}/app/resources/images/logo.svg
-docker cp style/logo-transparent.png mm:${BASEDIR}/${MM}/app/resources/images/logo-transparent.png
-docker exec -t mm sed -r -i -e "s|<img src='.+'>|<img src='/resources/images/logo-transparent.png'>|g" chooseRoom.html
+docker cp style/logo-white.jpg mm:${BASEDIR}/${MM}/app/resources/images/logo.jpg
+docker exec -t mm sed -r -i -e "s|<img src='.+'>|<img src='/resources/images/logo.jpg'>|g" chooseRoom.html
 
