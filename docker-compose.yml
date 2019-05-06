@@ -14,9 +14,9 @@ services:
     restart: always
     volumes:
       - ${PWD}/configs/server:${BASEDIR}/${MM}/server/config
-      - ${PWD}/configs/app:${BASEDIR}/${MM}/app/config
+      - ${PWD}/configs/app:${BASEDIR}/${MM}/server/public/config
       - ${PWD}/certs:${BASEDIR}/${MM}/server/certs
-      - ${PWD}/logo/logo.svg:${BASEDIR}/${MM}/app/resources/images/logo.svg
+      - ${PWD}/images:${BASEDIR}/${MM}/server/public/images
     ports:
       - "80:80"
       - "443:443"
