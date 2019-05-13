@@ -11,7 +11,6 @@ WORKDIR ${BASEDIR}
 RUN apk add --no-cache git
 
 #checkout code
-WORKDIR ${BASEDIR}/${MM}
 RUN git clone -b feat/oidc https://github.com/havfo/${MM}.git
 
 #install app dep
