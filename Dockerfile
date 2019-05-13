@@ -14,7 +14,7 @@ RUN git clone https://github.com/havfo/${MM}.git
 
 #install app dep
 WORKDIR ${BASEDIR}/${MM}/app
-RUN yarn install --production=false
+RUN yarn install --production=false --network-timeout 100000
 
 # set app in producion mode/minified/.
 ENV NODE_ENV ${NODE_ENV}
@@ -32,7 +32,7 @@ WORKDIR ${BASEDIR}/${MM}/server
 
 RUN apk add --no-cache git build-base python
 
-RUN yarn install --production=true
+RUN yarn install --production=true --network-timeout 100000
 
 
 FROM node:alpine
