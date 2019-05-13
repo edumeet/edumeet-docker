@@ -1,14 +1,26 @@
 module.exports =
 {
-	// oAuth2 conf
-
-	oauth2 :
+	// auth conf
+	auth :
 	{
-		clientID  			: 'CHANGE_ME',
-		clientSecret	: '',
-		callbackURL 	: 'https://mYDomainName:port/auth-callback'
+		/*
+		The issuer URL for OpenID Connect discovery 
+		The OpenID Provider Configuration Document 
+		could be discovered on: 
+		issuerURL + '/.well-known/openid-configuration'
+		*/
+		issuerURL 	: 'https://example.com'
+		clientOptions	:
+		{
+			client_id  	: '',
+			client_secret	: '',
+			scope		: 'openid email profile'
+			// where client.example.com is your multiparty meeting server 
+			redirect_uri	: 'https://client.example.com/auth/callback'
+		}
 	},
-
+	// session cookie secret
+	cookieSecret	: 'T0P-S3cR3t_cook!e',
 	// Listening hostname for `gulp live|open`.
 	domain : 'localhost',
 	tls    :
@@ -17,18 +29,12 @@ module.exports =
 		key  : `${__dirname}/../certs/privkey.pem`
 	},
 	// Listening port for https server.
-	listeningPort : 443,
+	listeningPort         : 443,
+	// Any http request is redirected to https.
+	// Listening port for http server.
 	listeningRedirectPort : 80,
-	turnServers   : [
-		{
-			urls : [
-				'turn:example.com:443?transport=tcp'
-			],
-			username   : 'example',
-			credential : 'example'
-		}
-	],
-	mediasoup :
+	// STUN/TURN
+	mediasoup             :
 	{
 		// mediasoup Server settings.
 		logLevel : 'warn',
@@ -62,22 +68,25 @@ module.exports =
 					useinbandfec : 1
 				}
 			},
+			// {
+			// 	kind      : 'video',
+			// 	name      : 'VP8',
+			// 	clockRate : 90000
+			// }
 			{
-				kind      : 'video',
-		        		name      : 'VP8',
-				clockRate : 90000
-			},
-			//{
-			// 	kind       : 'video',
-			// 	name       : 'H264',
-			// 	clockRate  : 90000,
-			// 	parameters :
-			// 	{
-			// 		'packetization-mode' : 1
-			// 	}
-			//}
+				kind       : 'video',
+				name       : 'H264',
+				clockRate  : 90000,
+				parameters :
+				{
+					'packetization-mode'      : 1,
+					'profile-level-id'        : '42e01f',
+					'level-asymmetry-allowed' : 1
+				}
+			}
 		],
 		// mediasoup per Peer max sending bitrate (in bps).
 		maxBitrate : 500000
 	}
 };
+
