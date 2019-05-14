@@ -9,12 +9,12 @@ module.exports =
 		could be discovered on: 
 		issuerURL + '/.well-known/openid-configuration'
 		*/
-		issuerURL 	: 'https://example.com'
+		issuerURL 	: 'https://example.com',
 		clientOptions	:
 		{
 			client_id  	: '',
 			client_secret	: '',
-			scope		: 'openid email profile'
+			scope		: 'openid email profile',
 			// where client.example.com is your multiparty meeting server 
 			redirect_uri	: 'https://client.example.com/auth/callback'
 		}
