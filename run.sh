@@ -10,4 +10,4 @@ docker run \
 	--restart unless-stopped \
 	--name mm \
 	--detach \
-      misi/mm:oidc
+      misi/mm:dev
