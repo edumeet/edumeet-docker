@@ -31,7 +31,7 @@ RUN yarn run build
 #install server dep
 WORKDIR ${BASEDIR}/${MM}/server
 
-RUN apk add --no-cache git build-base python
+RUN apk add --no-cache git build-base python linux-headers
 
 RUN yarn install --production=true --network-timeout 100000
 
