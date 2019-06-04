@@ -85,10 +85,23 @@ module.exports =
 		webRtcTransport :
 		{
 			listenIps :
-			[
-				{ ip: 0.0.0.0, announcedIp: null },
-				{ ip: ::, announcedIp: null }
-			],
+				(function (){
+					var ips=[];
+				        var ifaces = os.networkInterfaces();
+
+					Object.keys(ifaces).forEach(function (ifname) {
+						ifaces[ifname].forEach(function (iface) {
+							if ( iface.internal !== false || iface.family ==='IPv6' && iface.scopeid !==0 || ( iface.family!=='IPv4' && iface.family!=='IPv6' )) {
+								// skip over internal or ipv6 that is not global or not ipv4
+								return;
+							}
+							ips.push({ ip: iface.address, announcedIp: null });
+
+						});
+					});
+					return ips;
+
+				})(),
 			maxIncomingBitrate              : 4000000,
 			initialAvailableOutgoingBitrate : 2000000
 		}
