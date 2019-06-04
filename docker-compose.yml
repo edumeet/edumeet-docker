@@ -13,6 +13,7 @@ services:
         - SERVER_DEBUG=${SERVER_DEBUG}
       context: ./
     restart: always
+    image: misi/mm:${TAG}
     volumes:
       - ${PWD}/configs/server:${BASEDIR}/${MM}/server/config
       - ${PWD}/configs/app:${BASEDIR}/${MM}/server/public/config
