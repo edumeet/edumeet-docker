@@ -1,3 +1,5 @@
+const os = require('os');
+
 module.exports =
 {
 	// auth conf
