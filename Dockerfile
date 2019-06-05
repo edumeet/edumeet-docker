@@ -1,4 +1,4 @@
-FROM node:lts
+FROM node:lts-alpine AS mm-builder
 
 # Args
 ARG BASEDIR=/opt
@@ -8,28 +8,48 @@ ARG SERVER_DEBUG=''
 
 WORKDIR ${BASEDIR}
 
-RUN git clone -b '1.2' https://github.com/havfo/${MM}.git
+RUN apk add --no-cache git
 
-#install server dep
-WORKDIR ${BASEDIR}/${MM}/server
-
-RUN yarn
-
-# install gulp-cli
-RUN yarn global add gulp-cli
+#checkout code
+RUN git clone --single-branch --branch v2.x https://github.com/havfo/${MM}.git
 
 #install app dep
 WORKDIR ${BASEDIR}/${MM}/app
-RUN yarn install --production=false
-
-# copy app config
-ADD configs/app/config.js config/config.js
+RUN yarn install --production=false --network-timeout 100000
 
 # set app in producion mode/minified/.
 ENV NODE_ENV ${NODE_ENV}
 
+# Workaround for the next yarn run build => rm -rf public dir even if it does not exists.
+# TODO: Fix it smarter
+RUN mkdir -p ${BASEDIR}/${MM}/server/public
+
 # package web app
-RUN gulp dist
+RUN yarn run build
+
+
+#install server dep
+WORKDIR ${BASEDIR}/${MM}/server
+
+RUN apk add --no-cache git build-base python linux-headers
+
+RUN yarn install --production=true --network-timeout 100000
+
+
+FROM node:lts-alpine
+
+# Args
+ARG BASEDIR=/opt
+ARG MM=multiparty-meeting
+ARG NODE_ENV=production
+ARG SERVER_DEBUG=''
+
+WORKDIR ${BASEDIR}
+
+
+COPY --from=mm-builder ${BASEDIR}/${MM}/server ${BASEDIR}/${MM}/server
+
+
 
 # Web PORTS
 EXPOSE 80 443 
@@ -41,4 +61,3 @@ ENV DEBUG ${SERVER_DEBUG}
 
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
-

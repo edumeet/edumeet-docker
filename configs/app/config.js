@@ -1,8 +1,9 @@
-module.exports =
+// eslint-disable-next-line
+var config =
 {
-	chromeExtension : 'https://chrome.google.com/webstore/detail/fckajcjdaabdgnbdcmhhebdglogjfodi',
 	loginEnabled    : false,
-	turnServers : [
+	developmentPort : 3443,
+	turnServers     : [
 		{
 			urls : [
 				'turn:example.com:443?transport=tcp'
@@ -15,5 +16,46 @@ module.exports =
 	transportOptions :
 	{
 		tcp : true
+	},
+	lastN       : 4,
+	mobileLastN : 1,
+	background  : 'images/background.jpg',
+	// Add file and uncomment for adding logo to appbar
+	// logo       : 'images/logo.svg',
+	title       : 'Multiparty meeting',
+	theme       :
+	{
+		palette :
+		{
+			primary :
+			{
+				main : '#313131'
+			}
+		},
+		overrides :
+		{
+			MuiAppBar :
+			{
+				colorPrimary :
+				{
+					backgroundColor : '#313131'
+				}
+			},
+			MuiFab :
+			{
+				primary :
+				{
+					backgroundColor : '#5F9B2D',
+					'&:hover'       :
+					{
+						backgroundColor : '#518029'
+					}
+				}
+			}
+		},
+		typography :
+		{
+			useNextVariants : true
+		}
 	}
-};
+}

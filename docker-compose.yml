@@ -4,6 +4,7 @@ services:
 # multiparty-meeting
   mm:
     env_file: .env
+    image: misi/mm:v2
     build:
       args:
         - BASEDIR=${BASEDIR}
@@ -12,10 +13,12 @@ services:
         - SERVER_DEBUG=${SERVER_DEBUG}
       context: ./
     restart: always
+    image: misi/mm:${TAG}
     volumes:
       - ${PWD}/configs/server:${BASEDIR}/${MM}/server/config
-      - ${PWD}/configs/app:${BASEDIR}/${MM}/app/config
+      - ${PWD}/configs/app:${BASEDIR}/${MM}/server/public/config
       - ${PWD}/certs:${BASEDIR}/${MM}/server/certs
+      - ${PWD}/images:${BASEDIR}/${MM}/server/public/images
     ports:
       - "80:80"
       - "443:443"
