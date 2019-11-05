@@ -8,7 +8,7 @@ ARG SERVER_DEBUG=''
 
 WORKDIR ${BASEDIR}
 
-RUN apk add --no-cache git
+RUN apk add --no-cache git bash
 
 #checkout code
 RUN git clone --single-branch --branch 2.0 https://github.com/havfo/${MM}.git
