@@ -58,4 +58,4 @@ var config =
 			useNextVariants : true
 		}
 	}
-}
+};
