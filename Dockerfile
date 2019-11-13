@@ -1,4 +1,4 @@
-FROM node:lts-alpine AS mm-builder
+FROM node:10-alpine AS mm-builder
 
 # Args
 ARG BASEDIR=/opt
@@ -36,7 +36,7 @@ RUN apk add --no-cache git build-base python linux-headers
 RUN yarn install --production=true --network-timeout 100000
 
 
-FROM node:lts-alpine
+FROM node:10-alpine
 
 # Args
 ARG BASEDIR=/opt
