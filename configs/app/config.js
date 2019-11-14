@@ -3,6 +3,8 @@ var config =
 {
 	loginEnabled    : false,
 	developmentPort : 3443,
+  productionPort   : 443,
+  multipartyServer : 'fqdn',
 	turnServers     : [
 		{
 			urls : [
