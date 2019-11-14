@@ -5,6 +5,8 @@ services:
   mm:
     env_file: .env
     image: misi/mm:${TAG}
+    depends_on: 
+      - redis
     build:
       args:
         - BASEDIR=${BASEDIR}
@@ -25,3 +27,10 @@ services:
     network_mode: "host"
     stdin_open: true
     tty: true
+
+  redis:
+    image: redis
+    network_mode: "host"
+    entrypoint: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ${PWD}/configs/redis:/usr/local/etc/redis
