@@ -1,7 +1,7 @@
 const os = require("os");
 const ifaces = os.networkInterfaces();
 
-function getListenIPs() {
+function getListenIps() {
   let listenIP = [];
   Object.keys(ifaces).forEach(function(ifname) {
     var alias = 0;
@@ -100,7 +100,7 @@ module.exports = {
     },
     // mediasoup WebRtcTransport settings.
     webRtcTransport: {
-      listenIps: getListenIPs(),
+      listenIps: getListenIps(), 
       maxIncomingBitrate: 1500000,
       initialAvailableOutgoingBitrate: 1000000
     }
