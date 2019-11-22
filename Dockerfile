@@ -25,7 +25,7 @@ ENV NODE_ENV ${NODE_ENV}
 RUN mkdir -p ${BASEDIR}/${MM}/server/public
 
 # package web app
-RUN yarn run build
+RUN REACT_APP_DEBUG=* yarn run build
 
 
 #install server dep
