@@ -38,7 +38,7 @@ WORKDIR ${BASEDIR}/${MM}/server
 RUN apk add --no-cache git build-base python linux-headers
 
 #RUN yarn install --production=true --network-timeout 100000
-npm install
+RUN npm install
 
 
 FROM node:10-alpine
