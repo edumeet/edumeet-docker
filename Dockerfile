@@ -15,7 +15,9 @@ RUN git clone https://github.com/havfo/${MM}.git
 
 #install app dep
 WORKDIR ${BASEDIR}/${MM}/app
-RUN yarn install --production=false --network-timeout 100000
+
+#RUN yarn install --production=false --network-timeout 100000
+RUN npm install
 
 # set app in producion mode/minified/.
 ENV NODE_ENV ${NODE_ENV}
@@ -25,7 +27,9 @@ ENV NODE_ENV ${NODE_ENV}
 RUN mkdir -p ${BASEDIR}/${MM}/server/public
 
 # package web app
-RUN REACT_APP_DEBUG=* yarn run build
+#RUN REACT_APP_DEBUG=* yarn run build
+# package web app
+RUN npm run build
 
 
 #install server dep
@@ -33,7 +37,8 @@ WORKDIR ${BASEDIR}/${MM}/server
 
 RUN apk add --no-cache git build-base python linux-headers
 
-RUN yarn install --production=true --network-timeout 100000
+#RUN yarn install --production=true --network-timeout 100000
+npm install
 
 
 FROM node:10-alpine
