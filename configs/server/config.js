@@ -27,21 +27,28 @@ module.exports = {
   // oAuth2 conf
   /* auth :
 	{
+    lti :
+    {
+      consumerKey    : '_bo2uqnwon1ym4qkte5hhd4fzlnoufvts5h3hblxzcy',
+      consumerSecret : '_1xpnaa4iw36cwpnx7991e630yo0u4044so1crhvcnz'
+    },
+    oidc:
+    {
+		  // The issuer URL for OpenID Connect discovery
+		  // The OpenID Provider Configuration Document
+		  // could be discovered on:
+		  // issuerURL + '/.well-known/openid-configuration'
 
-		// The issuer URL for OpenID Connect discovery
-		// The OpenID Provider Configuration Document
-		// could be discovered on:
-		// issuerURL + '/.well-known/openid-configuration'
-
-		// issuerURL 	    : 'https://example.com',
-		// clientOptions     :
-		// {
-			client_id     : '',
-			client_secret : '',
-			scope         : 'openid email profile',
-			// where client.example.com is your multiparty meeting server
-			redirect_uri  : 'https://client.example.com/auth/callback'
-		}
+		  issuerURL 	    : 'https://example.com',
+		  clientOptions     :
+		  {
+        client_id     : '',
+        client_secret : '',
+        scope         : 'openid email profile',
+        // where client.example.com is your multiparty meeting server
+        redirect_uri  : 'https://client.example.com/auth/callback'
+		  }
+    }
 	},*/
   // session cookie secret
   cookieSecret: "T0P-S3cR3t_cook!e",
