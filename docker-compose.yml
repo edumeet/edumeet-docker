@@ -32,6 +32,7 @@ services:
     image: redis
     network_mode: "host"
     entrypoint: redis-server /usr/local/etc/redis/redis.conf
+    restart: always
     volumes:
       - ${PWD}/configs/redis:/usr/local/etc/redis
   ouroboros:
