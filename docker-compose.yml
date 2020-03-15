@@ -16,10 +16,10 @@ services:
       context: ./
     restart: always
     volumes:
-      - ${PWD}/configs/server:${BASEDIR}/${MM}/server/config
-      - ${PWD}/configs/app:${BASEDIR}/${MM}/server/public/config
-      - ${PWD}/certs:${BASEDIR}/${MM}/server/certs
-      - ${PWD}/images:${BASEDIR}/${MM}/server/public/images
+      - ./configs/server:${BASEDIR}/${MM}/server/config
+      - ./configs/app:${BASEDIR}/${MM}/server/public/config
+      - ./certs:${BASEDIR}/${MM}/server/certs
+      - ./images:${BASEDIR}/${MM}/server/public/images
     ports:
       - "80:80"
       - "443:443"
@@ -34,7 +34,7 @@ services:
     entrypoint: redis-server /usr/local/etc/redis/redis.conf
     restart: always
     volumes:
-      - ${PWD}/configs/redis:/usr/local/etc/redis
+      - ./configs/redis:/usr/local/etc/redis
   ouroboros:
     container_name: ouroboros
     hostname: ouroboros
