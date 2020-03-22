@@ -1,4 +1,4 @@
-FROM node:lts-alpine AS mm-builder
+FROM node:10-alpine AS mm-builder
 
 # Args
 ARG BASEDIR=/opt
@@ -11,7 +11,7 @@ WORKDIR ${BASEDIR}
 RUN apk add --no-cache git bash
 
 #checkout code
-RUN git clone --single-branch --branch 2.0 https://github.com/havfo/${MM}.git
+RUN git clone --single-branch --branch master https://github.com/havfo/${MM}.git
 
 #install app dep
 WORKDIR ${BASEDIR}/${MM}/app
@@ -36,7 +36,7 @@ RUN apk add --no-cache git build-base python linux-headers
 RUN yarn install --production=true --network-timeout 100000
 
 
-FROM node:lts-alpine
+FROM node:10-alpine
 
 # Args
 ARG BASEDIR=/opt
