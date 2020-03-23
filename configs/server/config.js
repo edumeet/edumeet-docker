@@ -3,10 +3,10 @@ const ifaces = os.networkInterfaces();
 
 function getListenIps() {
   let listenIP = [];
-  Object.keys(ifaces).forEach(function(ifname) {
+  Object.keys(ifaces).forEach(function (ifname) {
     var alias = 0;
 
-    ifaces[ifname].forEach(function(iface) {
+    ifaces[ifname].forEach(function (iface) {
       if (
         (iface.family !== "IPv4" &&
           (iface.family !== "IPv6" || iface.scopeid !== 0)) ||
@@ -50,6 +50,7 @@ module.exports = {
 		  }
     }
 	},*/
+  redisOptions: {},
   // session cookie secret
   cookieSecret: "T0P-S3cR3t_cook!e",
   cookieName: "multiparty-meeting.sid",
@@ -91,27 +92,59 @@ module.exports = {
       // Router media codecs.
       mediaCodecs: [
         {
-          kind: "audio",
-          mimeType: "audio/opus",
+          kind: 'audio',
+          mimeType: 'audio/opus',
           clockRate: 48000,
           channels: 2
         },
         {
-          kind: "video",
-          mimeType: "video/h264",
+          kind: 'video',
+          mimeType: 'video/VP8',
           clockRate: 90000,
-          parameters: {
-            "packetization-mode": 1,
-            "profile-level-id": "42e01f",
-            "level-asymmetry-allowed": 1,
-            "x-google-start-bitrate": 1000
+          parameters:
+          {
+            'x-google-start-bitrate': 1000
+          }
+        },
+        {
+          kind: 'video',
+          mimeType: 'video/VP9',
+          clockRate: 90000,
+          parameters:
+          {
+            'profile-id': 2,
+            'x-google-start-bitrate': 1000
+          }
+        },
+        {
+          kind: 'video',
+          mimeType: 'video/h264',
+          clockRate: 90000,
+          parameters:
+          {
+            'packetization-mode': 1,
+            'profile-level-id': '4d0032',
+            'level-asymmetry-allowed': 1,
+            'x-google-start-bitrate': 1000
+          }
+        },
+        {
+          kind: 'video',
+          mimeType: 'video/h264',
+          clockRate: 90000,
+          parameters:
+          {
+            'packetization-mode': 1,
+            'profile-level-id': '42e01f',
+            'level-asymmetry-allowed': 1,
+            'x-google-start-bitrate': 1000
           }
         }
       ]
     },
     // mediasoup WebRtcTransport settings.
     webRtcTransport: {
-      listenIps: getListenIps(), 
+      listenIps: getListenIps(),
       maxIncomingBitrate: 1500000,
       initialAvailableOutgoingBitrate: 1000000
     }

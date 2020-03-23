@@ -3,8 +3,8 @@ var config =
 {
 	loginEnabled    : false,
 	developmentPort : 3443,
-  productionPort   : 443,
-  multipartyServer : 'fqdn',
+  productionPort    : 443,
+  multipartyServer  : 'fqdn',
 	turnServers     : [
 		{
 			urls : [
@@ -14,6 +14,27 @@ var config =
 			credential : 'example'
 		}
 	],
+	/**
+	 * If defaultResolution is set, it will override user settings when joining:
+	 * low ~ 320x240
+	 * medium ~ 640x480
+	 * high ~ 1280x720
+	 * veryhigh ~ 1920x1080
+	 * ultra ~ 3840x2560
+	 **/
+	defaultResolution  : 'medium',
+	// Enable or disable simulcast for webcam video
+	simulcast          : true,
+	// Enable or disable simulcast for screen sharing video
+	simulcastSharing   : false,
+	// Simulcast encoding layers and levels
+	simulcastEncodings :
+	[
+		{ scaleResolutionDownBy: 4 },
+		{ scaleResolutionDownBy: 2 },
+		{ scaleResolutionDownBy: 1 }
+	],
+	// Socket.io request timeout	
 	requestTimeout   : 10000,
 	transportOptions :
 	{
