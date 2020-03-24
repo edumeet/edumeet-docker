@@ -3,15 +3,15 @@ var config =
 {
 	loginEnabled    : false,
 	developmentPort : 3443,
-  productionPort    : 443,
-  multipartyServer  : 'fqdn',
+  	productionPort    : 443,
+  	multipartyServer  : 'CHANGEME',
 	turnServers     : [
 		{
 			urls : [
-				'turn:example.com:443?transport=tcp'
+				'turn:CHANGEME:3478?transport=tcp'
 			],
-			username   : 'example',
-			credential : 'example'
+			username   : 'CHANGEME',
+			credential : 'CHANGEME'
 		}
 	],
 	/**
@@ -44,8 +44,8 @@ var config =
 	mobileLastN : 1,
 	background  : 'images/background.jpg',
 	// Add file and uncomment for adding logo to appbar
-	// logo       : 'images/logo.svg',
-	title       : 'Multiparty meeting',
+	 logo       : 'images/iorestoacasa-logo.svg',
+	title       : 'IoRestoACasa.work',
 	theme       :
 	{
 		palette :

@@ -1,6 +1,7 @@
 #!/bin/sh 
 
 echo "Container starting up..." 
+echo "----------------------------" 
 set -e 
 
 cd ${BASEDIR}/${MM}/server

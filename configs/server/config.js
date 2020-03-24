@@ -52,10 +52,10 @@ module.exports = {
 	},*/
   redisOptions: {},
   // session cookie secret
-  cookieSecret: "T0P-S3cR3t_cook!e",
+  cookieSecret: "ASDT0P-S3cR3t_cook!e",
   cookieName: "multiparty-meeting.sid",
   tls: {
-    cert: `${__dirname}/../certs/cert.pem`,
+    cert: `${__dirname}/../certs/fullchain.pem`,
     key: `${__dirname}/../certs/privkey.pem`
   },
   // Listening port for https server.

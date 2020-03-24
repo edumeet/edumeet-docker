@@ -1,28 +1,22 @@
 version: "3.3"
 
 services:
-# multiparty-meeting
   mm:
-    env_file: .env
     image: misi/mm:v3.2
-    build:
-      args:
-        - BASEDIR=${BASEDIR}
-        - MM=${MM}
-        - NODE_ENV=${NODE_ENV}
-        - SERVER_DEBUG=${SERVER_DEBUG}
-      context: ./
-    restart: always
-    image: misi/mm:${TAG}
+    working_dir: /opt/multiparty-meeting/server
+    entrypoint: ./mm_entrypoint.sh
+    restart: unless-stopped
+    image: misi/mm:latest
+    environment:
+      - BASEDIR=/opt
+      - MM=multiparty-meeting
+      - NODE_ENV=production
     volumes:
-      - ./configs/server:${BASEDIR}/${MM}/server/config
-      - ./configs/app:${BASEDIR}/${MM}/server/public/config
-      - ./certs:${BASEDIR}/${MM}/server/certs
-      - ./images:${BASEDIR}/${MM}/server/public/images
-    ports:
-      - "80:80"
-      - "443:443"
-      - "40000-49999:40000-49999/udp"
+      - ./configs/server:/opt/multiparty-meeting/server/config
+      - ./configs/app:/opt/multiparty-meeting/server/public/config
+      - ./certs:/opt/multiparty-meeting/server/certs
+      - ./images:/opt/multiparty-meeting/server/public/images
+      - ./mm_entrypoint.sh:/opt/multiparty-meeting/server/mm_entrypoint.sh
     network_mode: "host"
     stdin_open: true
     tty: true
@@ -30,21 +24,19 @@ services:
     image: redis
     network_mode: "host"
     entrypoint: redis-server /usr/local/etc/redis/redis.conf
-    restart: always
-    volumes:
-      - ./configs/redis:/usr/local/etc/redis
-  ouroboros:
-    container_name: ouroboros
-    hostname: ouroboros
-    image: pyouroboros/ouroboros
-    environment:
-      - CLEANUP=true
-      - INTERVAL=300
-      - LOG_LEVEL=info
-      - SELF_UPDATE=true
-      - IGNORE=mongo influxdb postgres mariadb
-      - TZ=Europe/Budapest
-      - CRON="* 2 * * *"
     restart: unless-stopped
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - ./configs/redis:/usr/local/etc/redis
+  coturn:
+    image: instrumentisto/coturn
+    network_mode: "host"
+    stop_signal: SIGKILL
+    restart: unless-stopped
+    volumes:
+     - ./coturn.conf:/etc/coturn/turnserver.conf
+  node_exporter:
+    image: prom/node-exporter
+    network_mode: "host"
+    restart: unless-stopped
+
+
