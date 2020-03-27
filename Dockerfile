@@ -5,6 +5,7 @@ ARG BASEDIR=/opt
 ARG MM=multiparty-meeting
 ARG NODE_ENV=production
 ARG SERVER_DEBUG=''
+ARG BRANCH=master
 
 WORKDIR ${BASEDIR}
 
