@@ -4,7 +4,7 @@ services:
 # multiparty-meeting
   mm:
     env_file: .env
-    image: misi/mm:v3.2
+    image: misi/mm:${TAG}
     build:
       args:
         - BASEDIR=${BASEDIR}
@@ -13,7 +13,6 @@ services:
         - SERVER_DEBUG=${SERVER_DEBUG}
       context: ./
     restart: always
-    image: misi/mm:${TAG}
     volumes:
       - ./configs/server:${BASEDIR}/${MM}/server/config
       - ./configs/app:${BASEDIR}/${MM}/server/public/config
