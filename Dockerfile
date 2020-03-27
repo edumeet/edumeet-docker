@@ -11,7 +11,7 @@ WORKDIR ${BASEDIR}
 RUN apk add --no-cache git bash
 
 #checkout code
-RUN git clone --single-branch --branch master https://github.com/havfo/${MM}.git
+RUN git clone --single-branch --branch ${BRANCH} https://github.com/havfo/${MM}.git
 
 #install app dep
 WORKDIR ${BASEDIR}/${MM}/app
