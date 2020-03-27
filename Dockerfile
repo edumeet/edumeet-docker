@@ -11,7 +11,11 @@ WORKDIR ${BASEDIR}
 RUN apk add --no-cache git bash
 
 #checkout code
+<<<<<<< HEAD
 RUN git clone https://github.com/havfo/${MM}.git
+=======
+RUN git clone --single-branch --branch ${BRANCH} https://github.com/havfo/${MM}.git
+>>>>>>> b0a4df5... Move branch to env
 
 #install app dep
 WORKDIR ${BASEDIR}/${MM}/app
