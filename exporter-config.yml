@@ -2,21 +2,21 @@ name: mm-exporter
 port: 8081
 endpoint: /metrics
 metrics:
-  - name: mm_rooms
+  - name: edumeet_rooms
     help: The count of rooms
     type: gauge
     executions:
     - type: sh
       command: docker exec -t mm /opt/multiparty-meeting/server/connect.js --stats | grep 'rooms' | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" | sed -E 's/rooms:([0-9]+)/\1/g'|sed -e 's/[\r\n]//g'
       timeout: 5000
-  - name: mm_peers
+  - name: edumeet_peers
     help: The count of peers
     type: gauge
     executions:
       - type: sh
         command: docker exec -t mm /opt/multiparty-meeting/server/connect.js --stats | grep 'peers' | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" | sed -E 's/peers:([0-9]+)/\1/g'|sed -e 's/[\r\n]//g'
         timeout: 5000
-  - name: mm_cpu_usage
+  - name: edumeet_cpu_usage
     help: CPU usage
     type: gauge
     executions:
