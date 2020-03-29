@@ -2,11 +2,9 @@ version: "3.3"
 
 services:
   mm:
-    image: misi/mm:v3.2
+    image: misi/mm:3.2
     working_dir: /opt/multiparty-meeting/server
-    entrypoint: ./mm_entrypoint.sh
     restart: unless-stopped
-    image: misi/mm:latest
     environment:
       - BASEDIR=/opt
       - MM=multiparty-meeting
@@ -16,10 +14,10 @@ services:
       - ./configs/app:/opt/multiparty-meeting/server/public/config
       - ./certs:/opt/multiparty-meeting/server/certs
       - ./images:/opt/multiparty-meeting/server/public/images
-      - ./mm_entrypoint.sh:/opt/multiparty-meeting/server/mm_entrypoint.sh
     network_mode: "host"
     stdin_open: true
     tty: true
+    container_name: mm
   redis:
     image: redis
     network_mode: "host"
@@ -34,9 +32,18 @@ services:
     restart: unless-stopped
     volumes:
      - ./coturn.conf:/etc/coturn/turnserver.conf
-  node_exporter:
-    image: prom/node-exporter
-    network_mode: "host"
+  #nodeexporter:
+  #  image: prom/node-exporter
+  #  network_mode: "host"
+  #  ports:
+  #    - '127.0.0.1:9100:9100'
+  #  restart: unless-stopped
+  exporter:
+    image: 'marckhouzam/custom-prometheus-exporter'
     restart: unless-stopped
-
-
+    ports:
+      - '8081:8081'
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - './exporter-config.yml:/edumeet-exporter.yaml'
+    command: '-f /edumeet-exporter.yaml'
