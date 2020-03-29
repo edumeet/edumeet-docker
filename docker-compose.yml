@@ -41,9 +41,11 @@ services:
   exporter:
     image: 'marckhouzam/custom-prometheus-exporter'
     restart: unless-stopped
-    ports:
-      - '8081:8081'
+    network_mode: "host"
+    #ports:
+    #  - '8081:8081'
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
       - './exporter-config.yml:/edumeet-exporter.yaml'
+      - './network_bitrate.sh:/network_bitrate.sh'
     command: '-f /edumeet-exporter.yaml'

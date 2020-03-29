@@ -23,3 +23,18 @@ metrics:
       - type: sh
         command: top -bn 1 | grep -i '^CPU' | sed 's/%//g'  | awk '{print (100.0-$8)/100 }'
         timeout: 5000
+  - name: edumeet_download_bitrate
+    help: download bitrate
+    type: gauge
+    executions:
+      - type: sh
+        command: sh /network_bitrate.sh download
+        timeout: 5000
+  - name: edumeet_upload_bitrate
+    help: upload bitrate
+    type: gauge
+    executions:
+      - type: sh
+        command: sh /network_bitrate.sh upload
+        timeout: 5000
+
