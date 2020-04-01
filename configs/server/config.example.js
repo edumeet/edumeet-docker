@@ -55,12 +55,14 @@ module.exports = {
 	*/
 	redisOptions : {},
 	// session cookie secret
+	// inserisci una stringa casuale
 	cookieSecret : 'CHANGEME_cook!e',
 	cookieName   : 'multiparty-meeting.sid',
 	tls          :
 	{
-		cert : `${__dirname}/../certs/mediasoup-demo.localhost.cert.pem`,
-		key  : `${__dirname}/../certs/mediasoup-demo.localhost.key.pem`
+		// devi inserire il percorso ai tuoi certificati SSL
+		cert: `${__dirname}/../certs/fullchain.pem`,
+		key: `${__dirname}/../certs/privkey.pem`
 	},
 	// Listening port for https server.
 	listeningPort         : 443,

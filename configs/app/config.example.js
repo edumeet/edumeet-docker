@@ -4,12 +4,20 @@ var config =
 	loginEnabled     : false,
 	developmentPort  : 3443,
 	productionPort   : 443,
+	// l'URL pubblico del tuo server MM
+	// ad esempio https://mm.iorestoacasa.work
 	multipartyServer : 'CHANGEME',
 	turnServers      : [
 		{
 			urls : [
+				// inserisci l'URL del tuo server
+				// ad esempio:
+				// 'turn:mm.iorestoacasa.work:3478?transport=tcp'
 				'turn:CHANGEME:3478?transport=tcp'
 			],
+			// username e password che specifichi qui
+			// dovranno essere gli stessi che inserisci
+			// in coturn.conf
 			username   : 'CHANGEME',
 			credential : 'CHANGEME'
 		}
