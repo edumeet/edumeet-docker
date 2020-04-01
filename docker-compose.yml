@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   mm:
-    image: misi/mm:3.2
+    image: misi/mm:v3.2.1
     working_dir: /opt/multiparty-meeting/server
     restart: unless-stopped
     environment:

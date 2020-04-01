@@ -1,11 +1,11 @@
 // eslint-disable-next-line
 var config =
 {
-	loginEnabled    : false,
-	developmentPort : 3443,
-  	productionPort    : 443,
-  	multipartyServer  : 'CHANGEME',
-	turnServers     : [
+	loginEnabled     : false,
+	developmentPort  : 3443,
+	productionPort   : 443,
+	multipartyServer : 'CHANGEME',
+	turnServers      : [
 		{
 			urls : [
 				'turn:CHANGEME:3478?transport=tcp'
@@ -34,9 +34,9 @@ var config =
 		{ scaleResolutionDownBy: 2 },
 		{ scaleResolutionDownBy: 1 }
 	],
-	// Socket.io request timeout	
-	requestTimeout   : 10000,
-	transportOptions :
+	// Socket.io request timeout
+	requestTimeout    : 10000,
+	transportOptions  :
 	{
 		tcp : true
 	},
@@ -44,8 +44,8 @@ var config =
 	mobileLastN : 1,
 	background  : 'images/background.jpg',
 	// Add file and uncomment for adding logo to appbar
-	 logo       : 'images/iorestoacasa-logo.svg',
-	title       : 'IoRestoACasa.work',
+	// logo       : 'images/logo.svg',
+	title       : 'Multiparty meeting',
 	theme       :
 	{
 		palette :
@@ -67,6 +67,17 @@ var config =
 			MuiFab :
 			{
 				primary :
+				{
+					backgroundColor : '#5F9B2D',
+					'&:hover'       :
+					{
+						backgroundColor : '#518029'
+					}
+				}
+			},
+			MuiBadge :
+			{
+				colorPrimary :
 				{
 					backgroundColor : '#5F9B2D',
 					'&:hover'       :
