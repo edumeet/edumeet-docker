@@ -4,8 +4,9 @@ var config =
 	loginEnabled     : false,
 	developmentPort  : 3443,
 	productionPort   : 443,
-	// l'URL pubblico del tuo server MM
-	// ad esempio https://mm.iorestoacasa.work
+	// FQDN
+	// l'hostname pubblico del tuo server MM (senza https://)
+	// ad esempio mm.iorestoacasa.work
 	multipartyServer : 'CHANGEME',
 	turnServers      : [
 		{
@@ -42,9 +43,9 @@ var config =
 		{ scaleResolutionDownBy: 2 },
 		{ scaleResolutionDownBy: 1 }
 	],
-	// Socket.io request timeout
-	requestTimeout    : 10000,
-	transportOptions  :
+	// Socket.io request timeout	
+	requestTimeout   : 10000,
+	transportOptions :
 	{
 		tcp : true
 	},
@@ -52,8 +53,8 @@ var config =
 	mobileLastN : 1,
 	background  : 'images/background.jpg',
 	// Add file and uncomment for adding logo to appbar
-	// logo       : 'images/logo.svg',
-	title       : 'Multiparty meeting',
+	 logo       : 'images/iorestoacasa-logo.svg',
+	title       : 'IoRestoACasa.work',
 	theme       :
 	{
 		palette :
