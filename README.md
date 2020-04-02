@@ -51,6 +51,8 @@ se la procedura ha successo troverai i file necessari in:
 # chiave privata
 /etc/letsencrypt/live/TUODOMINIO/privkey.pem
 ```
+Nota per i certicati Let's Encrypt:
+Ogni 3 mesi l'amministratore del server deve preocuparsi di aggiornare il certificato.
 
 ## 4. scarica MM
 
