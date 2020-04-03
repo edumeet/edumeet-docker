@@ -73,8 +73,8 @@ In questo repository trovi dei file di configurazione di esempio. Dovrai copiarl
 
 ```
 cp coturn.example.conf coturn.conf
-cp config/app/config.example.js config/app/config.js
-cp config/server/config.example.js config/server/config.js
+cp configs/app/config.example.js configs/app/config.js
+cp configs/server/config.example.js configs/server/config.js
 ```
 
 Modifica i tre file `coturn.conf`, `config/app/config.js`, `config/server/config.js` inserendo valori opportuni al posto dei `CHANGEME`
