@@ -6,6 +6,7 @@ ARG MM=multiparty-meeting
 ARG NODE_ENV=production
 ARG SERVER_DEBUG=''
 ARG BRANCH=develop
+ARG REACT_APP_DEBUG=''
 
 WORKDIR ${BASEDIR}
 
@@ -26,6 +27,8 @@ ENV NODE_ENV ${NODE_ENV}
 # Workaround for the next yarn run build => rm -rf public dir even if it does not exists.
 # TODO: Fix it smarter
 RUN mkdir -p ${BASEDIR}/${MM}/server/public
+
+ENV REACT_APP_DEBUG=${REACT_APP_DEBUG}
 
 # package web app
 #RUN REACT_APP_DEBUG=* yarn run build
