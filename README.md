@@ -83,14 +83,20 @@ Modifica i tre file `coturn.conf`, `config/app/config.js`, `config/server/config
 
 `docker-compose up -d`
 
-## 8. verifica che MM stia funzionando
+## 8. Non dimenticare il Firewall!
+* 80 e 443 TCP per WEB
+* 3478 TCP per TURN
+* 8081 TCP per le metriche
+* da 40000 a 49999 UDP/TCP per i media
+
+## 9. verifica che MM stia funzionando
 
 collegandoti con il browser all'hostname scelto e facendo una videochiamata
 
-## 9. verifica che le metriche siano esposte correttamente
+## 10. verifica che le metriche siano esposte correttamente
 
 `curl http://hostname.scelto.it:8081/metrics`
 
-## 10. comunica la buona notizia nella chat Telegram
+## 11. comunica la buona notizia nella chat Telegram
 
 aggiungeremo il tuo server alla tabella sul sito https://iorestoacasa.work
