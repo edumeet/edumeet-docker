@@ -99,6 +99,11 @@ collegandoti con il browser all'hostname scelto e facendo una videochiamata
 
 `curl http://hostname.scelto.it:8081/metrics`
 
-## 11. comunica la buona notizia nella chat Telegram
 
-aggiungeremo il tuo server alla tabella sul sito https://iorestoacasa.work
+## 11. apri una issue con le informazioni del server
+
+partendo [da questo template](https://github.com/iorestoacasa-work/iorestoacasa.work/issues/new?assignees=Radeox%2C+tapionx&labels=new+server&template=aggiunta-nuovo-server.md&title=%5BNEW+SERVER%5D)
+
+aggiungeremo prima possibile il tuo server alla tabella sul sito https://iorestoacasa.work.
+
+Di solito ci dedichiamo a questa attività mezz'ora dopo pranzo.
