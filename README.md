@@ -19,6 +19,10 @@ Per installare Docker, ti consiglio di seguire la guida ufficiale:
 
 https://docs.docker.com/install/
 
+Per installare Docker Compose, allo stesso modo, attieniti alla guida ufficiale:
+
+https://docs.docker.com/compose/install/
+
 Per garantire un servizio migliore abbiamo stabilito i seguenti requisiti minimi:
 
 • una macchina dedicata allo scopo, non condivisa con altri servizi.
