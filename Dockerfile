@@ -1,4 +1,4 @@
-FROM node:10-alpine AS mm-builder
+FROM node:lts-alpine AS mm-builder
 
 # Args
 ARG BASEDIR=/opt
@@ -40,7 +40,7 @@ RUN apk add --no-cache git build-base python linux-headers
 RUN npm install
 
 
-FROM node:10-alpine
+FROM node:lts-alpine
 
 # Args
 ARG BASEDIR=/opt
