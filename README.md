@@ -8,6 +8,10 @@ and like MM is shortcut, this container is a simillar shortcut that saves time.
 ## Run it in few easy step.
 1. git clone this code to your docker machine.
 2. copy your cert in `certs/cert.pem` and `certs/privkey.pem`
+    1. In case you need to generate a new cert and private key, you can use (note -nodes flag, which allows to generate unencrypted private key)
+```
+        $ openssl req -x509 -newkey rsa:4096 -keyout privkey.pem -out cert.pem -days 365 -nodes
+```
 2. configure your app side configs
    e.g. Set TURN server and credential in `configs/app/config.js`
 3. configure your server side configs
@@ -18,19 +22,19 @@ and like MM is shortcut, this container is a simillar shortcut that saves time.
 There is two ways
 1. simple use `docker run` command
 ```
-./run.sh
+$ sudo ./run.sh
 ```
 
 2. or with `docker-compose` 
 / [install docker compose](https://docs.docker.com/compose/install/) /
 ```
-  docker-compose up --detach
+  $ sudo docker-compose up --detach
 ```
 ## Rebuild
 
 If you change app-config.js or or something in .env then you have to rebuild the image.
 ```
-  docker-compose up --build --detach
+  $ sudo docker-compose up --build --detach
 ```
 
 ## Docker networking
