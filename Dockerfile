@@ -1,4 +1,4 @@
-FROM node:13-alpine AS mm-builder
+FROM node:13-slim AS mm-builder
 
 # Args
 ARG BASEDIR=/opt
@@ -10,7 +10,7 @@ ARG REACT_APP_DEBUG=''
 
 WORKDIR ${BASEDIR}
 
-RUN apk add --no-cache git bash
+RUN apt-get update;apt-get install -y git bash
 
 #checkout code
 RUN git clone --single-branch --branch ${BRANCH} https://github.com/havfo/${MM}.git
@@ -39,13 +39,13 @@ RUN npm run build
 #install server dep
 WORKDIR ${BASEDIR}/${MM}/server
 
-RUN apk add --no-cache git build-base python linux-headers
+RUN apt-get install -y git build-essential python
 
 #RUN yarn install --production=true --network-timeout 100000
 RUN npm install
 
 
-FROM node:13-alpine
+FROM node:13-slim
 
 # Args
 ARG BASEDIR=/opt
