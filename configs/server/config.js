@@ -53,9 +53,11 @@ module.exports = {
   // session cookie secret
   cookieSecret: "T0P-S3cR3t_cook!e",
   cookieName: "multiparty-meeting.sid",
+  // if you use encrypted private key the set the passphrase 
   tls: {
     cert: `${__dirname}/../certs/cert.pem`,
     key: `${__dirname}/../certs/privkey.pem`
+    // passphrase: key_password
   },
   // Listening port for https server.
   listeningPort: 443,
