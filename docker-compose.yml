@@ -14,7 +14,7 @@ services:
         - NODE_ENV=${NODE_ENV}
         - SERVER_DEBUG=${SERVER_DEBUG}
       context: ./
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./configs/server:${BASEDIR}/${MM}/server/config
       - ./configs/app:${BASEDIR}/${MM}/server/public/config
@@ -32,7 +32,7 @@ services:
     image: redis
     network_mode: "host"
     entrypoint: redis-server /usr/local/etc/redis/redis.conf
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./configs/redis:/usr/local/etc/redis
   ouroboros:
