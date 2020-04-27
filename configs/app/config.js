@@ -1,19 +1,40 @@
 // eslint-disable-next-line
 var config =
 {
-	loginEnabled    : false,
-	developmentPort : 3443,
-  productionPort   : 443,
-  multipartyServer : 'fqdn',
-	turnServers     : [
-		{
-			urls : [
-				'turn:example.com:443?transport=tcp'
-			],
-			username   : 'example',
-			credential : 'example'
-		}
+	loginEnabled     : false,
+	developmentPort  : 3443,
+	productionPort   : 443,
+
+	/**
+	 * If defaultResolution is set, it will override user settings when joining:
+	 * low ~ 320x240
+	 * medium ~ 640x480
+	 * high ~ 1280x720
+	 * veryhigh ~ 1920x1080
+	 * ultra ~ 3840x2560
+	 **/
+	defaultResolution  : 'medium',
+	// Enable or disable simulcast for webcam video
+	simulcast          : true,
+	// Enable or disable simulcast for screen sharing video
+	simulcastSharing   : false,
+	// Simulcast encoding layers and levels
+	simulcastEncodings :
+	[
+		{ scaleResolutionDownBy: 3 },
+		{ scaleResolutionDownBy: 1 }
 	],
+	/**
+	 * White listing browsers that support audio output device selection.
+	 * It is not yet fully implemented in Firefox.
+	 * See: https://bugzilla.mozilla.org/show_bug.cgi?id=1498512
+	 */
+	audioOutputSupportedBrowsers :
+	[
+		'chrome',
+		'opera'
+	],
+	// Socket.io request timeout
 	requestTimeout   : 10000,
 	transportOptions :
 	{
@@ -52,6 +73,24 @@ var config =
 					{
 						backgroundColor : '#518029'
 					}
+				}
+			},
+			MuiBadge :
+			{
+				colorPrimary :
+				{
+					backgroundColor : '#5F9B2D',
+					'&:hover'       :
+					{
+						backgroundColor : '#518029'
+					}
+				}
+			},
+			MuiButton :
+			{
+				containedSecondary :
+				{
+					backgroundColor : '#B2004C'
 				}
 			}
 		},
