@@ -90,7 +90,11 @@ var config =
 			{
 				containedSecondary :
 				{
-					backgroundColor : '#B2004C'
+					backgroundColor : '#B2004C',
+					'&:hover'       :
+					{
+						backgroundColor : '#800A3F'
+					}
 				}
 			}
 		},
