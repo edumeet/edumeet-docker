@@ -20,6 +20,7 @@ services:
       - ./configs/app:${BASEDIR}/${MM}/server/public/config
       - ./certs:${BASEDIR}/${MM}/server/certs
       - ./images:${BASEDIR}/${MM}/server/public/images
+      - ./privacy:${BASEDIR}/${MM}/server/public/static/privacy
     ports:
       - "80:80"
       - "443:443"
