@@ -43,7 +43,7 @@ RUN apt-get install -y git build-essential python
 
 #RUN yarn install --production=true --network-timeout 100000
 RUN npm install
-
+RUN npm install logstash-client
 
 FROM node:13-slim
 
