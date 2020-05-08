@@ -1,4 +1,4 @@
-FROM node:13-slim AS mm-builder
+FROM node:lts-slim AS mm-builder
 
 # Args
 ARG BASEDIR=/opt
@@ -45,7 +45,7 @@ RUN apt-get install -y git build-essential python
 RUN npm install
 RUN npm install logstash-client
 
-FROM node:13-slim
+FROM node:lts-slim
 
 # Args
 ARG BASEDIR=/opt
