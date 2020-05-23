@@ -5,6 +5,7 @@ docker run \
 	-v ${PWD}/configs/server:${BASEDIR}/${MM}/server/config \
 	-v ${PWD}/certs:${BASEDIR}/${MM}/server/certs \
 	-v ${PWD}/images:${BASEDIR}/${MM}/server/public/images \
+    -v ${PWD}/privacy:${BASEDIR}/${MM}/server/public/static/privacy \
 	-e BASEDIR=${BASEDIR} -e MM=${MM} \
 	--network host \
 	--restart unless-stopped \

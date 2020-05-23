@@ -5,6 +5,8 @@ services:
   mm:
     env_file: .env
     image: misi/mm:${TAG}
+    depends_on: 
+      - redis
     build:
       args:
         - BASEDIR=${BASEDIR}
@@ -12,12 +14,13 @@ services:
         - NODE_ENV=${NODE_ENV}
         - SERVER_DEBUG=${SERVER_DEBUG}
       context: ./
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./configs/server:${BASEDIR}/${MM}/server/config
       - ./configs/app:${BASEDIR}/${MM}/server/public/config
       - ./certs:${BASEDIR}/${MM}/server/certs
       - ./images:${BASEDIR}/${MM}/server/public/images
+      - ./privacy:${BASEDIR}/${MM}/server/public/static/privacy
     ports:
       - "80:80"
       - "443:443"
@@ -25,11 +28,12 @@ services:
     network_mode: "host"
     stdin_open: true
     tty: true
+  
   redis:
     image: redis
     network_mode: "host"
     entrypoint: redis-server /usr/local/etc/redis/redis.conf
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./configs/redis:/usr/local/etc/redis
   ouroboros:
