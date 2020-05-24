@@ -53,7 +53,7 @@ var config =
 	// Enable or disable simulcast for screen sharing video
 	simulcastSharing              : false,
 	// Simulcast encoding layers and levels
-	simulcastEncodings :
+	simulcastEncodings            :
 	[
 		{ scaleResolutionDownBy: 4 },
 		{ scaleResolutionDownBy: 2 },
