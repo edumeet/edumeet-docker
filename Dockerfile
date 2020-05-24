@@ -33,7 +33,6 @@ ENV REACT_APP_DEBUG=${REACT_APP_DEBUG}
 # package web app
 RUN npm run build
 
-
 #install server dep
 WORKDIR ${BASEDIR}/${MM}/server
 
