@@ -84,38 +84,38 @@ module.exports =
 	},
 	*/
 	// URI and key for requesting geoip-based TURN server closest to the client
-	turnAPIKey	: 'examplekey',
-	turnAPIURI	: 'https://example.com/api/turn',
-	turnAPIparams	: {
-				'uri_schema': 'turn',
-				'transport': 'tcp',
-				'ip_ver': 'ipv4',
-				'servercount': '2'
+	turnAPIKey    : 'examplekey',
+	turnAPIURI    : 'https://example.com/api/turn',
+	turnAPIparams : {
+		'uri_schema' 	: 'turn',
+		'transport' 		: 'tcp',
+		'ip_ver'    		: 'ipv4',
+		'servercount'	: '2'
 	},
 
 	// Backup turnservers if REST fails or is not configured
-	backupTurnServers: [
+	backupTurnServers : [
 		{
-			urls: [
+			urls : [
 				'turn:turn.example.com:443?transport=tcp'
 			],
-			username: 'example',
-			credential: 'example'
+			username   : 'example',
+			credential : 'example'
 		}
 	],
 	// bittorrent tracker
-	fileTracker: 'wss://tracker.lab.vvc.niif.hu:443',
-	// redis server option
-	redisOptions: {password: 'hd8qu31chmcu39gwuk27s9b9allnc93u4m7umu8c2t'},
+	fileTracker  : 'wss://tracker.lab.vvc.niif.hu:443',
+	// redis server options
+	redisOptions : {password: 'hd8qu31chmcu39gwuk27s9b9allnc93u4m7umu8c2t'},
 	// session cookie secret
 	cookieSecret : 'T0P-S3cR3t_cook!e',
 	cookieName   : 'multiparty-meeting.sid',
 	// if you use encrypted private key the set the passphrase
-	tls: 
+	tls          :
 	{
-		cert: `${__dirname}/../certs/cert.pem`,
+		cert : `${__dirname}/../certs/cert.pem`,
 		// passphrase: 'key_password'
-		key: `${__dirname}/../certs/privkey.pem`
+		key  : `${__dirname}/../certs/privkey.pem`
 	},
 	// listening Host or IP 
 	// If omitted listens on every IP. ("0.0.0.0" and "::")

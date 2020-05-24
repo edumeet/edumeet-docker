@@ -27,22 +27,36 @@ var config =
 	},
 
 	/**
-	 * If defaultResolution is set, it will override user settings when joining:
+	 * Resolutions:
+	 * 
 	 * low ~ 320x240
 	 * medium ~ 640x480
 	 * high ~ 1280x720
 	 * veryhigh ~ 1920x1080
 	 * ultra ~ 3840x2560
+	 * 
 	 **/
-	defaultResolution  : 'medium',
+
+	/**
+	 * Frame rates:
+	 * 
+	 * 1, 5, 10, 15, 20, 25, 30
+	 * 
+	 **/
+
+	defaultResolution             : 'medium',
+	defaultFrameRate              : 15,
+	defaultScreenResolution       : 'veryhigh',
+	defaultScreenSharingFrameRate : 5,
 	// Enable or disable simulcast for webcam video
-	simulcast          : true,
+	simulcast                     : true,
 	// Enable or disable simulcast for screen sharing video
-	simulcastSharing   : false,
+	simulcastSharing              : false,
 	// Simulcast encoding layers and levels
 	simulcastEncodings :
 	[
-		{ scaleResolutionDownBy: 3 },
+		{ scaleResolutionDownBy: 4 },
+		{ scaleResolutionDownBy: 2 },
 		{ scaleResolutionDownBy: 1 }
 	],
 
@@ -89,7 +103,8 @@ var config =
 	 * unmuted. Next participant will join automatically muted
 	 * Default value is 4
 	 * 
-	 * Set it to 0 to disable auto mute functionality, 
+	 * Set it to 0 to auto mute all, 
+	 * Set it to negative (-1) to never automatically auto mute
 	 * but use it with caution
 	 * full mesh audio strongly decrease room capacity! 
 	 */
@@ -118,6 +133,15 @@ var config =
 	// Add file and uncomment for adding logo to appbar
 	// logo       : 'images/logo.svg',
 	title                : 'Multiparty meeting',
+	// Service & Support URL
+	// if not set then not displayed on the about modals
+	supportUrl           : 'https://support.example.com',
+	// Privacy and dataprotection URL or path
+	// by default privacy/privacy.html
+	// that is a placeholder for your policies
+	//
+	// but an external url could be also used here	 
+	privacyUrl           : 'static/privacy.html',
 	theme                :
 	{
 		palette :
