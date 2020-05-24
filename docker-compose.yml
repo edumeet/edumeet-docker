@@ -28,7 +28,7 @@ services:
     network_mode: "host"
     stdin_open: true
     tty: true
-  
+
   redis:
     image: redis
     network_mode: "host"
