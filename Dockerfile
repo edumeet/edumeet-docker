@@ -18,20 +18,17 @@ RUN git clone --single-branch --branch ${BRANCH} https://github.com/havfo/${MM}.
 #install app dep
 WORKDIR ${BASEDIR}/${MM}/app
 
-#RUN yarn install --production=false --network-timeout 100000
 RUN npm install
 
 # set app in producion mode/minified/.
 ENV NODE_ENV ${NODE_ENV}
 
-# Workaround for the next yarn run build => rm -rf public dir even if it does not exists.
+# Workaround for the next npm run build => rm -rf public dir even if it does not exists.
 # TODO: Fix it smarter
 RUN mkdir -p ${BASEDIR}/${MM}/server/public
 
 ENV REACT_APP_DEBUG=${REACT_APP_DEBUG}
 
-# package web app
-#RUN REACT_APP_DEBUG=* yarn run build
 # package web app
 RUN npm run build
 
@@ -41,7 +38,6 @@ WORKDIR ${BASEDIR}/${MM}/server
 
 RUN apt-get install -y git build-essential python
 
-#RUN yarn install --production=true --network-timeout 100000
 RUN npm install
 RUN npm install logstash-client
 
