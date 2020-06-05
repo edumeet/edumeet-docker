@@ -21,6 +21,7 @@ services:
       - ./certs:${BASEDIR}/${MM}/server/certs
       - ./images:${BASEDIR}/${MM}/server/public/images
       - ./privacy:${BASEDIR}/${MM}/server/public/static/privacy
+      - ./.well-known:${BASEDIR}/${MM}/server/public/.well-known
     ports:
       - "80:80"
       - "443:443"
