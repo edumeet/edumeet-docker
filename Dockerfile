@@ -1,9 +1,9 @@
-FROM node:10-slim AS mm-builder
+FROM node:10-slim AS edumeet-builder
 
 
 # Args
 ARG BASEDIR=/opt
-ARG MM=multiparty-meeting
+ARG EDUMEET=edumeet
 ARG NODE_ENV=production
 ARG SERVER_DEBUG=''
 ARG BRANCH=master
@@ -14,10 +14,10 @@ WORKDIR ${BASEDIR}
 RUN apt-get update;apt-get install -y git bash
 
 #checkout code
-RUN git clone --single-branch --branch ${BRANCH} https://github.com/havfo/${MM}.git
+RUN git clone --single-branch --branch ${BRANCH} https://github.com/edumeet/${EDUMEET}.git
 
 #install app dep
-WORKDIR ${BASEDIR}/${MM}/app
+WORKDIR ${BASEDIR}/${EDUMEET}/app
 
 RUN npm install
 
@@ -26,7 +26,7 @@ ENV NODE_ENV ${NODE_ENV}
 
 # Workaround for the next npm run build => rm -rf public dir even if it does not exists.
 # TODO: Fix it smarter
-RUN mkdir -p ${BASEDIR}/${MM}/server/public
+RUN mkdir -p ${BASEDIR}/${EDUMEET}/server/public
 
 ENV REACT_APP_DEBUG=${REACT_APP_DEBUG}
 
@@ -34,7 +34,7 @@ ENV REACT_APP_DEBUG=${REACT_APP_DEBUG}
 RUN npm run build
 
 #install server dep
-WORKDIR ${BASEDIR}/${MM}/server
+WORKDIR ${BASEDIR}/${EDUMEET}/server
 
 RUN apt-get install -y git build-essential python
 
@@ -45,14 +45,14 @@ FROM node:10-slim
 
 # Args
 ARG BASEDIR=/opt
-ARG MM=multiparty-meeting
+ARG EDUMEET=edumeet
 ARG NODE_ENV=production
 ARG SERVER_DEBUG=''
 
 WORKDIR ${BASEDIR}
 
 
-COPY --from=mm-builder ${BASEDIR}/${MM}/server ${BASEDIR}/${MM}/server
+COPY --from=edumeet-builder ${BASEDIR}/${EDUMEET}/server ${BASEDIR}/${EDUMEET}/server
 
 
 

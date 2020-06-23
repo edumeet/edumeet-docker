@@ -76,7 +76,7 @@ module.exports =
 				client_id     : '',
 				client_secret : '',
 				scope       		: 'openid email profile',
-				// where client.example.com is your multiparty meeting server
+				// where client.example.com is your eduMeet server
 				redirect_uri  : 'https://client.example.com/auth/callback'
 			}
 
@@ -109,7 +109,7 @@ module.exports =
 	redisOptions : {password: 'hd8qu31chmcu39gwuk27s9b9allnc93u4m7umu8c2t'},
 	// session cookie secret
 	cookieSecret : 'T0P-S3cR3t_cook!e',
-	cookieName   : 'multiparty-meeting.sid',
+	cookieName   : 'edumeet.sid',
 	// if you use encrypted private key the set the passphrase
 	tls          :
 	{

@@ -3,7 +3,7 @@
 echo "Container starting up..." 
 set -e 
 
-cd ${BASEDIR}/${MM}/server
-node ${BASEDIR}/${MM}/server/server.js
+cd ${BASEDIR}/${EDUMEET}/server
+node ${BASEDIR}/${EDUMEET}/server/server.js
 
 exec "$@"
