@@ -1,27 +1,27 @@
 version: "3.3"
 
 services:
-# multiparty-meeting
-  mm:
+# edumeet
+  edumeet:
     env_file: .env
-    image: misi/mm:${TAG}
+    image: edumeet/edumeet:${TAG}
     depends_on: 
       - redis
     build:
       args:
         - BASEDIR=${BASEDIR}
-        - MM=${MM}
+        - EDUMEET=${EDUMEET}
         - NODE_ENV=${NODE_ENV}
         - SERVER_DEBUG=${SERVER_DEBUG}
       context: ./
     restart: unless-stopped
     volumes:
-      - ./configs/server:${BASEDIR}/${MM}/server/config
-      - ./configs/app:${BASEDIR}/${MM}/server/public/config
-      - ./certs:${BASEDIR}/${MM}/server/certs
-      - ./images:${BASEDIR}/${MM}/server/public/images
-      - ./privacy:${BASEDIR}/${MM}/server/public/static/privacy
-      - ./.well-known:${BASEDIR}/${MM}/server/public/.well-known
+      - ./configs/server:${BASEDIR}/${EDUMEET}/server/config
+      - ./configs/app:${BASEDIR}/${EDUMEET}/server/public/config
+      - ./certs:${BASEDIR}/${EDUMEET}/server/certs
+      - ./images:${BASEDIR}/${EDUMEET}/server/public/images
+      - ./privacy:${BASEDIR}/${EDUMEET}/server/public/static/privacy
+      - ./.well-known:${BASEDIR}/${EDUMEET}/server/public/.well-known
     ports:
       - "80:80"
       - "443:443"

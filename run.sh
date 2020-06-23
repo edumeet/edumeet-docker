@@ -1,14 +1,14 @@
 #/bin/bash
 source .env
 docker run \
-	-v ${PWD}/configs/app:${BASEDIR}/${MM}/server/public/config \
-	-v ${PWD}/configs/server:${BASEDIR}/${MM}/server/config \
-	-v ${PWD}/certs:${BASEDIR}/${MM}/server/certs \
-	-v ${PWD}/images:${BASEDIR}/${MM}/server/public/images \
-    -v ${PWD}/privacy:${BASEDIR}/${MM}/server/public/static/privacy \
-	-e BASEDIR=${BASEDIR} -e MM=${MM} \
+	-v ${PWD}/configs/app:${BASEDIR}/${EDUMEET}/server/public/config \
+	-v ${PWD}/configs/server:${BASEDIR}/${EDUMEET}/server/config \
+	-v ${PWD}/certs:${BASEDIR}/${EDUMEET}/server/certs \
+	-v ${PWD}/images:${BASEDIR}/${EDUMEET}/server/public/images \
+    -v ${PWD}/privacy:${BASEDIR}/${EDUMEET}/server/public/static/privacy \
+	-e BASEDIR=${BASEDIR} -e EDUMEET=${EDUMEET} \
 	--network host \
 	--restart unless-stopped \
-	--name mm \
+	--name edumeet \
 	--detach \
-      misi/mm:${TAG}
+      misi/edumeet:${TAG}
