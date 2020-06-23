@@ -1,10 +1,9 @@
-# Multiparty Meeting => MM
+# eduMeet in docker container
 
-MM stand as a shortcut for multiparty-meeting.
+Docker hub repository: [edumeet/edumeet](https://hub.docker.com/r/edumeet/edumeet)
 
-This is the container, or a "dockerized" version of the [multiparty meeting](https://github.com/havfo/multiparty-meeting),
-and like MM is shortcut, this container is a simillar shortcut that saves time.
-:)
+This is the container, or a "dockerized" version of the [eduMeet](https://github.com/edumeet/edumeet).
+(Successor of [multiparty meeting](https://github.com/havfo/multiparty-meeting) fork of mediasoup-demo)
 
 ## Run it in few easy step
 
@@ -54,7 +53,7 @@ Run with `docker-compose`
 
 ## Rebuild
 
-If you change app-config.js or or something in .env then you have to rebuild the image.
+If you change .env then you have to rebuild the image.
 
 ```sh
   $ sudo docker-compose up --build --detach
@@ -68,4 +67,4 @@ Container works in "host" network mode, because birdge mode has the following is
 
 ## Further Informations
 
-Read more about configs and settings in [multiparty meeting](https://github.com/havfo/multiparty-meeting) README.
+Read more about configs and settings in [eduMeet](https://github.com/edumeet/edumeet) README.
