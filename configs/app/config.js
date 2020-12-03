@@ -43,7 +43,22 @@ var config =
 	 * 1, 5, 10, 15, 20, 25, 30
 	 * 
 	 **/
-
+	// The aspect ratio of the videos as shown on
+	// the screen. This is changeable in client settings.
+	// This value must match one of the defined values in
+	// viewAspectRatios EXACTLY (e.g. 1.333)
+	viewAspectRatio  : 1.777,
+	// These are the selectable aspect ratios in the settings
+	viewAspectRatios : [ {
+		value : 1.333, // 4 / 3
+		label : '4 : 3'
+	}, {
+		value : 1.777, // 16 / 9
+		label : '16 : 9'
+	} ],
+	// The aspect ratio of the video from the camera
+	// this is not changeable in settings, only config
+	videoAspectRatio              : 1.777,
 	defaultResolution             : 'medium',
 	defaultFrameRate              : 15,
 	defaultScreenResolution       : 'veryhigh',
@@ -86,16 +101,32 @@ var config =
 	{
 		tcp : true
 	},
+	// defaults for audio setting on new clients / can be customized and overruled from client side
 	defaultAudio :
 	{
-		sampleRate        : 48000,
-		channelCount      : 1,
-		volume            : 1.0,
-		autoGainControl   : true,
-		echoCancellation  : true,
-		noiseSuppression  : true,
-		voiceActivityMute : false,
-		sampleSize        : 16
+		autoGainControl      : false, // default : false
+		echoCancellation     : true, // default : true 
+		noiseSuppression     : true, // default : true 
+		// Automatically unmute speaking above noisThereshold
+		voiceActivatedUnmute : false, // default : false 
+		// This is only for voiceActivatedUnmute and audio-indicator
+		noiseThreshold       : -60 // default -60
+	},
+	// Audio options for now only centrally from config file: 
+	centralAudioOptions :
+	{
+		// will not eat that much bandwith thanks to opus
+		sampleRate          : 48000, // default : 48000 and don't go higher
+		// usually mics are mono so this saves bandwidth
+		channelCount        : 1, // default : 1
+		volume              : 1.0, // default : 1.0
+		sampleSize          : 16, // default : 16
+		// usually mics are mono so this saves bandwidth
+		opusStereo          : false, // default : false
+		opusDtx             : true, // default : true / will save bandwidth 
+		opusFec             : true, // default : true / forward error correction
+		opusPtime           : '20', // default : 20 / minimum packet time (3, 5, 10, 20, 40, 60, 120)
+		opusMaxPlaybackRate : 48000 // default : 48000 and don't go higher
 	},
 
 	/**
@@ -130,7 +161,8 @@ var config =
 	maxLastN             : 10,
 	// If truthy, users can NOT change number of speakers visible
 	lockLastN            : false,
-	// Add file and uncomment for adding logo to appbar
+	// Show logo if "logo" is not null, else show title
+	// Set logo file name using logo.* pattern like "logo.png" to not track it by git 
 	// logo       : 'images/logo.svg',
 	title                : 'eduMeet',
 	// Service & Support URL
@@ -141,7 +173,7 @@ var config =
 	// that is a placeholder for your policies
 	//
 	// but an external url could be also used here	 
-	privacyUrl           : 'static/privacy.html',
+	privacyUrl           : 'privacy/privacy.html',
 	theme                :
 	{
 		palette :
@@ -160,6 +192,50 @@ var config =
 					backgroundColor : '#313131'
 				}
 			},
+			MuiButton :
+			{
+				containedPrimary :
+				{
+					backgroundColor : '#5F9B2D',
+					'&:hover'       :
+					{
+						backgroundColor : '#5F9B2D'
+					}
+				},
+				containedSecondary :
+				{
+					backgroundColor : '#f50057',
+					'&:hover'       :
+					{
+						backgroundColor : '#f50057'
+					}
+				}
+
+			},
+
+			/*
+			MuiIconButton :
+			{
+				colorPrimary :
+				{
+					backgroundColor : '#5F9B2D',
+					'&:hover'       :
+					{
+						backgroundColor : '#5F9B2D'
+					}
+				},
+				colorSecondary :
+				{
+					backgroundColor : '#f50057',
+					'&:hover'       :
+					{
+						backgroundColor : '#f50057'
+					}
+				}
+
+			},
+			*/
+
 			MuiFab :
 			{
 				primary :
@@ -167,9 +243,18 @@ var config =
 					backgroundColor : '#5F9B2D',
 					'&:hover'       :
 					{
-						backgroundColor : '#518029'
+						backgroundColor : '#5F9B2D'
+					}
+				},
+				secondary :
+				{
+					backgroundColor : '#f50057',
+					'&:hover'       :
+					{
+						backgroundColor : '#f50057'
 					}
 				}
+
 			},
 			MuiBadge :
 			{
@@ -179,17 +264,6 @@ var config =
 					'&:hover'       :
 					{
 						backgroundColor : '#518029'
-					}
-				}
-			},
-			MuiButton :
-			{
-				containedSecondary :
-				{
-					backgroundColor : '#B2004C',
-					'&:hover'       :
-					{
-						backgroundColor : '#800A3F'
 					}
 				}
 			}
