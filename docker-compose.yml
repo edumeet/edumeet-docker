@@ -22,10 +22,10 @@ services:
       - ./images:${BASEDIR}/${EDUMEET}/server/public/images
       - ./privacy:${BASEDIR}/${EDUMEET}/server/public/static/privacy
       - ./.well-known:${BASEDIR}/${EDUMEET}/server/public/.well-known
-    ports:
-      - "80:80"
-      - "443:443"
-      - "40000-49999:40000-49999/udp"
+    #ports:
+    #  - "80:80"
+    #  - "443:443"
+    #  - "40000-49999:40000-49999/udp"
     network_mode: "host"
     stdin_open: true
     tty: true
