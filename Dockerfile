@@ -35,7 +35,7 @@ RUN npm run build
 #install server dep
 WORKDIR ${BASEDIR}/${EDUMEET}/server
 
-RUN apt-get install -y git build-essential python pkg-config
+RUN apt-get install -y git build-essential python pkg-config openssl
 
 RUN npm install
 RUN npm install logstash-client
