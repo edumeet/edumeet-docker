@@ -1,4 +1,4 @@
-FROM node:10-slim AS edumeet-builder
+FROM node:lts-buster-slim AS edumeet-builder
 
 # Args
 ARG BASEDIR=/opt
@@ -40,9 +40,9 @@ RUN apt-get install -y git build-essential python openssl libssl-dev pkg-config
 RUN npm install
 RUN npm install logstash-client
 
-FROM node:10-slim
+FROM node:lts-buster-slim
 
-# Args
+# Args:
 ARG BASEDIR=/opt
 ARG EDUMEET=edumeet
 ARG NODE_ENV=production
