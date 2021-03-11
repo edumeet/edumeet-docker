@@ -26,8 +26,8 @@ const {
 // const AwaitQueue = require('awaitqueue');
 // const axios = require('axios');
 
-// To gather ip address only on interface like eth0, ens0p3
-const ifaceWhiteListRegex = '^(eth.*)|(ens.*)'
+// To gather ip address only on interface like eth0, enp0s3
+const ifaceWhiteListRegex = '^(eth.*)|(enp.*)'
 
 function getListenIps() {
 	let listenIP = [];
