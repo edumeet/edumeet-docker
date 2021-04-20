@@ -53,7 +53,7 @@ WORKDIR ${BASEDIR}
 
 COPY --from=edumeet-builder ${BASEDIR}/${EDUMEET}/server ${BASEDIR}/${EDUMEET}/server
 
-
+RUN apt-get update;apt-get install -y openssl
 
 # Web PORTS
 EXPOSE 80 443 
