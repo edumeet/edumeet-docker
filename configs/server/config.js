@@ -474,7 +474,7 @@ module.exports =
 		webRtcTransport :
 		{
 			listenIps : getListenIps(),
-			/*[
+			/*listenIps : [
 				// change 192.0.2.1 IPv4 to your server's IPv4 address!!
 				//{ ip: '192.0.2.1', announcedIp: null }
 
