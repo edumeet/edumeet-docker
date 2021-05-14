@@ -1,4 +1,7 @@
+//serial: 2021051303
 const os = require('os');
+// const fs = require('fs');
+
 const userRoles = require('../userRoles');
 
 const {
@@ -9,8 +12,11 @@ const {
 const {
 	CHANGE_ROOM_LOCK,
 	PROMOTE_PEER,
+	MODIFY_ROLE,
 	SEND_CHAT,
 	MODERATE_CHAT,
+	SHARE_AUDIO,
+	SHARE_VIDEO,
 	SHARE_SCREEN,
 	EXTRA_VIDEO,
 	SHARE_FILE,
@@ -153,9 +159,9 @@ module.exports =
 	// if you use encrypted private key the set the passphrase
 	tls          :
 	{
-		cert : `${__dirname}/../certs/cert.pem`,
+		cert : `${__dirname}/../../certs/cert.pem`,
 		// passphrase: 'key_password'
-		key  : `${__dirname}/../certs/privkey.pem`
+		key  : `${__dirname}/../../certs/privkey.pem`
 	},
 	// listening Host or IP 
 	// If omitted listens on every IP. ("0.0.0.0" and "::")
@@ -368,6 +374,12 @@ module.exports =
 	// When true, the room will be open to all users as long as there
 	// are allready users in the room
 	activateOnHostJoin   : true,
+	// roomsUnlocked is an array of rooms users can enter without waiting
+	// in the lobby.  If the array is undefined or null, users can enter
+	// any room without waiting in the lobby.  This is the default.  The
+	// aim of roomsUnlocked is to enforce moderated access to all rooms
+	// with the exception of the rooms defined in the array.
+	// roomsUnlocked        : [ 'unlocked1', 'unlocked2', 'unlocked3' ],
 	// When set, maxUsersPerRoom defines how many users can join
 	// a single room. If not set, there is no limit.
 	// maxUsersPerRoom    : 20,
@@ -377,6 +389,8 @@ module.exports =
 	requestTimeout       : 20000,
 	// Socket retries when timeout
 	requestRetries       : 3,
+	// If > 0, sets a cache-control max-age (in seconds) to static files responses.
+	staticFilesCachePeriod : 0,
 	// Mediasoup settings
 	mediasoup            :
 	{
