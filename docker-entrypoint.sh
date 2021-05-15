@@ -10,7 +10,7 @@ if [[ ! -e ${BASEDIR}/${EDUMEET}/server/dist/config/config.js ]] || [[ $(head -1
       npm run build
 fi
 
-npm start
-#node ${BASEDIR}/${EDUMEET}/server/server.js
+#npm start
+node ${BASEDIR}/${EDUMEET}/server/dist/server.js
 
 exec "$@"
