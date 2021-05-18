@@ -3,7 +3,7 @@ FROM node:lts-buster-slim AS edumeet-builder
 # Args
 ARG BASEDIR=/opt
 ARG EDUMEET=edumeet
-#ARG NODE_ENV=production
+ARG NODE_ENV=production
 ARG SERVER_DEBUG=''
 ARG BRANCH=develop
 ARG REACT_APP_DEBUG=''
@@ -18,10 +18,10 @@ RUN git clone --single-branch --branch ${BRANCH} https://github.com/edumeet/${ED
 #install app dep
 WORKDIR ${BASEDIR}/${EDUMEET}/app
 
-RUN npm install
+RUN npm install --production=false
 
 # set app in producion mode/minified/.
-#ENV NODE_ENV ${NODE_ENV}
+ENV NODE_ENV ${NODE_ENV}
 
 # Workaround for the next npm run build => rm -rf public dir even if it does not exists.
 # TODO: Fix it smarter
@@ -35,14 +35,16 @@ RUN npm run build
 #install server dep
 WORKDIR ${BASEDIR}/${EDUMEET}/server
 
-RUN npm install;npm run build;npm install logstash-client
+RUN npm install --production=false
+RUN npm install logstash-client
+RUN npm run build
 
 FROM node:lts-buster-slim
 
 # Args:
 ARG BASEDIR=/opt
 ARG EDUMEET=edumeet
-#ARG NODE_ENV=production
+ARG NODE_ENV=production
 ARG SERVER_DEBUG=''
 
 WORKDIR ${BASEDIR}
@@ -62,4 +64,3 @@ ENV DEBUG ${SERVER_DEBUG}
 
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
-#ENTRYPOINT ["bash"]
