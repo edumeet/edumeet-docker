@@ -10,7 +10,7 @@ ARG REACT_APP_DEBUG=''
 
 WORKDIR ${BASEDIR}
 
-RUN apt-get update;apt-get install -y git bash
+RUN apt-get update;apt-get install -y git bash build-essential python openssl libssl-dev pkg-config 
 
 #checkout code
 RUN git clone --single-branch --branch ${BRANCH} https://github.com/edumeet/${EDUMEET}.git
@@ -18,7 +18,7 @@ RUN git clone --single-branch --branch ${BRANCH} https://github.com/edumeet/${ED
 #install app dep
 WORKDIR ${BASEDIR}/${EDUMEET}/app
 
-RUN npm install
+RUN npm install --production=false
 
 # set app in producion mode/minified/.
 ENV NODE_ENV ${NODE_ENV}
@@ -35,10 +35,9 @@ RUN npm run build
 #install server dep
 WORKDIR ${BASEDIR}/${EDUMEET}/server
 
-RUN apt-get install -y git build-essential python openssl libssl-dev pkg-config 
-
-RUN npm install
+RUN npm install --production=false
 RUN npm install logstash-client
+RUN npm run build
 
 FROM node:lts-buster-slim
 
