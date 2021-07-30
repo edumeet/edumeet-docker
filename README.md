@@ -48,6 +48,7 @@ Run with `docker-compose`
 / [install docker compose](https://docs.docker.com/compose/install/) /
 
 ```sh
+  $ sudo docker-compose pull
   $ sudo docker-compose up --detach
 ```
 
