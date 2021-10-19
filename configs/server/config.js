@@ -1,28 +1,6 @@
-//serial: 2021051303
 const os = require('os');
 // const fs = require('fs');
-
-const userRoles = require('../userRoles');
-
-const {
-	BYPASS_ROOM_LOCK,
-	BYPASS_LOBBY
-} = require('../access');
-
-const {
-	CHANGE_ROOM_LOCK,
-	PROMOTE_PEER,
-	MODIFY_ROLE,
-	SEND_CHAT,
-	MODERATE_CHAT,
-	SHARE_AUDIO,
-	SHARE_VIDEO,
-	SHARE_SCREEN,
-	EXTRA_VIDEO,
-	SHARE_FILE,
-	MODERATE_FILES,
-	MODERATE_ROOM
-} = require('../permissions');
+// const tunnel = require('tunnel');
 
 // const AwaitQueue = require('awaitqueue');
 // const axios = require('axios');
@@ -53,7 +31,6 @@ function getListenIps() {
 
 module.exports =
 {
-
 	// Auth conf
 	/*
 	auth :
@@ -88,8 +65,22 @@ module.exports =
 				scope       		: 'openid email profile',
 				// where client.example.com is your edumeet server
 				redirect_uri  : 'https://client.example.com/auth/callback'
+			},
+			/*
+			HttpOptions   :
+			{
+  				timeout: 5000,
+				agent: 
+				{
+                	https:tunnel.httpsOverHttp({
+                           proxy: {
+                                host: 'proxy',
+                               port: 3128
+                           }
+                 	})
+  				}
 			}
-
+			*//*
 		},
 		saml :
 		{
@@ -129,58 +120,6 @@ module.exports =
 		}
 	},
 	*/
-	// URI and key for requesting geoip-based TURN server closest to the client
-	turnAPIKey    : 'examplekey',
-	turnAPIURI    : 'https://example.com/api/turn',
-	turnAPIparams : {
-		'uri_schema' 	: 'turn',
-		'transport' 		: 'tcp',
-		'ip_ver'    		: 'ipv4',
-		'servercount'	: '2'
-	},
-	turnAPITimeout    : 2 * 1000,
-	// Backup turnservers if REST fails or is not configured
-	backupTurnServers : [
-		{
-			urls : [
-				'turn:turn.example.com:443?transport=tcp'
-			],
-			username   : 'example',
-			credential : 'example'
-		}
-	],
-	// bittorrent tracker
-	fileTracker  : 'wss://tracker.lab.vvc.niif.hu:443',
-	// redis server options
-	redisOptions : {password: 'hd8qu31chmcu39gwuk27s9b9allnc93u4m7umu8c2t'},
-	// session cookie secret
-	cookieSecret : 'T0P-S3cR3t_cook!e',
-	cookieName   : 'edumeet.sid',
-	// if you use encrypted private key the set the passphrase
-	tls          :
-	{
-		cert : `${__dirname}/../../certs/cert.pem`,
-		// passphrase: 'key_password'
-		key  : `${__dirname}/../../certs/privkey.pem`
-	},
-	// listening Host or IP 
-	// If omitted listens on every IP. ("0.0.0.0" and "::")
-	// listeningHost: 'localhost',
-	// Listening port for https server.
-	listeningPort         : 443,
-	// Any http request is redirected to https.
-	// Listening port for http server.
-	listeningRedirectPort : 80,
-	// Listens only on http, only on listeningPort
-	// listeningRedirectPort disabled
-	// use case: loadbalancer backend
-	httpOnly              : false,
-	// WebServer/Express trust proxy config for httpOnly mode
-	// You can find more info:
-	//  - https://expressjs.com/en/guide/behind-proxies.html
-	//  - https://www.npmjs.com/package/proxy-addr
-	// use case: loadbalancer backend
-	trustProxy            : '',
 	// This logger class will have the log function
 	// called every time there is a room created or destroyed,
 	// or peer created or destroyed. This would then be able
@@ -328,69 +267,6 @@ module.exports =
 	//
 	// Example:
 	// [ userRoles.MODERATOR, userRoles.AUTHENTICATED ]
-	accessFromRoles : {
-		// The role(s) will gain access to the room
-		// even if it is locked (!)
-		[BYPASS_ROOM_LOCK] : [ userRoles.ADMIN ],
-		// The role(s) will gain access to the room without
-		// going into the lobby. If you want to restrict access to your
-		// server to only directly allow authenticated users, you could
-		// add the userRoles.AUTHENTICATED to the user in the userMapping
-		// function, and change to BYPASS_LOBBY : [ userRoles.AUTHENTICATED ]
-		[BYPASS_LOBBY]     : [ userRoles.NORMAL ]
-	},
-	permissionsFromRoles : {
-		// The role(s) have permission to lock/unlock a room
-		[CHANGE_ROOM_LOCK] : [ userRoles.MODERATOR ],
-		// The role(s) have permission to promote a peer from the lobby
-		[PROMOTE_PEER]     : [ userRoles.NORMAL ],
-		// The role(s) have permission to give/remove other peers roles
-		[MODIFY_ROLE]      : [ userRoles.NORMAL ],
-		// The role(s) have permission to send chat messages
-		[SEND_CHAT]        : [ userRoles.NORMAL ],
-		// The role(s) have permission to moderate chat
-		[MODERATE_CHAT]    : [ userRoles.MODERATOR ],
-		// The role(s) have permission to share audio
-		[SHARE_AUDIO]      : [ userRoles.NORMAL ],
-		// The role(s) have permission to share video
-		[SHARE_VIDEO]      : [ userRoles.NORMAL ],
-		// The role(s) have permission to share screen
-		[SHARE_SCREEN]     : [ userRoles.NORMAL ],
-		// The role(s) have permission to produce extra video
-		[EXTRA_VIDEO]      : [ userRoles.NORMAL ],
-		// The role(s) have permission to share files
-		[SHARE_FILE]       : [ userRoles.NORMAL ],
-		// The role(s) have permission to moderate files
-		[MODERATE_FILES]   : [ userRoles.MODERATOR ],
-		// The role(s) have permission to moderate room (e.g. kick user)
-		[MODERATE_ROOM]    : [ userRoles.MODERATOR ]
-	},
-	// Array of permissions. If no peer with the permission in question
-	// is in the room, all peers are permitted to do the action. The peers
-	// that are allowed because of this rule will not be able to do this 
-	// action as soon as a peer with the permission joins. In this example
-	// everyone will be able to lock/unlock room until a MODERATOR joins.
-	allowWhenRoleMissing : [ CHANGE_ROOM_LOCK ],
-	// When true, the room will be open to all users as long as there
-	// are allready users in the room
-	activateOnHostJoin   : true,
-	// roomsUnlocked is an array of rooms users can enter without waiting
-	// in the lobby.  If the array is undefined or null, users can enter
-	// any room without waiting in the lobby.  This is the default.  The
-	// aim of roomsUnlocked is to enforce moderated access to all rooms
-	// with the exception of the rooms defined in the array.
-	// roomsUnlocked        : [ 'unlocked1', 'unlocked2', 'unlocked3' ],
-	// When set, maxUsersPerRoom defines how many users can join
-	// a single room. If not set, there is no limit.
-	// maxUsersPerRoom    : 20,
-	// Room size before spreading to new router
-	routerScaleSize      : 40,
-	// Socket timeout value
-	requestTimeout       : 20000,
-	// Socket retries when timeout
-	requestRetries       : 3,
-	// If > 0, sets a cache-control max-age (in seconds) to static files responses.
-	staticFilesCachePeriod : 0,
 	// Mediasoup settings
 	mediasoup            :
 	{
@@ -478,16 +354,4 @@ module.exports =
 			maxIncomingBitrate              : 1500000
 		}
 	}
-
-	/*
-	,
-	// Prometheus exporter
-	prometheus : {
-		deidentify : false, // deidentify IP addresses
-		// listen     : 'localhost', // exporter listens on this address
-		numeric    : false, // show numeric IP addresses
-		port       : 8889, // allocated port
-		quiet      : false // include fewer labels
-	}
-	*/
 };
