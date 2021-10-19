@@ -1,3 +1,6 @@
+# Add Redis password
+
+Please after checkout run once the gen-redis-password.sh to generate a random password for redis, and setup in both redis config and edumeet config.
 # eduMeet in docker container
 
 Docker hub repository: [edumeet/edumeet](https://hub.docker.com/r/edumeet/edumeet)
