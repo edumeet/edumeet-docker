@@ -16,7 +16,7 @@ services:
       context: ./
     restart: unless-stopped
     volumes:
-      - ./configs/server:${BASEDIR}/${EDUMEET}/server/config
+      - ./configs/server:${BASEDIR}/${EDUMEET}/server/dist/config
       - ./configs/app:${BASEDIR}/${EDUMEET}/server/public/config
       - ./certs:${BASEDIR}/${EDUMEET}/server/certs
       - ./images:${BASEDIR}/${EDUMEET}/server/public/images
