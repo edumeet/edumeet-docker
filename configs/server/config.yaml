@@ -1,3 +1,6 @@
+tls:
+  cert : /opt/edumeet/server/certs/cert.pem
+  key  : /opt/edumeet/server/certs/privkey.pem
 redisOptions:
-  host: redis
+  host: 127.0.0.1
   port: 6379
