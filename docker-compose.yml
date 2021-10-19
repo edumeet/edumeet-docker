@@ -17,11 +17,11 @@ services:
     restart: unless-stopped
     volumes:
       - ./configs/server:${BASEDIR}/${EDUMEET}/server/dist/config
-      - ./configs/app:${BASEDIR}/${EDUMEET}/server/public/config
+      - ./configs/app:${BASEDIR}/${EDUMEET}/server/dist/public/config
       - ./certs:${BASEDIR}/${EDUMEET}/server/certs
-      - ./images:${BASEDIR}/${EDUMEET}/server/public/images
-      - ./privacy:${BASEDIR}/${EDUMEET}/server/public/static/privacy
-      - ./.well-known:${BASEDIR}/${EDUMEET}/server/public/.well-known
+      - ./images:${BASEDIR}/${EDUMEET}/server/dist/public/images
+      - ./privacy:${BASEDIR}/${EDUMEET}/server/dist/public/static/privacy
+      - ./.well-known:${BASEDIR}/${EDUMEET}/server/dist/public/.well-known
     ports:
       - "80:80"
       - "443:443"
