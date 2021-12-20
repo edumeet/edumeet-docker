@@ -8,11 +8,11 @@ This is the container, or a "dockerized" version of the [eduMeet](https://github
 ## Run it in few easy step
 
 1. Git clone this code to your docker machine.
-2. Copy your cert in `certs/cert.pem` and `certs/privkey.pem`
+2. Copy your cert in `certs/cert.pem` and `certs/key.pem`
     1. In case you need to generate a new cert and private key, you can use (note -nodes flag, which allows to generate unencrypted private key)
 
 ```sh
-        $ openssl req -x509 -newkey rsa:4096 -keyout privkey.pem -out cert.pem -days 365 -nodes
+        $ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes
 ```
 
 3. **Recomended**: set TURN server and credential in `configs/server/config.js`
