@@ -7,13 +7,6 @@ services:
     image: edumeet/edumeet:${TAG}
     depends_on: 
       - redis
-    build:
-      args:
-        - BASEDIR=${BASEDIR}
-        - EDUMEET=${EDUMEET}
-        - NODE_ENV=${NODE_ENV}
-        - SERVER_DEBUG=${SERVER_DEBUG}
-      context: ./
     restart: unless-stopped
     volumes:
       - ./configs/server:${BASEDIR}/${EDUMEET}/server/dist/config
@@ -22,15 +15,11 @@ services:
       - ./images:${BASEDIR}/${EDUMEET}/server/dist/public/images
       - ./privacy:${BASEDIR}/${EDUMEET}/server/dist/public/static/privacy
       - ./.well-known:${BASEDIR}/${EDUMEET}/server/dist/public/.well-known
-    #ports:
-    #  - "80:80"
-    #  - "443:443"
-    #  - "40000-49999:40000-49999/udp"
     network_mode: "host"
     stdin_open: true
     tty: true
-    environment:
-      - DEBUG=mediasoup*
+#   environment:
+#     - DEBUG=mediasoup*
 
   redis:
     image: redis
@@ -39,18 +28,21 @@ services:
     restart: unless-stopped
     volumes:
       - ./configs/redis:/usr/local/etc/redis
-  ouroboros:
-    container_name: ouroboros
-    hostname: ouroboros
-    image: pyouroboros/ouroboros
-    environment:
-      - CLEANUP=true
-      - INTERVAL=300
-      - LOG_LEVEL=info
-      - SELF_UPDATE=true
-      - IGNORE=mongo influxdb postgres mariadb
-      - TZ=Europe/Budapest
-      - CRON="* 2 * * *"
-    restart: unless-stopped
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+
+# Uncomment if you require automatic docker image update
+#
+#  ouroboros:
+#    container_name: ouroboros
+#    hostname: ouroboros
+#    image: pyouroboros/ouroboros
+#    environment:
+#      - CLEANUP=true
+#      - INTERVAL=300
+#      - LOG_LEVEL=info
+#      - SELF_UPDATE=true
+#      - IGNORE=mongo influxdb postgres mariadb
+#      - TZ=Europe/Budapest
+#      - CRON="* 2 * * *"
+#    restart: unless-stopped
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock

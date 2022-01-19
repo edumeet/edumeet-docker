@@ -1,6 +1,35 @@
+listeningPort: 443
+listeningHost: HOST.DOMAIN.TLD
+#listeningRedirectPort: 80
+
 tls:
   cert : /opt/edumeet/server/certs/cert.pem
   key  : /opt/edumeet/server/certs/privkey.pem
+
+#turnAPIURI: "https://HOST.DOMAIN.TLD/turn"
+#turnAPIKey: "Your API key"
+#
+#backupTurnServers: 
+#- urls: 
+#  - "turn:HOST.DOMAIN.TLD:443?transport=tcp"
+#  username: "Your username"
+#  credential: "Your's credential"
+
 redisOptions:
   host: 127.0.0.1
   port: 6379
+  password: _GENERATED_REDIS_PASSWORD_
+
+#prometheus:
+#  enabled: true
+#  deidentify: true
+#  numeric: true
+#  listen: HOST.DOMAIN.TLD
+#   
+#mediasoup:
+#  webRtcTransport:
+#    listenIps:
+#    - ip: "IP_ADDRESS"
+#      announcedIp: ""
+#
+

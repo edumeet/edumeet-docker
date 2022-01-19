@@ -1,0 +1,27 @@
+version: "3.3"
+
+services:
+# edumeet
+  edumeet:
+    env_file: .env
+    image: edumeet/edumeet:${TAG}
+    build:
+      args:
+        - BASEDIR=${BASEDIR}
+        - EDUMEET=${EDUMEET}
+        - NODE_ENV=${NODE_ENV}
+        - SERVER_DEBUG=${SERVER_DEBUG}
+      context: ./
+    restart: unless-stopped
+    volumes:
+      - ./configs/server:${BASEDIR}/${EDUMEET}/server/dist/config
+      - ./configs/app:${BASEDIR}/${EDUMEET}/server/dist/public/config
+      - ./certs:${BASEDIR}/${EDUMEET}/server/certs
+      - ./images:${BASEDIR}/${EDUMEET}/server/dist/public/images
+      - ./privacy:${BASEDIR}/${EDUMEET}/server/dist/public/static/privacy
+      - ./.well-known:${BASEDIR}/${EDUMEET}/server/dist/public/.well-known
+    network_mode: "host"
+    stdin_open: true
+    tty: true
+#   environment:
+#     - DEBUG=mediasoup*
