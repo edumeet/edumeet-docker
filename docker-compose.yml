@@ -29,8 +29,8 @@ services:
     volumes:
       - ./configs/redis:/usr/local/etc/redis
 
-# Uncomment if you require automatic docker image update
-#
+# Uncomment "ouroboros" image and change timezone (TZ) if you require automatic docker image update
+
 #  ouroboros:
 #    container_name: ouroboros
 #    hostname: ouroboros
