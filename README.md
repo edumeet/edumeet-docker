@@ -21,7 +21,7 @@ This is the container, or a "dockerized" version of the [eduMEET](https://github
 ```sh
         $ openssl req -x509 -newkey rsa:4096 -keyout privkey.pem -out cert.pem -days 365 -nodes
 ```
-5. Custom server configuration could be in `yaml` (recomended) or `json` file format. **NOTICE: Use only one!!!
+5. Custom server configuration could be in `yaml` (recomended), `json`, or `toml` file format. **NOTICE: Use only one!!!
     - In case `yaml` file format i used, copy `config.example.yaml` to `config.yaml`
     - minimal options which has to be set in configs/server/config.yaml:
 
@@ -47,7 +47,7 @@ This is the container, or a "dockerized" version of the [eduMEET](https://github
     redisOptions:
         host: "127.0.0.1"
         port: "6379"
-        password: "_GENERATED_REDIS_PASSWORD_"
+        password: "_REDIS_PASSWORD_"
 ```
 - In case `json` file format is used, copy `config.example.json` to `config.json`
 - minimal options which has to be set in configs/server/config.json:
@@ -76,12 +76,12 @@ This is the container, or a "dockerized" version of the [eduMEET](https://github
         "redisOptions": {
             "host" : "127.0.0.1",
             "port" : "6379",
-            "password" : "_GENERATED_REDIS_PASSWORD_"
+            "password" : "_REDIS_PASSWORD_"
         }
     }
 ```
 - `host.domain.tld` has to be replaced by server's IP address or FQDN
-- _GENERATED_REDIS_PASSWORD_ will be replaced automatically during step 3
+- _REDIS_PASSWORD_ will be replaced automatically during step 3
 
 **Recommended:**
 - set TURN server and credential in `configs/server/config.yaml`
@@ -129,7 +129,7 @@ To rebuild edumeet docker image (eg. change in .env) use following command:
   $ sudo docker-compose -f docker-compose-build.yml build
 ```
 
-## Docker networking
+## 2 Docker networking
 
 Container works in "host" network mode, because bridge mode has the following issue: ["Docker hangs when attempting to bind a large number of ports"](https://success.docker.com/article/docker-compose-and-docker-run-hang-when-binding-a-large-port-range)
 

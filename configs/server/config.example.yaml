@@ -19,7 +19,7 @@ backupTurnServers:
 redisOptions:
   host: "127.0.0.1"                                                                                                                                                                  
   port: "6379"            
-  password: "_GENERATED_REDIS_PASSWORD_"
+  password: "_REDIS_PASSWORD_"
 
 prometheus:
   enabled: true

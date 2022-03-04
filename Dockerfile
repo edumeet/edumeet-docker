@@ -2,20 +2,21 @@
 FROM node:16-bullseye-slim AS edumeet-builder
 
 # Args
-ARG BASEDIR=/opt
-ARG EDUMEET=edumeet
-ARG NODE_ENV=production
-ARG SERVER_DEBUG=''
-#ARG BRANCH=develop
-ARG BRANCH=release-3.5.0 
-ARG REACT_APP_DEBUG=''
+ARG BASEDIR
+ARG EDUMEET
+ARG NODE_ENV
+ARG SERVER_DEBUG
+ARG GIT_SERVER
+ARG REPOSITORY
+ARG BRANCH
+ARG REACT_APP_DEBUG
 
 WORKDIR ${BASEDIR}
 
 RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash jq build-essential python python3-pip openssl libssl-dev pkg-config;apt-get clean
 
 #checkout code
-RUN git clone --single-branch --branch ${BRANCH} https://github.com/edumeet/${EDUMEET}.git
+RUN git clone --single-branch --branch ${BRANCH} ${GIT_SERVER}/${REPOSITORY}/${EDUMEET}.git
 
 #install app dep
 WORKDIR ${BASEDIR}/${EDUMEET}/app
@@ -38,10 +39,10 @@ RUN npm pack
 FROM node:16-bullseye-slim
 
 # Args:
-ARG BASEDIR=/opt
-ARG EDUMEET=edumeet
-ARG NODE_ENV=production
-ARG SERVER_DEBUG=''
+ARG BASEDIR
+ARG EDUMEET
+ARG NODE_ENV
+ARG SERVER_DEBUG
 
 WORKDIR ${BASEDIR}
 
