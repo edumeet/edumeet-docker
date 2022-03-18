@@ -1,65 +1,63 @@
-FROM node:10-slim AS edumeet-builder
-
+#build edumeet 
+FROM node:16-bullseye-slim AS edumeet-builder
 
 # Args
-ARG BASEDIR=/opt
-ARG EDUMEET=edumeet
-ARG NODE_ENV=production
-ARG SERVER_DEBUG=''
-ARG BRANCH=master
-ARG REACT_APP_DEBUG=''
+ARG BASEDIR
+ARG EDUMEET
+ARG NODE_ENV
+ARG SERVER_DEBUG
+ARG GIT_SERVER
+ARG REPOSITORY
+ARG BRANCH
+ARG REACT_APP_DEBUG
 
 WORKDIR ${BASEDIR}
 
-RUN apt-get update;apt-get install -y git bash
+RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash jq build-essential python python3-pip openssl libssl-dev pkg-config;apt-get clean
 
 #checkout code
-RUN git clone --single-branch --branch ${BRANCH} https://github.com/edumeet/${EDUMEET}.git
+RUN git clone --single-branch --branch ${BRANCH} ${GIT_SERVER}/${REPOSITORY}/${EDUMEET}.git
 
 #install app dep
 WORKDIR ${BASEDIR}/${EDUMEET}/app
+RUN yarn install --production=false
 
-RUN npm install
-
-# set app in producion mode/minified/.
+#set and build app in producion mode/minified/.
 ENV NODE_ENV ${NODE_ENV}
-
-# Workaround for the next npm run build => rm -rf public dir even if it does not exists.
-# TODO: Fix it smarter
-RUN mkdir -p ${BASEDIR}/${EDUMEET}/server/public
-
 ENV REACT_APP_DEBUG=${REACT_APP_DEBUG}
-
-# package web app
-RUN npm run build
+RUN yarn run build
 
 #install server dep
 WORKDIR ${BASEDIR}/${EDUMEET}/server
+RUN yarn install --production=false && yarn run build
 
-RUN apt-get install -y git build-essential python
+# create edumeet package 
+RUN ["/bin/bash", "-c", "cat <<< $(jq '.bundleDependencies += .dependencies' package.json) > package.json" ]
+RUN npm pack
 
-RUN npm install
-RUN npm install logstash-client
+# create edumeet image
+FROM node:16-bullseye-slim
 
-FROM node:10-slim
-
-# Args
-ARG BASEDIR=/opt
-ARG EDUMEET=edumeet
-ARG NODE_ENV=production
-ARG SERVER_DEBUG=''
+# Args:
+ARG BASEDIR
+ARG EDUMEET
+ARG NODE_ENV
+ARG SERVER_DEBUG
 
 WORKDIR ${BASEDIR}
 
+COPY --from=edumeet-builder ${BASEDIR}/${EDUMEET}/server/edumeet-server*.tgz  ${BASEDIR}/${EDUMEET}/server/
 
-COPY --from=edumeet-builder ${BASEDIR}/${EDUMEET}/server ${BASEDIR}/${EDUMEET}/server
+WORKDIR ${BASEDIR}/${EDUMEET}/server
 
+RUN tar xzf edumeet-server*.tgz && mv package/* ./ && rm -r package edumeet-server*.tgz
+
+RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq openssl;apt-get clean
 
 
 # Web PORTS
 EXPOSE 80 443 
 EXPOSE 40000-49999/udp
-
 
 ## run server 
 ENV DEBUG ${SERVER_DEBUG}

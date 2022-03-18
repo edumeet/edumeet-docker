@@ -4,31 +4,22 @@ services:
 # edumeet
   edumeet:
     env_file: .env
-    image: edumeet/edumeet:${TAG}
+    image: ${REPOSITORY}/${EDUMEET}:${TAG}
     depends_on: 
       - redis
-    build:
-      args:
-        - BASEDIR=${BASEDIR}
-        - EDUMEET=${EDUMEET}
-        - NODE_ENV=${NODE_ENV}
-        - SERVER_DEBUG=${SERVER_DEBUG}
-      context: ./
     restart: unless-stopped
     volumes:
-      - ./configs/server:${BASEDIR}/${EDUMEET}/server/config
-      - ./configs/app:${BASEDIR}/${EDUMEET}/server/public/config
+      - ./configs/server:${BASEDIR}/${EDUMEET}/server/dist/config
+      - ./configs/app:${BASEDIR}/${EDUMEET}/server/dist/public/config
       - ./certs:${BASEDIR}/${EDUMEET}/server/certs
-      - ./images:${BASEDIR}/${EDUMEET}/server/public/images
-      - ./privacy:${BASEDIR}/${EDUMEET}/server/public/static/privacy
-      - ./.well-known:${BASEDIR}/${EDUMEET}/server/public/.well-known
-    #ports:
-    #  - "80:80"
-    #  - "443:443"
-    #  - "40000-49999:40000-49999/udp"
+      - ./images:${BASEDIR}/${EDUMEET}/server/dist/public/images
+      - ./privacy:${BASEDIR}/${EDUMEET}/server/dist/public/static/privacy
+      - ./.well-known:${BASEDIR}/${EDUMEET}/server/dist/public/.well-known
     network_mode: "host"
     stdin_open: true
     tty: true
+#   environment:
+#     - DEBUG=mediasoup*
 
   redis:
     image: redis
@@ -37,18 +28,21 @@ services:
     restart: unless-stopped
     volumes:
       - ./configs/redis:/usr/local/etc/redis
-  ouroboros:
-    container_name: ouroboros
-    hostname: ouroboros
-    image: pyouroboros/ouroboros
-    environment:
-      - CLEANUP=true
-      - INTERVAL=300
-      - LOG_LEVEL=info
-      - SELF_UPDATE=true
-      - IGNORE=mongo influxdb postgres mariadb
-      - TZ=Europe/Budapest
-      - CRON="* 2 * * *"
-    restart: unless-stopped
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+
+# Uncomment "ouroboros" image and change timezone (TZ) if you require automatic docker image update
+
+#  ouroboros:
+#    container_name: ouroboros
+#    hostname: ouroboros
+#    image: pyouroboros/ouroboros
+#    environment:
+#      - CLEANUP=true
+#      - INTERVAL=300
+#      - LOG_LEVEL=info
+#      - SELF_UPDATE=true
+#      - IGNORE=mongo influxdb postgres mariadb
+#      - TZ=Europe/Budapest
+#      - CRON="* 2 * * *"
+#    restart: unless-stopped
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
