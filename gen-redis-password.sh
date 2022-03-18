@@ -5,7 +5,7 @@ echo "Generated Redis password: ${REDIS_PASSWORD}"
 REDIS_PASSWORD=${REDIS_PASSWORD//\//\\/}
 
 echo "setting Redis password in ./configs/redis/redis.conf"
-sed -i -r "s/requirepass\ *_REDIS_PASSWORD_.*/requirepass\ ${REDIS_PASSWORD}/" configs/redis/redis.conf
+sed -i -r "s/requirepass\ .*/requirepass\ ${REDIS_PASSWORD}/" configs/redis/redis.conf
 
 for fileType in {json,yaml,toml}
 do
