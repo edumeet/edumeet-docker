@@ -4,7 +4,7 @@ services:
 # edumeet
   edumeet:
     env_file: .env
-    image: edumeet/edumeet:${TAG}
+    image: ${REPOSITORY}/${EDUMEET}:${TAG}
     depends_on: 
       - redis
     restart: unless-stopped

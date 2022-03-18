@@ -4,13 +4,16 @@ services:
 # edumeet
   edumeet:
     env_file: .env
-    image: edumeet/edumeet:${TAG}
+    image: ${REPOSITORY}/${EDUMEET}:${TAG}
     build:
       args:
         - BASEDIR=${BASEDIR}
         - EDUMEET=${EDUMEET}
         - NODE_ENV=${NODE_ENV}
         - SERVER_DEBUG=${SERVER_DEBUG}
+        - GIT_SERVER=${GIT_SERVER}
+        - REPOSITORY=${REPOSITORY}
+        - BRANCH=${BRANCH}
       context: ./
     restart: unless-stopped
     volumes:

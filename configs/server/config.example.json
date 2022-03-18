@@ -5,8 +5,8 @@
   "fileTracker" : "wss://tracker.openwebtorrent.com",
 
   "tls" : {
-    "cert" : "/opt/edumeet/server/certs/cert.pem",
-    "key"  : "/opt/edumeet/server/certs/privkey.pem"
+    "cert" : "./certs/edumeet-demo-cert.pem",
+    "key"  : "./certs/edumeet-demo-key.pem"
   },
 
   "turnAPIKey" : "Your API key",
@@ -21,7 +21,7 @@
   "redisOptions": {
     "host" : "127.0.0.1",
     "port" : "6379",
-    "password" : "_GENERATED_REDIS_PASSWORD_"
+    "password" : "_REDIS_PASSWORD_"
   },
 
   "prometheus" : {
@@ -33,8 +33,12 @@
 
   "mediasoup" : {
       "webRtcTransport" : {
-        "listenIps" : [ "ip": "PUBLIC_IP_ADDRESS"],
-        "announcedIp" : ""
+        "listenIps" : [
+          {
+            "ip": "PUBLIC_IP_ADDRESS",
+            "announcedIp" : ""
+          }
+        ]
       }
   }
 }
