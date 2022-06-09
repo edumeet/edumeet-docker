@@ -9,17 +9,17 @@ services:
       - redis
     restart: unless-stopped
     volumes:
-      - ./configs/server:${BASEDIR}/${EDUMEET}/server/dist/config
-      - ./configs/app:${BASEDIR}/${EDUMEET}/server/dist/public/config
-      - ./certs:${BASEDIR}/${EDUMEET}/server/certs
-      - ./images:${BASEDIR}/${EDUMEET}/server/dist/public/images
-      - ./privacy:${BASEDIR}/${EDUMEET}/server/dist/public/static/privacy
-      - ./.well-known:${BASEDIR}/${EDUMEET}/server/dist/public/.well-known
+      - ${PWD}/configs/server:${BASEDIR}/${EDUMEET}/server/dist/config
+      - ${PWD}/configs/app:${BASEDIR}/${EDUMEET}/server/dist/public/config
+      - ${PWD}/certs:${BASEDIR}/${EDUMEET}/server/certs
+      - ${PWD}/images:${BASEDIR}/${EDUMEET}/server/dist/public/images
+      - ${PWD}/privacy:${BASEDIR}/${EDUMEET}/server/dist/public/static/privacy
+      - ${PWD}/.well-known:${BASEDIR}/${EDUMEET}/server/dist/public/.well-known
     network_mode: "host"
     stdin_open: true
     tty: true
 #   environment:
-#     - DEBUG=mediasoup*
+#     - DEBUG=edumeet*
 
   redis:
     image: redis
@@ -27,7 +27,7 @@ services:
     entrypoint: redis-server /usr/local/etc/redis/redis.conf
     restart: unless-stopped
     volumes:
-      - ./configs/redis:/usr/local/etc/redis
+      - ${PWD}/configs/redis:/usr/local/etc/redis
 
 # Uncomment "ouroboros" image and change timezone (TZ) if you require automatic docker image update
 
