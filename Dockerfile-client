@@ -1,0 +1,50 @@
+# syntax=docker/dockerfile:1
+
+
+# build edumeet 
+
+FROM node:16-bullseye-slim AS edumeet-builder
+# Args
+ARG BASEDIR
+ARG EDUMEETCLIENT
+ARG NODE_ENV
+ARG SERVER_DEBUG
+ARG GIT_SERVER
+ARG REPOSITORY
+ARG BRANCH
+ARG REACT_APP_DEBUG
+
+WORKDIR ${BASEDIR}
+
+RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash jq build-essential python python3-pip openssl libssl-dev pkg-config;apt-get clean
+
+#checkout code
+#RUN git clone --single-branch --branch havfo/ng-room-server https://github.com/edumeet/edumeet-client.git
+
+#checkout code
+RUN git clone --single-branch --branch ${BRANCH} ${GIT_SERVER}/${REPOSITORY}/${EDUMEETCLIENT}.git
+
+#install app dep
+ARG EDUMEETCLIENT
+
+WORKDIR ${BASEDIR}/${EDUMEETCLIENT}
+
+RUN yarn install  --production=false
+#set and build app in producion mode/minified/.
+RUN ["/bin/bash", "-c", "cat <<< $(jq '.bundleDependencies += .dependencies' package.json) > package.json" ]
+
+RUN yarn build
+
+# create edumeet-client image
+FROM nginx
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+
+WORKDIR /usr/share/nginx/html/
+COPY --from=edumeet-builder /opt/edumeet-client/build/  /usr/share/nginx/html/
+
+COPY certs/ /srv/edumeet/
+RUN chmod 644 /srv/edumeet/*
+
+# Web PORTS
+EXPOSE 443
+#EXPOSE 40000-49999/udp

@@ -1,0 +1,53 @@
+# syntax=docker/dockerfile:1
+#build edumeet 
+FROM node:16-bullseye-slim AS edumeet-builder
+ARG BASEDIR
+ARG EDUMEETSERVER
+ARG NODE_ENV
+ARG SERVER_DEBUG
+ARG GIT_SERVER
+ARG REPOSITORY
+ARG BRANCH
+ARG REACT_APP_DEBUG
+WORKDIR ${BASEDIR}
+
+#install app dependency
+RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash jq build-essential python python3-pip openssl libssl-dev pkg-config mc net-tools;apt-get clean
+
+#checkout code
+#RUN git clone --single-branch --branch main https://github.com/edumeet/edumeet-room-server.git
+
+#checkout code
+RUN git clone --single-branch --branch ${BRANCH} ${GIT_SERVER}/${REPOSITORY}/${EDUMEETSERVER}.git
+
+# hack to the first build 
+# TODO fix
+#RUN mkdir -p /opt/edumeet-room-server/dist
+#RUN touch /opt/edumeet-room-server/dist/tmp.file
+
+#WORKDIR /opt/edumeet-room-server
+#ARG BASEDIR
+WORKDIR ${BASEDIR}/${EDUMEETSERVER}
+
+ENV NODE_ENV ${NODE_ENV}
+ENV REACT_APP_DEBUG=${REACT_APP_DEBUG}
+RUN yarn install  --production=false
+
+#RUN yarn run build
+
+COPY configs/server/ config
+COPY certs/ certs/
+
+# Web PORTS
+EXPOSE 8002 
+EXPOSE 40000-49999/udp
+
+# run server 
+ENV DEBUG ${SERVER_DEBUG}
+
+COPY docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+# for testing 
+#ENTRYPOINT ["tail", "-f", "/dev/null"]
+

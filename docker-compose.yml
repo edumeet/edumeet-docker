@@ -1,26 +1,6 @@
 version: "3.3"
-
 services:
-# edumeet
-  edumeet:
-    env_file: .env
-    image: ${REPOSITORY}/${EDUMEET}:${TAG}
-    depends_on: 
-      - redis
-    restart: unless-stopped
-    volumes:
-      - ${PWD}/configs/server:${BASEDIR}/${EDUMEET}/server/dist/config
-      - ${PWD}/configs/app:${BASEDIR}/${EDUMEET}/server/dist/public/config
-      - ${PWD}/certs:${BASEDIR}/${EDUMEET}/server/certs
-      - ${PWD}/images:${BASEDIR}/${EDUMEET}/server/dist/public/images
-      - ${PWD}/privacy:${BASEDIR}/${EDUMEET}/server/dist/public/static/privacy
-      - ${PWD}/.well-known:${BASEDIR}/${EDUMEET}/server/dist/public/.well-known
-    network_mode: "host"
-    stdin_open: true
-    tty: true
-#   environment:
-#     - DEBUG=edumeet*
-
+  ## build redis for edumeet-room-server
   redis:
     image: redis
     network_mode: "host"
@@ -29,20 +9,123 @@ services:
     volumes:
       - ${PWD}/configs/redis:/usr/local/etc/redis
 
-# Uncomment "ouroboros" image and change timezone (TZ) if you require automatic docker image update
+  ## build edumeet-room-server
+  edumeet-room-server:
+    env_file: .env
+    container_name: edumeet-room-server
+    depends_on: 
+      - redis
+    restart: unless-stopped
+    build:
+      args:
+        - BASEDIR=${BASEDIR}
+        - GIT_SERVER=${GIT_SERVER}
+        - REPOSITORY=${REPOSITORY}
+        - EDUMEETSERVER=${EDUMEETSERVER}
+        - NODE_ENV=${NODE_ENV}
+        - SERVER_DEBUG=${SERVER_DEBUG}
+        - BRANCH=${BRANCH}
+        - TAG=${TAG}
+      context: .
+      dockerfile: Dockerfile-server
+      
+    ## use host mode for the media ports
+    network_mode: "host"
+    stdin_open: true
+    tty: true
 
-#  ouroboros:
-#    container_name: ouroboros
-#    hostname: ouroboros
-#    image: pyouroboros/ouroboros
-#    environment:
-#      - CLEANUP=true
-#      - INTERVAL=300
-#      - LOG_LEVEL=info
-#      - SELF_UPDATE=true
-#      - IGNORE=mongo influxdb postgres mariadb
-#      - TZ=Europe/Budapest
-#      - CRON="* 2 * * *"
-#    restart: unless-stopped
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
+  ## build edumeet-client instance(s)
+  edumeet-client-a:
+    env_file: .env
+    container_name: edumeet-client-a
+    volumes:
+      - ${PWD}/configs/app:/usr/share/nginx/html/config
+      ## todo 
+      #- ${PWD}/images:/usr/share/nginx/html/images
+      #- ${PWD}/privacy:/usr/share/nginx/html/static/privacy
+    build:
+      args:
+        - BASEDIR=${BASEDIR}
+        - GIT_SERVER=${GIT_SERVER}
+        - REPOSITORY=${REPOSITORY}
+        - EDUMEETCLIENT=${EDUMEETCLIENT}
+        - NODE_ENV=${NODE_ENV}
+        - SERVER_DEBUG=${SERVER_DEBUG}
+        - BRANCH=${BRANCH}
+        - TAG=${TAG}
+      context: .
+      dockerfile: Dockerfile-client
+    ## database config (mysql)
+    #depends_on:
+    #  - database
+    #volumes:
+    #  - ./www:/var/www/html:Z
+    network_mode: "host"
+
+  #edumeet-client-b:
+  #  env_file: .env
+  #  container_name: edumeet-client-b
+  #  volumes:
+  #    - ${PWD}/configs/app:/usr/share/nginx/html/config
+  #  build:
+  #    context: .
+  #    dockerfile: Dockerfile-client
+  #  network_mode: "host"
+
+  ##add pgsql database
+  #db:
+  #  image: postgres:14.1-alpine
+  #  restart: always
+  #  environment:
+  #    - POSTGRES_USER=postgres
+  #    - POSTGRES_PASSWORD=postgres
+  #  ports:
+  #    - '5432:5432'
+  #  volumes: 
+  #    - db:/var/lib/postgresql/data
+
+  ## add mysql database
+  #database:
+  #  container_name: database
+  #  image: mysql
+  #  restart: always
+  #  environment:
+  #    MYSQL_ROOT_PASSWORD: root
+  #    MYSQL_DATABASE: edumeet
+  #    MYSQL_USER: edumeet
+  #    MYSQL_PASSWORD: password
+  #  #ports:
+  #  #  - 9906:3306
+  #  volumes:
+  #    - dbdata:/var/lib/mysql
+
+  # add mysql database manadgement
+  #phpmyadmin:
+  #  container_name: phpmyadmin
+  #  image: phpmyadmin/phpmyadmin
+  #  ports:
+  #    - 8080:80
+  #  restart: always
+  #  environment:
+  #    PMA_HOST: database
+  #  depends_on:
+  #    - database
+
+  # proxy with haproxy
+  #haproxy:
+  #    image: haproxy:2.2
+  #    volumes:
+  #        - ./haproxy:/haproxy-override
+  #        - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+  #    links:
+  #        - edumeet-client-a
+  #        - edumeet-client-b
+  #    ports:
+  #        - "80:80" # proxy
+  #        - "70:70" # stats
+
+## volumes for database(s)
+#volumes:
+#  db:
+#    driver: local
+#  dbdata:
