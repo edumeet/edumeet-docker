@@ -24,7 +24,7 @@ services:
         - EDUMEETSERVER=${EDUMEETSERVER}
         - NODE_ENV=${NODE_ENV}
         - SERVER_DEBUG=${SERVER_DEBUG}
-        - BRANCH=${BRANCH}
+        - BRANCHSERVER=${BRANCHSERVER}
         - TAG=${TAG}
       context: .
       dockerfile: Dockerfile-server
@@ -51,7 +51,7 @@ services:
         - EDUMEETCLIENT=${EDUMEETCLIENT}
         - NODE_ENV=${NODE_ENV}
         - SERVER_DEBUG=${SERVER_DEBUG}
-        - BRANCH=${BRANCH}
+        - BRANCHCLIENT=${BRANCHCLIENT}
         - TAG=${TAG}
       context: .
       dockerfile: Dockerfile-client

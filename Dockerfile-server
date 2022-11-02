@@ -7,7 +7,7 @@ ARG NODE_ENV
 ARG SERVER_DEBUG
 ARG GIT_SERVER
 ARG REPOSITORY
-ARG BRANCH
+ARG BRANCHSERVER
 ARG REACT_APP_DEBUG
 WORKDIR ${BASEDIR}
 
@@ -15,25 +15,21 @@ WORKDIR ${BASEDIR}
 RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash jq build-essential python python3-pip openssl libssl-dev pkg-config mc net-tools;apt-get clean
 
 #checkout code
-#RUN git clone --single-branch --branch main https://github.com/edumeet/edumeet-room-server.git
 
-#checkout code
-RUN git clone --single-branch --branch ${BRANCH} ${GIT_SERVER}/${REPOSITORY}/${EDUMEETSERVER}.git
+RUN git clone --single-branch --branch release-4.0 ${GIT_SERVER}/${REPOSITORY}/${EDUMEETSERVER}.git
 
-# hack to the first build 
-# TODO fix
-#RUN mkdir -p /opt/edumeet-room-server/dist
-#RUN touch /opt/edumeet-room-server/dist/tmp.file
-
-#WORKDIR /opt/edumeet-room-server
-#ARG BASEDIR
-WORKDIR ${BASEDIR}/${EDUMEETSERVER}
+WORKDIR ${BASEDIR}/${EDUMEETSERVER}/server
 
 ENV NODE_ENV ${NODE_ENV}
 ENV REACT_APP_DEBUG=${REACT_APP_DEBUG}
-RUN yarn install  --production=false
+RUN yarn install --production=false
 
-#RUN yarn run build
+# hack to the first build 
+# TODO fix
+RUN mkdir -p /opt/edumeet/server/dist
+RUN touch /opt/edumeet/server/dist/tmp.file
+
+RUN yarn run build
 
 COPY configs/server/ config
 COPY certs/ certs/
@@ -44,6 +40,8 @@ EXPOSE 40000-49999/udp
 
 # run server 
 ENV DEBUG ${SERVER_DEBUG}
+
+
 
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
