@@ -13,7 +13,6 @@ WORKDIR ${BASEDIR}
 
 #install app dependency
 RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash jq build-essential python python3-pip openssl libssl-dev pkg-config mc net-tools;apt-get clean
-
 #checkout code
 RUN git clone --single-branch --branch ${BRANCHSERVER} ${GIT_SERVER}/${REPOSITORY}/${EDUMEETSERVER}.git
 WORKDIR ${BASEDIR}/${EDUMEETSERVER}/server
@@ -21,11 +20,6 @@ WORKDIR ${BASEDIR}/${EDUMEETSERVER}/server
 ENV NODE_ENV ${NODE_ENV}
 ENV REACT_APP_DEBUG=${REACT_APP_DEBUG}
 RUN yarn install --production=false
-
-# hack to the first build 
-# TODO fix
-RUN mkdir -p /opt/edumeet/server/dist
-RUN touch /opt/edumeet/server/dist/tmp.file
 
 RUN yarn run build
 
