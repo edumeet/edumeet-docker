@@ -15,9 +15,7 @@ WORKDIR ${BASEDIR}
 RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash jq build-essential python python3-pip openssl libssl-dev pkg-config mc net-tools;apt-get clean
 
 #checkout code
-
-RUN git clone --single-branch --branch release-4.0 ${GIT_SERVER}/${REPOSITORY}/${EDUMEETSERVER}.git
-
+RUN git clone --single-branch --branch ${BRANCHSERVER} ${GIT_SERVER}/${REPOSITORY}/${EDUMEETSERVER}.git
 WORKDIR ${BASEDIR}/${EDUMEETSERVER}/server
 
 ENV NODE_ENV ${NODE_ENV}
@@ -31,7 +29,8 @@ RUN touch /opt/edumeet/server/dist/tmp.file
 
 RUN yarn run build
 
-COPY configs/server/ config
+COPY configs/server/ dist/config
+
 COPY certs/ certs/
 
 # Web PORTS
