@@ -1,0 +1,24 @@
+# syntax=docker/dockerfile:1
+#build edumeet edumeet-translator
+FROM php:7.4-apache
+
+RUN apt-get update && apt-get -yq install git
+
+WORKDIR /var/www/
+
+RUN git clone --single-branch --branch release-4.0 https://github.com/edumeet/edumeet-translator.git
+RUN cp -r edumeet-translator/html/ ./
+
+WORKDIR /var/www/html/
+
+RUN rm -rf /var/www/html/edumeet
+
+RUN chown www-data:www-data -R /var/www/html
+
+RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+
+RUN a2enmod rewrite
+
+RUN git clone https://github.com/edumeet/edumeet-client.git /tmp/edumeet
+
+EXPOSE 8080
