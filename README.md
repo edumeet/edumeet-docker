@@ -1,9 +1,56 @@
 # ![eduMEET](/images/logo.edumeet.svg) in Docker container
 
+
+# How to build 
+edumeet-docker - include install setps for docker compose and configs -> build edumeet (server+client)
+
+## documentation for configs are version specific default values can be found on release branches on 
+- [client](https://github.com/edumeet/edumeet-client/)
+- [redis](https://github.com/edumeet/edumeet-client/tree/release-4.0)  only needed for 4.0 
+- [room-server config](https://github.com/edumeet/edumeet-room-server) 
+
+## documentation for docker build and run
+##  edumeet docker hub with prebuilt release images
+
+#How Branches work: 
+- -release-4.0 (this shoud be the same for client and server too for production)
+- -main-dev (yourdevbranch(es) for local dev) - link repo localy or add some remote branch 
+
+## Things that docker can build :
+- edumeet-client - client side
+- edumeet-room-server - server side 
+- edumeet-translator - translation page 
+
+
+
 Docker hub repository: [edumeet/edumeet](https://hub.docker.com/r/edumeet/edumeet)
 
 This is the container, or a "dockerized" version of the [eduMEET](https://github.com/edumeet/edumeet).
 (Successor of [multiparty meeting](https://github.com/havfo/multiparty-meeting) fork of mediasoup-demo)
+
+
+## Ports and firewall
+| Port | protocol | description |
+| ---- | ----------- | ----------- |
+|  443 | tcp | default https webserver and signaling - adjustable in `server/config/config.yaml`) |
+| 4443 | tcp | default `yarn start` port for developing with live browser reload, not needed in production environments - adjustable in app/package.json) |
+| 40000-49999 | udp, tcp | media ports - adjustable in `server/config/config.yaml` |
+
+## Load balanced installation
+
+To deploy this as a load balanced cluster, have a look at [HAproxy](HAproxy.md).
+
+## Learning management integration
+
+To integrate with an LMS (e.g. Moodle), have a look at [LTI](LTI/LTI.md).
+
+## TURN configuration
+
+If you are part of the GEANT eduGAIN, you can request your turn api key at [https://turn.geant.org/](https://turn.geant.org/)
+	
+You need an additional [TURN](https://github.com/coturn/coturn)-server for clients located behind restrictive firewalls! 
+Add your server and credentials to `server/config/config.yaml`
+
 
 ## Run it in few easy steps
 
