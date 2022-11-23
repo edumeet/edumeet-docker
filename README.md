@@ -40,7 +40,7 @@ Update with update-config.sh. (This will get the newest dockerfiles and config.e
 ```
 ./update-config.sh
 ```
-## Configure [nginx.conf](https://github.com/edumeet/edumeet-docker/blob/4.x/nginx/nginx.confclient) in nginx folder.
+## Configure [nginx.conf](https://github.com/edumeet/edumeet-docker/blob/4.x/nginx/nginx.conf) in nginx folder.
  
 Change configuration url and update certs. 
 ```bash
