@@ -3,11 +3,21 @@ source .env
 echo "Updating configuration example files from upstream edumeet(${BRANCH}) repository.
 See README.md file for details how to configure"
 
-curl -s "https://raw.githubusercontent.com/${REPOSITORY}/edumeet/${BRANCH}/app/public/config/config.example.js" -o "configs/app/config.example.js"
-curl -s "https://raw.githubusercontent.com/${REPOSITORY}/edumeet/${BRANCH}/server/config/config.example.{js,json,yaml,toml}" -Z -o "configs/server/config.example.#1" 
 
-echo "Updating TAG version in .env file extracted from edumeet version"
-VERSION=$(curl -s "https://raw.githubusercontent.com/edumeet/edumeet/${BRANCH}/server/package.json" | grep version | sed -e 's/^.*:\ \"\(.*\)\",/\1/')
-echo "Current tag: ${TAG}"
-sed -i "s/^.*TAG.*$/TAG=${VERSION}/" .env
+# Download dockerfiles
+if [ ${LOCALDEVMODE} == "1" ]; then  
+  # dev-dockerfile
+  curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEETCLIENT}/${BRANCHCLIENT}/Dockerfile-dev" -o "Dockefile-client" && curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEETSERVER}/${BRANCHSERVER}/Dockerfile-dev" -o "Dockefile-server"
+else
+  # production dockerfile
+  curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEETCLIENT}/${BRANCHCLIENT}/Dockerfile" -o "Dockefile-client" && curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEETSERVER}/${BRANCHSERVER}/Dockerfile" -o "Dockefile-server"
+fi
+
+# client example config
+curl -s "https://raw.githubusercontent.com/REPOSITORY}/${EDUMEETCLIENT}/${BRANCHCLIENT}/public/config/config.example.js" -o "configs/app/config.example.js"
+
+# server example config(s)
+curl -s "https://raw.githubusercontent.com/REPOSITORY}/${EDUMEETSERVER}/${BRANCHSERVER}/server/config/config.example.js" -o "configs/server/config.example.js"
+# yaml for 4.0
+curl -s "https://raw.githubusercontent.com/REPOSITORY}/${EDUMEETSERVER}/${BRANCHSERVER}/server/config/config.yaml.js" -o "configs/server/config.yaml.js"
 
