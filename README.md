@@ -1,5 +1,18 @@
 # ![eduMEET](/images/logo.edumeet.svg) in Docker container
+This is the docker building repo for eduMEET. It can setup a production instance of eduMEET and help you with setting up a development enviroment as well.
 
+For more generic information look here:
+
+main [eduMEET repo](https://github.com/edumeet/edumeet) with generic documentation
+
+# Architecture
+- Current stable eduMEET consists of these components:
+  - [edumeet-client](https://github.com/edumeet/edumeet-client/) 
+  - [room-server](https://github.com/edumeet/edumeet/tree/master/server)) from edumeet-repo /server folder
+- Next generation eduMEET:
+  - [edumeet-client](https://github.com/edumeet/edumeet-client/)
+  - [room-server](https://github.com/edumeet/edumeet-room-server)
+  - [edumeet-media-node](https://github.com/edumeet/edumeet-media-node)
 
 # How to build 
 edumeet-docker - include install setps for docker compose and configs -> build edumeet (server+client)
