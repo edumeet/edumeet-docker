@@ -51,25 +51,26 @@ Change configuration url and update certs.
   ssl_certificate_key /srv/edumeet/edumeet-demo-key.pem;
 ```
 
-
-## Copy [configs/app/config.example.js](https://github.com/edumeet/edumeet-docker/tree/4.x/configs/app) to configs/app/config.js
+Copy [configs/app/config.example.js](https://github.com/edumeet/edumeet-docker/tree/4.x/configs/app) to configs/app/config.js
 ```bash
 cp configs/app/config.example.js configs/app/config.js
 ```
-## Copy [configs/server/config.example.json](https://github.com/edumeet/edumeet-docker/tree/4.x/configs/server) to configs/server/config.json
+Copy [configs/server/config.example.json](https://github.com/edumeet/edumeet-docker/tree/4.x/configs/server) to configs/server/config.json
 ```bash
 cp configs/server/config.example.json configs/server/config.json
 ```
 
 ### for 4.0 you shoud use : 
-## Copy [configs/server/config.example.js](https://github.com/edumeet/edumeet-docker/tree/4.x/configs/server) to configs/server/config.js
+Copy [configs/server/config.example.js](https://github.com/edumeet/edumeet-docker/tree/4.x/configs/server) to configs/server/config.js
 ```bash
 cp configs/server/config.example.js configs/server/config.js
 ```
-## Copy [configs/server/config.example.yaml](https://github.com/edumeet/edumeet-docker/tree/4.x/configs/server) to configs/server/config.yaml
+Copy [configs/server/config.example.yaml](https://github.com/edumeet/edumeet-docker/tree/4.x/configs/server) to configs/server/config.yaml
 ```bash
 cp configs/server/config.example.yaml configs/server/config.yaml
 ```
+
+Optional update config files.
 
 ## Edit docker-compose for services that you want 
 * required  edumeet-room-server
@@ -85,8 +86,7 @@ Run with `docker-compose`
 ```sh
   $ sudo docker-compose up --detach
 ```
-- edumeet and redis images will be pooled from Docker hub
-- **note**: to enable automatic Docker images update, uncomment `ouroboros` configuration in `docker-compose.yml`
+- TODO : edumeet images will be pooled from Docker hub
 
 ## Ports and firewall
 | Port | protocol | description |
@@ -110,7 +110,7 @@ If you are part of the GEANT eduGAIN, you can request your turn api key at [http
 You need an additional [TURN](https://github.com/coturn/coturn)-server for clients located behind restrictive firewalls! 
 Add your server and credentials to `server/config/config.yaml`
 
-## 2 Docker networking
+## Docker networking
 
 Container works in "host" network mode, because bridge mode has the following issue: ["Docker hangs when attempting to bind a large number of ports"](https://success.docker.com/article/docker-compose-and-docker-run-hang-when-binding-a-large-port-range)
 
