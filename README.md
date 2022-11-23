@@ -91,9 +91,10 @@ Run with `docker-compose`
 ## Ports and firewall
 | Port | protocol | description |
 | ---- | ----------- | ----------- |
-|  443 | tcp | default https webserver and signaling - adjustable in `server/config/config.yaml`) |
-| 4443 | tcp | default `yarn start` port for developing with live browser reload, not needed in production environments - adjustable in app/package.json) |
-| 40000-49999 | udp, tcp | media ports - adjustable in `server/config/config.yaml` |
+|  80 | tcp | webserver redirect) |
+|  443 | tcp | default https webserver and signaling - adjustable in `nginx config`) |
+|  8002 (localhost for edumeet-room-server) | tcp | default https webserver and signaling - adjustable in `server config`)
+| 40000-49999 | udp, tcp | media ports - adjustable in `server config` |
 
 ## Load balanced installation
 
