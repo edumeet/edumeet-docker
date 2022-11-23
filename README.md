@@ -23,6 +23,8 @@ edumeet-docker - include install setps for docker compose and configs -> build e
 - [room-server config](https://github.com/edumeet/edumeet-room-server) 
 
 ## documentation for docker build and run
+Update with update-config
+
 ##  edumeet docker hub with prebuilt release images
 
 #How Branches work: 
