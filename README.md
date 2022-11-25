@@ -16,10 +16,10 @@ main [eduMEET repo](https://github.com/edumeet/edumeet) with generic documentati
 
 
 # How branches work: 
-- release branch names like 4.0 shoud match for client side and server side too.
-- for example release-4.0 is production ready release branch, the install steps are in Dockerfile .
-- releases also contiain Dockerfile-dev files (that are for local development) - link repo localy or specify remote branch to run 
-- documentation for configs can be found on the separate repos like edumeet/edumeet-client .  
+- Release branch names like 4.0 shoud match for client side and server side too.
+- For example release-4.0 is production ready release branch, the install steps are in Dockerfile .
+- Releases also contiain Dockerfile-dev files (that are for local development) - link repo locally or specify remote branch to run 
+- Documentation for configs can be found on the separate repos like edumeet/edumeet-client .  
 
 ## Things that edumeet-docker can build :
 - edumeet-client - client side
