@@ -32,7 +32,10 @@ main [eduMEET repo](https://github.com/edumeet/edumeet) with generic documentati
 ```bash
 git clone https://github.com/edumeet/edumeet-docker.git
 ```
-
+## change to folder
+```
+cd edumeet-docker
+```
 ## Run update  
 Set your desired release branch. For example 4.0-release in the .env file.
 
@@ -42,13 +45,11 @@ Update with update-config.sh. (This will get the newest dockerfiles and config.e
 ```
 ## Configure [nginx.conf](https://github.com/edumeet/edumeet-docker/blob/4.x/nginx/nginx.conf) in nginx folder.
  
-Change configuration url and update certs. 
+Check configuration of nginx and copy certificates to cert folder check at name for certificate matches config:
 ```bash
   server_name  edumeet.example.com; 
-  listen 443 ssl;
-  listen [::]:443 ssl;
   ssl_certificate     /srv/edumeet/edumeet-demo-cert.pem;
-  ssl_certificate_key /srv/edumeet/edumeet-demo-key.pem;
+  ssl_certificate_key /srv/edumeet/edumeet-demo-key.pem; 
 ```
 
 Copy [configs/app/config.example.js](https://github.com/edumeet/edumeet-docker/tree/4.x/configs/app) to configs/app/config.js
