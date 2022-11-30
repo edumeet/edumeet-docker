@@ -18,5 +18,5 @@ curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEETCLIENT}/${BRAN
 # server example config(s)
 curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEETSERVER}/${BRANCHSERVER}/server/config/config.example.js" -o "configs/server/config.example.js"
 # yaml for 4.0
-curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEETSERVER}/${BRANCHSERVER}/server/config/config.yaml.js" -o "configs/server/config.yaml.js"
+curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEETSERVER}/${BRANCHSERVER}/server/config/config.example.yaml" -o "configs/server/config.example.yaml"
 
