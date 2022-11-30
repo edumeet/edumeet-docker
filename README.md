@@ -28,12 +28,9 @@ main [eduMEET repo](https://github.com/edumeet/edumeet) with generic documentati
 
 
 # Update, configure, build and run.
-## Git clone this code to your docker machine.
+## Git clone this code to your docker machine and change into folder:
 ```bash
 git clone https://github.com/edumeet/edumeet-docker.git
-```
-## change to folder
-```
 cd edumeet-docker
 ```
 ## Run update  
