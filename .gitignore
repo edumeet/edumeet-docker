@@ -2,8 +2,10 @@
 /configs/app/*
 /configs/server/*
 /configs/nginx/*
-!/certs/*.example.*
+/configs/redis/*
+!/certs/*-demo-*
 !/configs/app/*.example.*
 !/configs/server/*.example.*
 !/configs/nginx/*.example.*
+!/configs/redis/*.example.*
 /images
