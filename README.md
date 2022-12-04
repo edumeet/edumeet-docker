@@ -1,80 +1,67 @@
 # ![eduMEET](/images/logo.edumeet.svg) in Docker container
-This is the docker building repo for eduMEET. It can setup a production instance of eduMEET and help you with setting up a development enviroment as well.
+Docker hub repository: [edumeet/edumeet](https://hub.docker.com/r/edumeet/edumeet)
 
-For more generic information look here:
+This is "dockerized" version of the [eduMEET](https://github.com/edumeet/edumeet).
+(Successor of [multiparty meeting](https://github.com/havfo/multiparty-meeting) fork of mediasoup-demo)
 
-main [eduMEET repo](https://github.com/edumeet/edumeet) with generic documentation
+It will setup a production eduMEET instance, and help you with setting up a development environment.
+
+For further (more generic) information take a look at [eduMEET repository](https://github.com/edumeet/edumeet)
 
 # Architecture
 - Current stable eduMEET consists of these components:
   - [edumeet-client](https://github.com/edumeet/edumeet-client/) 
-  - [room-server](https://github.com/edumeet/edumeet/tree/master/server)) from edumeet-repo /server folder
+  - [edumeet-room-server](https://github.com/edumeet/edumeet/tree/master/server)) from edumeet-repo /server folder
 - Next generation eduMEET:
   - [edumeet-client](https://github.com/edumeet/edumeet-client/)
-  - [room-server](https://github.com/edumeet/edumeet-room-server)
+  - [iedumeet-room-server](https://github.com/edumeet/edumeet-room-server)
   - [edumeet-media-node](https://github.com/edumeet/edumeet-media-node)
 
 
-# How branches work: 
-- Release branch names like 4.0 shoud match for client side and server side too.
-- For example release-4.0 is production ready release branch, the install steps are in Dockerfile .
-- Releases also contiain Dockerfile-dev files (that are for local development) - link repo locally or specify remote branch to run 
-- Documentation for configs can be found on the separate repos like edumeet/edumeet-client .  
-
-## Things that edumeet-docker can build :
+## Docker images that will be created:
 - edumeet-client - client side
 - edumeet-room-server - server side 
 - edumeet-translator - translation page 
 
-
 # Update, configure, build and run.
-## Git clone this code to your docker machine and change into folder:
+## Clone repository to your (docker) host, and cd into th folder:
 ```bash
 git clone https://github.com/edumeet/edumeet-docker.git
 cd edumeet-docker
 ```
-## Run update  
-Set your desired release branch. For example 4.0-release in the .env file.
+## `run-me-first.sh` - update and set configuration files
+Step 1: Set your desired release branch in .env file. Branch names (for example 4.0) should match for client and server side.
 
-Update with update-config.sh. (This will get the newest dockerfiles and config.examples from the branches)
+Step 2: start `run-me-first.sh` script. This script will download newest Dockerfile(s) and config.example.* files from the repository, also it will generate and set Redis password.
 ```
-./update-config.sh
+./run-me-first.sh
+
 ```
-## Configure [nginx.conf](https://github.com/edumeet/edumeet-docker/blob/4.x/nginx/nginx.conf) in nginx folder.
- 
-Check configuration of nginx and copy certificates to cert folder check at name for certificate matches config:
+
+Step 3: Configure app/config.js, server/config.json, nginx/default.conf in configs folder
+
+- Additional configuration documentation is located in [edumeet-client](https://github.com/edumeet/edumeet-client/) and [edumeet-room-server](https://github.com/edumeet/edumeet-room-server) repositories.
+
+NOTE! Certficates are selfsigned, set your signed certificate in nginx and  server configuration files
+
+`in nginx/default.conf`
 ```bash
   server_name  edumeet.example.com; 
-  ssl_certificate     /srv/edumeet/edumeet-demo-cert.pem;
-  ssl_certificate_key /srv/edumeet/edumeet-demo-key.pem; 
+  ssl_certificate     /etc/edumeet/edumeet-demo-cert.pem;
+  ssl_certificate_key /etc/edumeet/edumeet-demo-key.pem; 
+```
+`in server/config.json`
+```json
+    "tls" : {
+      "cert" : "./certs/edumeet-demo-cert.pem",
+      "key"  : "./certs/edumeet-demo-key.pem"
+    },
 ```
 
-Copy [configs/app/config.example.js](https://github.com/edumeet/edumeet-docker/tree/4.x/configs/app) to configs/app/config.js
-```bash
-cp configs/app/config.example.js configs/app/config.js
-```
-Copy [configs/server/config.example.json](https://github.com/edumeet/edumeet-docker/tree/4.x/configs/server) to configs/server/config.json
-```bash
-cp configs/server/config.example.json configs/server/config.json
-```
-
-### for 4.0 you shoud use : 
-Copy [configs/server/config.example.js](https://github.com/edumeet/edumeet-docker/tree/4.x/configs/server) to configs/server/config.js
-```bash
-cp configs/server/config.example.js configs/server/config.js
-```
-Copy [configs/server/config.example.yaml](https://github.com/edumeet/edumeet-docker/tree/4.x/configs/server) to configs/server/config.yaml
-```bash
-cp configs/server/config.example.yaml configs/server/config.yaml
-```
-
-Optional update config files.
-
-## Edit docker-compose for services that you want 
+## Edit docker-compose.yml for services that you want 
 * required  edumeet-room-server
 * required  edumeet-client
-* optional edumeet-translator
-
+* optional  edumeet-translator 
 
 ## Run
 
@@ -86,13 +73,16 @@ Run with `docker-compose`
 ```
 - TODO : edumeet images will be pooled from Docker hub
 
-## Ports and firewall
+## Default ports for firewall setting
 | Port | protocol | description |
 | ---- | ----------- | ----------- |
-|  80 | tcp | webserver redirect) |
-|  443 | tcp | default https webserver and signaling - adjustable in `nginx config`) |
-|  8002 (localhost for edumeet-room-server) | tcp | default https webserver and signaling - adjustable in `server config`)
-| 40000-49999 | udp, tcp | media ports - adjustable in `server config` |
+|  80 | tcp | edumeet-client webserver (redirect to 443) |
+|  443 | tcp | edumeet-client https webserver and signaling proxy |
+|  8002 | tcp | edumeet-room-server webserver and signaling |
+|  40000-49999 | udp | edumeet-room-server media ports |
+
+If other ports are required, they have to be set in configuration files and exposed Dockerfiles
+
 
 ## Load balanced installation
 
@@ -104,14 +94,18 @@ To integrate with an LMS (e.g. Moodle), have a look at [LTI](LTI/LTI.md).
 
 ## TURN configuration
 
-If you are part of the GEANT eduGAIN, you can request your turn api key at [https://turn.geant.org/](https://turn.geant.org/)
-	
-You need an additional [TURN](https://github.com/coturn/coturn)-server for clients located behind restrictive firewalls! 
-Add your server and credentials to `server/config/config.yaml`
+For clients located behind restrictive firewalls, You will need an additional [TURN](https://github.com/coturn/coturn)-server 
+Add your server and credentials to `server/config/config.json`
+
+```json
+    "turnAPIKey" : "Your API key",
+    "turnAPIURI" : "https://host.domain.tld/turn",
+```
+If you are [eduGAIN](https://edugain.org/) member, you can generate your turn api key at [https://turn.geant.org/](https://turn.geant.org/)
 
 ## Docker networking
 
-Container works in "host" network mode, because bridge mode has the following issue: ["Docker hangs when attempting to bind a large number of ports"](https://success.docker.com/article/docker-compose-and-docker-run-hang-when-binding-a-large-port-range)
+edumeet-room-server container works in "host" network mode, because bridge mode has the following issue: ["Docker hangs when attempting to bind a large number of ports"](https://success.docker.com/article/docker-compose-and-docker-run-hang-when-binding-a-large-port-range)
 
 ## Further Informations
 

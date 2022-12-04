@@ -1,6 +1,9 @@
+/certs/*
 /configs/app/*
 /configs/server/*
+/configs/nginx/*
+!/certs/*.example.*
 !/configs/app/*.example.*
 !/configs/server/*.example.*
-/certs
+!/configs/nginx/*.example.*
 /images

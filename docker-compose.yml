@@ -3,6 +3,7 @@ services:
   ## build redis for edumeet-room-server
   redis:
     image: redis
+    container_name: edumeet-redis
     network_mode: "host"
     entrypoint: redis-server /usr/local/etc/redis/redis.conf
     restart: unless-stopped
@@ -12,10 +13,12 @@ services:
   ## build edumeet-room-server
   edumeet-room-server:
     env_file: .env
-    container_name: edumeet-room-server
     depends_on: 
       - redis
     restart: unless-stopped
+    volumes:
+      - ${PWD}/configs/server:${BASEDIR}/${EDUMEETSERVER}/server/dist/config
+      - ${PWD}/certs:${BASEDIR}/${EDUMEETSERVER}/server/certs
     build:
       args:
         - BASEDIR=${BASEDIR}
@@ -28,19 +31,22 @@ services:
         - TAG=${TAG}
       context: .
       dockerfile: Dockerfile-server
-      
+    container_name: edumeet-room-server
+    image: ${REPOSITORY}/${EDUMEETSERVER}-room-server:${TAG}
+
     ## use host mode for the media ports
     network_mode: "host"
     stdin_open: true
     tty: true
 
   ## build edumeet-client instance(s)
-  edumeet-client-a:
+  edumeet-client:
     env_file: .env
-    container_name: edumeet-client-a
     volumes:
       - ${PWD}/configs/app:/usr/share/nginx/html/config
-      ## todo 
+      - ${PWD}/configs/nginx:/etc/nginx/conf.d
+      - ${PWD}/certs:/etc/edumeet/certs
+      ## TODO 
       #- ${PWD}/images:/usr/share/nginx/html/images
       #- ${PWD}/privacy:/usr/share/nginx/html/static/privacy
     build:
@@ -55,16 +61,24 @@ services:
         - TAG=${TAG}
       context: .
       dockerfile: Dockerfile-client
-    ## database config (mysql)
+    container_name: edumeet-client
+    image: ${REPOSITORY}/${EDUMEETCLIENT}:${TAG}
+    ports:
+        - "80:80"
+        - "443:443"
+
+    ## -- FUTURE USE -- database config (mysql) for client
     #depends_on:
     #  - database
     #volumes:
     #  - ./www:/var/www/html:Z
-    network_mode: "host"
-  ## build edumeet-client instance(s)
+  
+  ## build edumeet-translator instance
   edumeet-translator:
     env_file: .env
     container_name: edumeet-translator
+    image: ${REPOSITORY}/edumeet-translator:${TAG}
+    ## TODO
     #volumes:
     #  - ${PWD}/configs/app:/usr/share/nginx/html/config
     build:
@@ -76,13 +90,18 @@ services:
         - BRANCHCLIENT=${BRANCHCLIENT}
       context: .
       dockerfile: Dockerfile-translator
-    ## database config (mysql)
+    ports:
+        - "8080:80"
+    ## -- FUTURE USE -- database config (mysql) for translator
     #depends_on:
     #  - database
     #volumes:
     #  - ./www:/var/www/html:Z
-    network_mode: "host"
-  #edumeet-client-b:
+
+  ##
+  ## -- Following lines are for FUTURE USE --
+  ##
+  # edumeet-client-b:
   #  env_file: .env
   #  container_name: edumeet-client-b
   #  volumes:
@@ -143,9 +162,9 @@ services:
   #    ports:
   #        - "80:80" # proxy
   #        - "70:70" # stats
-
-## volumes for database(s)
-#volumes:
-#  db:
-#    driver: local
-#  dbdata:
+  
+  ## volumes for database(s)
+  #volumes:
+  #  db:
+  #    driver: local
+  #  dbdata:

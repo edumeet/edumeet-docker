@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1
-#build edumeet 
-FROM node:16-bullseye-slim AS edumeet-builder
+
+#build edumeet-room-server 
+FROM node:16-bullseye-slim AS edumeet-server-builder
 ARG BASEDIR
 ARG EDUMEETSERVER
 ARG NODE_ENV
@@ -11,21 +12,40 @@ ARG BRANCHSERVER
 ARG REACT_APP_DEBUG
 WORKDIR ${BASEDIR}
 
-#install app dependency
+#install server build dependency
 RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash jq build-essential python python3-pip openssl libssl-dev pkg-config mc net-tools;apt-get clean
+
 #checkout code
 RUN git clone --single-branch --branch ${BRANCHSERVER} ${GIT_SERVER}/${REPOSITORY}/${EDUMEETSERVER}.git
 WORKDIR ${BASEDIR}/${EDUMEETSERVER}/server
 
 ENV NODE_ENV ${NODE_ENV}
 ENV REACT_APP_DEBUG=${REACT_APP_DEBUG}
-RUN yarn install --production=false
+RUN yarn install --production=false && yarn run build
 
-RUN yarn run build
+# create edumeet-room-server package
+RUN ["/bin/bash", "-c", "cat <<< $(jq '.bundleDependencies += .dependencies' package.json) > package.json" ]
+RUN npm pack
 
-COPY configs/server/ dist/config
 
-COPY certs/ certs/
+# create edumeet-room-server image
+FROM node:16-bullseye-slim
+
+# Args:
+ARG BASEDIR
+ARG EDUMEETSERVER
+ARG NODE_ENV
+ARG SERVER_DEBUG
+
+WORKDIR ${BASEDIR}
+
+COPY --from=edumeet-server-builder ${BASEDIR}/${EDUMEETSERVER}/server/edumeet-*.tgz  ${BASEDIR}/${EDUMEETSERVER}/server/
+
+WORKDIR ${BASEDIR}/${EDUMEETSERVER}/server
+
+RUN tar xzf edumeet-*.tgz && mv package/* ./ && rm -rf package edumeet-*.tgz
+
+RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq openssl;apt-get clean
 
 # Web PORTS
 EXPOSE 8002 
@@ -34,11 +54,6 @@ EXPOSE 40000-49999/udp
 # run server 
 ENV DEBUG ${SERVER_DEBUG}
 
-
-
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
-
-# for testing 
-#ENTRYPOINT ["tail", "-f", "/dev/null"]
 
