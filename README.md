@@ -10,21 +10,21 @@ For further (more generic) information take a look at [eduMEET repository](https
 
 # Architecture
 - Current stable eduMEET consists of these components:
-  - [edumeet-client](https://github.com/edumeet/edumeet-client/) 
+  - [edumeet-client](https://github.com/edumeet/edumeet-client/)
   - [edumeet-room-server](https://github.com/edumeet/edumeet/tree/master/server)) from edumeet-repo /server folder
 - Next generation eduMEET:
   - [edumeet-client](https://github.com/edumeet/edumeet-client/)
-  - [iedumeet-room-server](https://github.com/edumeet/edumeet-room-server)
+  - [edumeet-room-server](https://github.com/edumeet/edumeet-room-server)
   - [edumeet-media-node](https://github.com/edumeet/edumeet-media-node)
 
 
 ## Docker images that will be created:
 - edumeet-client - client side
-- edumeet-room-server - server side 
-- edumeet-translator - translation page 
+- edumeet-room-server - server side
+- optional edumeet-translator - a web service to help to generate translation files
 
 # Update, configure, build and run.
-## Clone repository to your (docker) host, and cd into th folder:
+## Clone repository to your (docker) host, and cd into the folder:
 ```bash
 git clone https://github.com/edumeet/edumeet-docker.git
 cd edumeet-docker
@@ -42,7 +42,7 @@ Step 3: Configure app/config.js, server/config.json, nginx/default.conf in confi
 
 - Additional configuration documentation is located in [edumeet-client](https://github.com/edumeet/edumeet-client/) and [edumeet-room-server](https://github.com/edumeet/edumeet-room-server) repositories.
 
-NOTE! Certficates are selfsigned, set your signed certificate in nginx and  server configuration files
+NOTE! Certficates are selfsigned, for a production service you need to set YOUR signed certificate in nginx and  server configuration files
 
 `in nginx/default.conf`
 ```bash
@@ -61,7 +61,7 @@ NOTE! Certficates are selfsigned, set your signed certificate in nginx and  serv
 ## Edit docker-compose.yml for services that you want 
 * required  edumeet-room-server
 * required  edumeet-client
-* optional  edumeet-translator 
+* optional  edumeet-translator
 
 ## Run
 
