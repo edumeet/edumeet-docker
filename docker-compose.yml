@@ -74,29 +74,29 @@ services:
     #  - ./www:/var/www/html:Z
   
   ## build edumeet-translator instance
-  edumeet-translator:
-    env_file: .env
-    container_name: edumeet-translator
-    image: ${REPOSITORY}/edumeet-translator:${TAG}
-    ## TODO
-    #volumes:
-    #  - ${PWD}/configs/app:/usr/share/nginx/html/config
-    build:
-      args:
-        - BASEDIR=${BASEDIR}
-        - GIT_SERVER=${GIT_SERVER}
-        - REPOSITORY=${REPOSITORY}
-        - EDUMEETCLIENT=${EDUMEETCLIENT}
-        - BRANCHCLIENT=${BRANCHCLIENT}
-      context: .
-      dockerfile: Dockerfile-translator
-    ports:
-        - "8080:80"
-    ## -- FUTURE USE -- database config (mysql) for translator
-    #depends_on:
-    #  - database
-    #volumes:
-    #  - ./www:/var/www/html:Z
+  #edumeet-translator:
+  #  env_file: .env
+  #  container_name: edumeet-translator
+  #  image: ${REPOSITORY}/edumeet-translator:${TAG}
+  #  ## TODO
+  #  #volumes:
+  #  #  - ${PWD}/configs/app:/usr/share/nginx/html/config
+  #  build:
+  #    args:
+  #     - BASEDIR=${BASEDIR}
+  #      - GIT_SERVER=${GIT_SERVER}
+  #      - REPOSITORY=${REPOSITORY}
+  #      - EDUMEETCLIENT=${EDUMEETCLIENT}
+  #      - BRANCHCLIENT=${BRANCHCLIENT}
+  #    context: .
+  #    dockerfile: Dockerfile-translator
+  #  ports:
+  #      - "8080:80"
+  #  ## -- FUTURE USE -- database config (mysql) for translator
+  #  #depends_on:
+  #  #  - database
+  #  #volumes:
+  #  #  - ./www:/var/www/html:Z
 
   ##
   ## -- Following lines are for FUTURE USE --
