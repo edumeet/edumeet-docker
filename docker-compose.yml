@@ -22,7 +22,7 @@ services:
 #     - DEBUG=edumeet*
 
   redis:
-    image: redis
+    image: redis:6
     network_mode: "host"
     entrypoint: redis-server /usr/local/etc/redis/redis.conf
     restart: unless-stopped
