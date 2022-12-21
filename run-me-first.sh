@@ -54,7 +54,7 @@ sed -i -r "s/(^.*\"password\"\ :).*/\1 \"${REDIS_PASSWORD}\"/" configs/server/co
 echo "Updating TAG version in .env file extracted from edumeet version"
 VERSION=$(curl -s "https://raw.githubusercontent.com/edumeet/edumeet/${BRANCHSERVER}/server/package.json" | grep version | sed -e 's/^.*:\ \"\(.*\)\",/\1/')
 sed -i "s/^.*TAG.*$/TAG=${VERSION}/" .env
-echo "Current tag: ${TAG}"
+echo "Current tag: ${VERSION}"
 
 echo "
 DONE!
