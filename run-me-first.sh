@@ -1,19 +1,15 @@
 #!/bin/bash
+
+RED='\033[1;31m'
+GREEN='\033[0;32m'
+NOCOLOR='\033[0m'
+
 source .env                                                                                                                                                                                
-echo "Updating configuration example files from upstream edumeet(${BRANCH}) repository.
-See README.md file for details how to configure"
 
-
-# Download dockerfiles
-# if [ ${LOCALDEVMODE} != 0  ]; then
-#   # dev-dockerfile
-#   curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEETCLIENT}/${BRANCHCLIENT}/Dockerfile-dev" -o "Dockerfile-client" && curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEETSERVER}/${BRANCHSERVER}/Dockerfile-dev" -o "Dockerfile-server"
-# else
-#   # production dockerfile
-#   curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEETCLIENT}/${BRANCHCLIENT}/Dockerfile" -o "Dockerfile-client" && curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEETSERVER}/${BRANCHSERVER}/Dockerfile" -o "Dockerfile-server"
-# fi
-#
-
+echo -e "
+${GREEN}Step 1.${NOCOLOR}
+Updating configuration example files from upstream edumeet(${BRANCHSERVER}) repository.
+"
 # Update example configurations
 # edumeet-client
 curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEETCLIENT}/${BRANCHCLIENT}/public/config/config.example.js" -o "configs/app/config.example.js"
@@ -28,10 +24,12 @@ do
       confFile=${exConfFile/.example/}
       if [ -f ${confFile} ]
       then
-        echo "Config ${confFile} exist, skipping..."
-      else
-        echo "Creating ${confFile} from ${exConfFile}. Please check configuration parameters!"
-        cp ${exConfFile} ${confFile}
+        echo -e "Config ${confFile} exist, ${RED}skipping...${NOCOLOR}"
+        rm ${exConfFile}  &>/dev/null
+      elif [ -f ${exConfFile} ]
+      then
+        echo -e "Creating ${confFile} from ${exConfFile}. ${RED}Please check configuration parameters!${NOCOLOR}"
+        mv ${exConfFile} ${confFile} &>/dev/null
       fi
   done
 done
@@ -39,26 +37,31 @@ done
 # Generate and set Redis password
 #
 REDIS_PASSWORD=$(openssl rand -base64 32)
-echo "Generated Redis password: ${REDIS_PASSWORD}"
+echo -e "
+
+${GREEN}Step 2.${NOCOLOR}
+Generating Redis password: ${REDIS_PASSWORD}"
 # escape sed delimiter (/)
 REDIS_PASSWORD=${REDIS_PASSWORD//\//\\/}
 
-echo "setting Redis password in ./configs/redis/redis.conf"
-sed -i -r "s/^.?requirepass\ .*/requirepass\ ${REDIS_PASSWORD}/" configs/redis/redis.conf
+echo -e "setting Redis password in ./configs/redis/redis.conf"
+sed -i -r "s/^#?\ ?requirepass\ .*/requirepass\ ${REDIS_PASSWORD}/" configs/redis/redis.conf
 
-echo "setting Redis password in ./configs/server/config.json"
+echo -e "setting Redis password in ./configs/server/config.json"
 sed -i -r "s/(^.*\"password\"\ :).*/\1 \"${REDIS_PASSWORD}\"/" configs/server/config.json
 
 # Update TAG version
 #
-echo "Updating TAG version in .env file extracted from edumeet version"
+echo -e "
+
+${GREEN}Step 3.${NOCOLOR}
+Updating TAG version in .env file extracted from edumeet version"
 VERSION=$(curl -s "https://raw.githubusercontent.com/edumeet/edumeet/${BRANCHSERVER}/server/package.json" | grep version | sed -e 's/^.*:\ \"\(.*\)\",/\1/')
 sed -i "s/^.*TAG.*$/TAG=${VERSION}/" .env
-echo "Current tag: ${VERSION}"
+echo -e "Current tag: ${RED}${VERSION}${GREEN}"
 
-echo "
+echo -e "
 DONE!
 
-Please see README file for further configuration instructions.
-
+${RED}Please see README file for further configuration instructions.${NOCOLOR}
 "
