@@ -19,18 +19,19 @@ services:
     volumes:
       - ${PWD}/configs/server:${BASEDIR}/${EDUMEETSERVER}/server/dist/config
       - ${PWD}/certs:${BASEDIR}/${EDUMEETSERVER}/server/certs
-    build:
-      args:
-        - BASEDIR=${BASEDIR}
-        - GIT_SERVER=${GIT_SERVER}
-        - REPOSITORY=${REPOSITORY}
-        - EDUMEETSERVER=${EDUMEETSERVER}
-        - NODE_ENV=${NODE_ENV}
-        - SERVER_DEBUG=${SERVER_DEBUG}
-        - BRANCHSERVER=${BRANCHSERVER}
-        - TAG=${TAG}
-      context: .
-      dockerfile: Dockerfile-server
+    ## Comment out whole build-section to build edumeet-room-server and not pulling from docher-hub
+    #build:
+    #  args:
+    #    - BASEDIR=${BASEDIR}
+    #    - GIT_SERVER=${GIT_SERVER}
+    #    - REPOSITORY=${REPOSITORY}
+    #    - EDUMEETSERVER=${EDUMEETSERVER}
+    #    - NODE_ENV=${NODE_ENV}
+    #    - SERVER_DEBUG=${SERVER_DEBUG}
+    #    - BRANCHSERVER=${BRANCHSERVER}
+    #    - TAG=${TAG}
+    #  context: .
+    #  dockerfile: Dockerfile-server
     container_name: edumeet-room-server
     image: ${REPOSITORY}/${EDUMEETSERVER}-room-server:${TAG}
 
@@ -49,18 +50,19 @@ services:
       ## TODO 
       #- ${PWD}/images:/usr/share/nginx/html/images
       #- ${PWD}/privacy:/usr/share/nginx/html/static/privacy
-    build:
-      args:
-        - BASEDIR=${BASEDIR}
-        - GIT_SERVER=${GIT_SERVER}
-        - REPOSITORY=${REPOSITORY}
-        - EDUMEETCLIENT=${EDUMEETCLIENT}
-        - NODE_ENV=${NODE_ENV}
-        - SERVER_DEBUG=${SERVER_DEBUG}
-        - BRANCHCLIENT=${BRANCHCLIENT}
-        - TAG=${TAG}
-      context: .
-      dockerfile: Dockerfile-client
+    ## Comment out whole build-section to build edumeet-room-server and not pulling from docher-hub
+    #build:
+    #  args:
+    #    - BASEDIR=${BASEDIR}
+    #    - GIT_SERVER=${GIT_SERVER}
+    #- REPOSITORY=${REPOSITORY}
+    #    - EDUMEETCLIENT=${EDUMEETCLIENT}
+    #    - NODE_ENV=${NODE_ENV}
+    #    - SERVER_DEBUG=${SERVER_DEBUG}
+    #    - BRANCHCLIENT=${BRANCHCLIENT}
+    #    - TAG=${TAG}
+    #  context: .
+    #  dockerfile: Dockerfile-client
     container_name: edumeet-client
     image: ${REPOSITORY}/${EDUMEETCLIENT}:${TAG}
     ports:
