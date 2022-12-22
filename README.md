@@ -38,7 +38,7 @@ Step 2: start `run-me-first.sh` script. This script will download newest Dockerf
 
 ```
 
-Step 3: Configure app/config.js, server/config.json, nginx/default.conf in configs folder
+Step 3: Configure `configs/app/config.js`, `configs/server/config.json`, `configs/nginx/default.conf`
 
 - Additional configuration documentation is located in [edumeet-client](https://github.com/edumeet/edumeet-client/) and [edumeet-room-server](https://github.com/edumeet/edumeet-room-server) repositories.
 
