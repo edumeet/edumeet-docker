@@ -107,6 +107,9 @@ If you are [eduGAIN](https://edugain.org/) member, you can generate your turn ap
 
 edumeet-room-server container works in "host" network mode, because bridge mode has the following issue: ["Docker hangs when attempting to bind a large number of ports"](https://success.docker.com/article/docker-compose-and-docker-run-hang-when-binding-a-large-port-range)
 
+## Building images locally for Development
+In order to build docker images you can uncomment the build-sections in `docker-compose.yml` for the images you want. 
+
 ## Further Informations
 
 Read more about configs and settings in [eduMEET](https://github.com/edumeet/edumeet) README.
