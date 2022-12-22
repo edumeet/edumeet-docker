@@ -55,7 +55,7 @@ services:
     #  args:
     #    - BASEDIR=${BASEDIR}
     #    - GIT_SERVER=${GIT_SERVER}
-    #- REPOSITORY=${REPOSITORY}
+    #    - REPOSITORY=${REPOSITORY}
     #    - EDUMEETCLIENT=${EDUMEETCLIENT}
     #    - NODE_ENV=${NODE_ENV}
     #    - SERVER_DEBUG=${SERVER_DEBUG}
