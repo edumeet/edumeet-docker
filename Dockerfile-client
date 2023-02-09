@@ -1,37 +1,30 @@
-# syntax=docker/dockerfile:1
-# build edumeet 
-FROM node:16-bullseye-slim AS edumeet-builder
+FROM node:18-bullseye-slim AS edumeet-builder
 
 # Args
-ARG BASEDIR
-ARG EDUMEETCLIENT
-ARG NODE_ENV
-ARG SERVER_DEBUG
+ARG EDUMEET_CLIENT
 ARG GIT_SERVER
 ARG REPOSITORY
-ARG BRANCHCLIENT
-ARG REACT_APP_DEBUG
+ARG BRANCH_CLIENT
 
-WORKDIR ${BASEDIR}
+WORKDIR /app
 
 RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash jq build-essential python python3-pip openssl libssl-dev pkg-config;apt-get clean
-
 #checkout code
-RUN git clone --single-branch --branch ${BRANCHCLIENT} ${GIT_SERVER}/${REPOSITORY}/${EDUMEETCLIENT}.git
+RUN git clone --single-branch --branch ${BRANCH_CLIENT} ${GIT_SERVER}/${REPOSITORY}/${EDUMEET_CLIENT}.git
+WORKDIR /app/${EDUMEET_CLIENT}
+COPY  configs/app/config.js /app/${EDUMEET_CLIENT}/public/config/config.js
 
-#install app dep
-WORKDIR ${BASEDIR}/${EDUMEETCLIENT}
-RUN yarn install --production=false; yarn build
-
-#set and build app in producion mode/minified/.
-#RUN ["/bin/bash", "-c", "cat <<< $(jq '.bundleDependencies += .dependencies' package.json) > package.json" ]
-#RUN 
+RUN yarn install --frozen-lockfile
+RUN yarn add eslint-config-react-app@v6 -D
+RUN yarn run build
 
 # create edumeet-client image
 FROM nginx
 WORKDIR /usr/share/nginx/html/
-COPY --from=edumeet-builder /opt/edumeet-client/build/  /usr/share/nginx/html/
+ARG EDUMEET_CLIENT
+COPY --from=edumeet-builder /app/${EDUMEET_CLIENT}/build/   /usr/share/nginx/html/
 
 # Web PORTS
 EXPOSE 80
 EXPOSE 443
+RUN echo "127.0.0.1    secure.localhost" >>  /etc/hosts 

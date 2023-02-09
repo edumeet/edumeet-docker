@@ -8,16 +8,15 @@ source .env
 
 echo -e "
 ${GREEN}Step 1.${NOCOLOR}
-Updating configuration example files from upstream edumeet(${BRANCHSERVER}) repository.
+Updating configuration example files from upstream edumeet(${BRANCH_SERVER}) repository.
 "
 # Update example configurations
 # edumeet-client
-curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEETCLIENT}/${BRANCHCLIENT}/public/config/config.example.js" -o "configs/app/config.example.js"
+curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEET_CLIENT}/${BRANCH_CLIENT}/public/config/config.example.js" -o "configs/app/config.example.js"
 # edumeet-room-server
-curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEETSERVER}/${BRANCHSERVER}/server/config/config.example.js" -o "configs/server/config.example.js"
-curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEETSERVER}/${BRANCHSERVER}/server/config/config.example.json" -o "configs/server/config.example.json"
+curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEET_SERVER}/${BRANCH_SERVER}/config/config.example.json" -o "configs/server/config.example.json"
 
-for confDir in {app,nginx,redis,server}
+for confDir in {app,nginx,server}
 do
   for exConfFile in $(echo ./configs/${confDir}/*example*)
     do
@@ -34,29 +33,12 @@ do
   done
 done
 
-# Generate and set Redis password
-#
-REDIS_PASSWORD=$(openssl rand -base64 32)
+# Update TAG version
 echo -e "
 
 ${GREEN}Step 2.${NOCOLOR}
-Generating Redis password: ${REDIS_PASSWORD}"
-# escape sed delimiter (/)
-REDIS_PASSWORD=${REDIS_PASSWORD//\//\\/}
-
-echo -e "setting Redis password in ./configs/redis/redis.conf"
-sed -i -r "s/^#?\ ?requirepass\ .*/requirepass\ ${REDIS_PASSWORD}/" configs/redis/redis.conf
-
-echo -e "setting Redis password in ./configs/server/config.json"
-sed -i -r "s/(^.*\"password\"\ :).*/\1 \"${REDIS_PASSWORD}\"/" configs/server/config.json
-
-# Update TAG version
-#
-echo -e "
-
-${GREEN}Step 3.${NOCOLOR}
 Updating TAG version in .env file extracted from edumeet version"
-VERSION=$(curl -s "https://raw.githubusercontent.com/edumeet/edumeet/${BRANCHSERVER}/server/package.json" | grep version | sed -e 's/^.*:\ \"\(.*\)\",/\1/')
+VERSION=$(curl -s "https://raw.githubusercontent.com/edumeet/${EDUMEET_SERVER}/${BRANCH_SERVER}/package.json" | grep version | sed -e 's/^.*:\ \"\(.*\)\",/\1/')
 sed -i "s/^.*TAG.*$/TAG=${VERSION}/" .env
 echo -e "Current tag: ${RED}${VERSION}${GREEN}"
 

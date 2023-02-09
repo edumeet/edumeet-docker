@@ -1,0 +1,48 @@
+version: "3.3"
+services:
+  ## build edumeet-room-server
+  edumeet-room-server:
+    env_file: .env
+    restart: unless-stopped
+    volumes:
+      - ${PWD}/configs/server:${BASEDIR}/${EDUMEET_SERVER}/server/dist/config
+      - ${PWD}/certs:${BASEDIR}/${EDUMEET_SERVER}/server/certs
+    container_name: edumeet-room-server
+    image: ${REPOSITORY}/${EDUMEET_SERVER}-room-server:${TAG}
+
+    ## use host mode for the media ports
+    network_mode: "host"
+    stdin_open: true
+    tty: true
+
+  ## build edumeet-client instance + web proxy
+  edumeet-client:
+    env_file: .env
+    volumes:
+      - ${PWD}/configs/app:/usr/share/nginx/html/config
+      - ${PWD}/configs/nginx:/etc/nginx/conf.d
+      - ${PWD}/certs:/etc/edumeet/certs
+    container_name: edumeet-client
+    image: ${REPOSITORY}/${EDUMEET_CLIENT}:${TAG}
+    ports:
+        - "80:80"
+        - "443:443"
+  # build edumeet-translator instance
+  edumeet-translator:
+    env_file: .env
+    container_name: edumeet-translator
+    image: ${REPOSITORY}/edumeet-translator:${TAG}
+    ## TODO
+    #volumes:
+    #  - ${PWD}/configs/app:/usr/share/nginx/html/config
+    build:
+      args:
+        - BASEDIR=${BASEDIR}
+        - GIT_SERVER=${GIT_SERVER}
+        - REPOSITORY=${REPOSITORY}
+        - EDUMEET_CLIENT=${EDUMEET_CLIENT}
+        - BRANCH_CLIENT=${BRANCH_CLIENT}
+      context: .
+      dockerfile: Dockerfile-translator
+    ports:
+        - "8080:80"

@@ -1,172 +1,81 @@
 version: "3.3"
 services:
-  ## build redis for edumeet-room-server
-  redis:
-    image: redis:6
-    container_name: edumeet-redis
-    network_mode: "host"
-    entrypoint: redis-server /usr/local/etc/redis/redis.conf
-    restart: unless-stopped
-    volumes:
-      - ${PWD}/configs/redis:/usr/local/etc/redis
-
   ## build edumeet-room-server
   edumeet-room-server:
     env_file: .env
-    depends_on: 
-      - redis
     restart: unless-stopped
     volumes:
-      - ${PWD}/configs/server:${BASEDIR}/${EDUMEETSERVER}/server/dist/config
-      - ${PWD}/certs:${BASEDIR}/${EDUMEETSERVER}/server/certs
-    ## Comment out whole build-section to build edumeet-room-server and not pulling from docher-hub
-    #build:
-    #  args:
-    #    - BASEDIR=${BASEDIR}
-    #    - GIT_SERVER=${GIT_SERVER}
-    #    - REPOSITORY=${REPOSITORY}
-    #    - EDUMEETSERVER=${EDUMEETSERVER}
-    #    - NODE_ENV=${NODE_ENV}
-    #    - SERVER_DEBUG=${SERVER_DEBUG}
-    #    - BRANCHSERVER=${BRANCHSERVER}
-    #    - TAG=${TAG}
-    #  context: .
-    #  dockerfile: Dockerfile-server
+      - ${PWD}/configs/server:/app/${EDUMEET_SERVER}/config
+      - ${PWD}/certs:/app/${EDUMEET_SERVER}/certs
     container_name: edumeet-room-server
-    image: ${REPOSITORY}/${EDUMEETSERVER}-room-server:${TAG}
-
+    #image: ${REPOSITORY}/${EDUMEET_SERVER}-room-server:${TAG}
+    # Comment out whole build-section to build edumeet-room-server and not pulling from docher-hub
+    build:
+      args:
+        - GIT_SERVER=${GIT_SERVER}
+        - REPOSITORY=${REPOSITORY}
+        - EDUMEET_SERVER=${EDUMEET_SERVER}
+        - BRANCH_SERVER=${BRANCH_SERVER}
+      context: .
+      dockerfile: Dockerfile-server
     ## use host mode for the media ports
     network_mode: "host"
     stdin_open: true
     tty: true
 
-  ## build edumeet-client instance(s)
+  ## build edumeet-client instance + web proxy
   edumeet-client:
     env_file: .env
     volumes:
       - ${PWD}/configs/app:/usr/share/nginx/html/config
       - ${PWD}/configs/nginx:/etc/nginx/conf.d
       - ${PWD}/certs:/etc/edumeet/certs
-      ## TODO 
-      #- ${PWD}/images:/usr/share/nginx/html/images
-      #- ${PWD}/privacy:/usr/share/nginx/html/static/privacy
-    ## Comment out whole build-section to build edumeet-room-server and not pulling from docher-hub
-    #build:
-    #  args:
-    #    - BASEDIR=${BASEDIR}
-    #    - GIT_SERVER=${GIT_SERVER}
-    #    - REPOSITORY=${REPOSITORY}
-    #    - EDUMEETCLIENT=${EDUMEETCLIENT}
-    #    - NODE_ENV=${NODE_ENV}
-    #    - SERVER_DEBUG=${SERVER_DEBUG}
-    #    - BRANCHCLIENT=${BRANCHCLIENT}
-    #    - TAG=${TAG}
-    #  context: .
-    #  dockerfile: Dockerfile-client
     container_name: edumeet-client
-    image: ${REPOSITORY}/${EDUMEETCLIENT}:${TAG}
+    #image: ${REPOSITORY}/${EDUMEET_CLIENT}:${TAG}
+    # Comment out whole build-section to build edumeet-room-server and not pulling from docher-hub
+    build:
+      args:
+        - GIT_SERVER=${GIT_SERVER}
+        - REPOSITORY=${REPOSITORY}
+        - EDUMEET_CLIENT=${EDUMEET_CLIENT}
+        - BRANCH_CLIENT=${BRANCH_CLIENT}
+      context: .
+      dockerfile: Dockerfile-client
     ports:
         - "80:80"
         - "443:443"
-
-    ## -- FUTURE USE -- database config (mysql) for client
-    #depends_on:
-    #  - database
-    #volumes:
-    #  - ./www:/var/www/html:Z
-  
-  ## build edumeet-translator instance
-  #edumeet-translator:
-  #  env_file: .env
-  #  container_name: edumeet-translator
-  #  image: ${REPOSITORY}/edumeet-translator:${TAG}
-  #  ## TODO
-  #  #volumes:
-  #  #  - ${PWD}/configs/app:/usr/share/nginx/html/config
-  #  build:
-  #    args:
-  #     - BASEDIR=${BASEDIR}
-  #      - GIT_SERVER=${GIT_SERVER}
-  #      - REPOSITORY=${REPOSITORY}
-  #      - EDUMEETCLIENT=${EDUMEETCLIENT}
-  #      - BRANCHCLIENT=${BRANCHCLIENT}
-  #    context: .
-  #    dockerfile: Dockerfile-translator
-  #  ports:
-  #      - "8080:80"
-  #  ## -- FUTURE USE -- database config (mysql) for translator
-  #  #depends_on:
-  #  #  - database
-  #  #volumes:
-  #  #  - ./www:/var/www/html:Z
-
-  ##
-  ## -- Following lines are for FUTURE USE --
-  ##
-  # edumeet-client-b:
-  #  env_file: .env
-  #  container_name: edumeet-client-b
-  #  volumes:
-  #    - ${PWD}/configs/app:/usr/share/nginx/html/config
-  #  build:
-  #    context: .
-  #    dockerfile: Dockerfile-client
-  #  network_mode: "host"
-
-  ##add pgsql database
-  #db:
-  #  image: postgres:14.1-alpine
-  #  restart: always
-  #  environment:
-  #    - POSTGRES_USER=postgres
-  #    - POSTGRES_PASSWORD=postgres
-  #  ports:
-  #    - '5432:5432'
-  #  volumes: 
-  #    - db:/var/lib/postgresql/data
-
-  ## add mysql database
-  #database:
-  #  container_name: database
-  #  image: mysql
-  #  restart: always
-  #  environment:
-  #    MYSQL_ROOT_PASSWORD: root
-  #    MYSQL_DATABASE: edumeet
-  #    MYSQL_USER: edumeet
-  #    MYSQL_PASSWORD: password
-  #  #ports:
-  #  #  - 9906:3306
-  #  volumes:
-  #    - dbdata:/var/lib/mysql
-
-  # add mysql database manadgement
-  #phpmyadmin:
-  #  container_name: phpmyadmin
-  #  image: phpmyadmin/phpmyadmin
-  #  ports:
-  #    - 8080:80
-  #  restart: always
-  #  environment:
-  #    PMA_HOST: database
-  #  depends_on:
-  #    - database
-
-  # proxy with haproxy
-  #haproxy:
-  #    image: haproxy:2.2
-  #    volumes:
-  #        - ./haproxy:/haproxy-override
-  #        - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-  #    links:
-  #        - edumeet-client-a
-  #        - edumeet-client-b
-  #    ports:
-  #        - "80:80" # proxy
-  #        - "70:70" # stats
-  
-  ## volumes for database(s)
-  #volumes:
-  #  db:
-  #    driver: local
-  #  dbdata:
+        ## build edumeet-client instance + web proxy
+  edumeet-media-node:
+    env_file: .env
+    volumes:
+      - ${PWD}/configs/app:/usr/share/nginx/html/config
+    container_name: edumeet-media-node
+    #image: ${REPOSITORY}/${EDUMEET_CLIENT}:${TAG}
+    # Comment out whole build-section to build edumeet-room-server and not pulling from docher-hub
+    build:
+      args:
+        - GIT_SERVER=${GIT_SERVER}
+        - REPOSITORY=${REPOSITORY}
+        - EDUMEET_MN_SERVER=${EDUMEET_MN_SERVER}
+        - BRANCH_MN_SERVER=${BRANCH_MN_SERVER}
+      context: .
+      dockerfile: Dockerfile-medianode
+    ports:
+        - "3000:3000"
+  # build edumeet-translator instance
+  edumeet-translator:
+    env_file: .env
+    container_name: edumeet-translator
+    #image: ${REPOSITORY}/edumeet-translator:${TAG}
+    ## TODO
+    build:
+      args:
+        - BASEDIR=${BASEDIR}
+        - GIT_SERVER=${GIT_SERVER}
+        - REPOSITORY=${REPOSITORY}
+        - EDUMEET_CLIENT=${EDUMEET_CLIENT}
+        - BRANCH_CLIENT=${BRANCH_CLIENT}
+      context: .
+      dockerfile: Dockerfile-translator
+    ports:
+        - "8080:80"
