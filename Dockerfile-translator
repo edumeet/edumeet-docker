@@ -2,7 +2,7 @@
 #build edumeet edumeet-translator
 FROM php:7.4-apache
 
-RUN apt-get update && apt-get -yq install git
+RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git;apt-get clean
 
 WORKDIR /var/www/
 
