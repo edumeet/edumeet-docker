@@ -5,8 +5,8 @@ services:
     env_file: .env
     restart: unless-stopped
     volumes:
-      - ${PWD}/configs/server:/app/${EDUMEET_SERVER}/config
-      - ${PWD}/certs:/app/${EDUMEET_SERVER}/certs
+      - ${PWD}/configs/server:/usr/src/app/dist/config
+      - ${PWD}/certs:/usr/src/app/certs
     container_name: edumeet-room-server
     #image: ${REPOSITORY}/${EDUMEET_SERVER}-room-server:${TAG}
     # Comment out whole build-section to build edumeet-room-server and not pulling from docher-hub
@@ -63,19 +63,19 @@ services:
     ports:
         - "3000:3000"
   # build edumeet-translator instance
-  edumeet-translator:
-    env_file: .env
-    container_name: edumeet-translator
-    #image: ${REPOSITORY}/edumeet-translator:${TAG}
-    ## TODO
-    build:
-      args:
-        - BASEDIR=${BASEDIR}
-        - GIT_SERVER=${GIT_SERVER}
-        - REPOSITORY=${REPOSITORY}
-        - EDUMEET_CLIENT=${EDUMEET_CLIENT}
-        - BRANCH_CLIENT=${BRANCH_CLIENT}
-      context: .
-      dockerfile: Dockerfile-translator
-    ports:
-        - "8080:80"
+ # edumeet-translator:
+ #   env_file: .env
+ #   container_name: edumeet-translator
+ #   #image: ${REPOSITORY}/edumeet-translator:${TAG}
+ #   ## TODO
+ #   build:
+ #     args:
+ #       - BASEDIR=${BASEDIR}
+ #       - GIT_SERVER=${GIT_SERVER}
+ #       - REPOSITORY=${REPOSITORY}
+ #       - EDUMEET_CLIENT=${EDUMEET_CLIENT}
+ #       - BRANCH_CLIENT=${BRANCH_CLIENT}
+ #     context: .
+ #     dockerfile: Dockerfile-translator
+ #   ports:
+ #       - "8080:80"
