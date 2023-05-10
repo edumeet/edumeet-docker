@@ -63,12 +63,20 @@ NOTE! Certficates are selfsigned, for a production service you need to set YOUR 
 * required  edumeet-client
 * optional  edumeet-translator
 
+## download images :
+```
+docker pull edumeet/edumeet-media-node:4.x-20230510-nightly
+docker pull edumeet/edumeet-room-server:4.x-20230510-nightly
+docker pull edumeet/edumeet-client:4.x-20230510-nightly
+```
+
 ## Edit nginx config and server config.json with the ip of the server
 # nginx example
     proxy_pass          http://<ip>:<port of the server>;
     -> 
     proxy_pass          http://172.24.208.161:8000;
 # server example
+```
 {
 	"listenPort": "8000",
 	"listenHost": "172.24.208.161",
@@ -80,6 +88,7 @@ NOTE! Certficates are selfsigned, for a production service you need to set YOUR 
 		"longitude": 10.394964
 	}]
 }
+```
 ## Run
 
 Run with `docker-compose` 
