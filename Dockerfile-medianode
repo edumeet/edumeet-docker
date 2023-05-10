@@ -4,7 +4,7 @@ ARG EDUMEET_MN_SERVER
 ARG GIT_SERVER
 ARG REPOSITORY
 ARG BRANCH_MN_SERVER
-
+ARG BRANCH_MN_SERVER_SECRET
 ARG listenPort=3000
 ENV LISTEN_PORT=$listenPort
 
@@ -35,7 +35,7 @@ EXPOSE ${LISTEN_PORT}
 EXPOSE ${RTC_MIN_PORT}-${RTC_MAX_PORT}/udp
 EXPOSE ${RTC_MIN_PORT}-${RTC_MAX_PORT}/tcp
 
-ENTRYPOINT DEBUG=edumeet-media-node:* yarn run prodstart --listenPort ${LISTEN_PORT} --rtcMinPort ${RTC_MIN_PORT} --rtcMaxPort ${RTC_MAX_PORT} --ip "0.0.0.0" --secret "secret-shared-with-media-node" $0 $@
+ENTRYPOINT DEBUG=edumeet-media-node:* yarn run prodstart --listenPort ${LISTEN_PORT} --rtcMinPort ${RTC_MIN_PORT} --rtcMaxPort ${RTC_MAX_PORT} --ip "0.0.0.0" --secret ${BRANCH_MN_SERVER_SECRET} $0 $@
 
 
 

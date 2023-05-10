@@ -63,6 +63,23 @@ NOTE! Certficates are selfsigned, for a production service you need to set YOUR 
 * required  edumeet-client
 * optional  edumeet-translator
 
+## Edit nginx config and server config.json with the ip of the server
+# nginx example
+    proxy_pass          http://<ip>:<port of the server>;
+    -> 
+    proxy_pass          http://172.24.208.161:8000;
+# server example
+{
+	"listenPort": "8000",
+	"listenHost": "172.24.208.161",
+	"mediaNodes": [{
+		"hostname": "localhost",
+		"port": 3000,
+		"secret": "secret-shared-with-media-node",
+		"latitude": 63.430481,
+		"longitude": 10.394964
+	}]
+}
 ## Run
 
 Run with `docker-compose` 

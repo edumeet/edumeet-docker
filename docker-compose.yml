@@ -16,8 +16,10 @@ services:
         - REPOSITORY=${REPOSITORY}
         - EDUMEET_SERVER=${EDUMEET_SERVER}
         - BRANCH_SERVER=${BRANCH_SERVER}
+        - BRANCH_MN_SERVER_SECRET=${BRANCH_MN_SERVER_SECRET}
       context: .
       dockerfile: Dockerfile-server
+    image: ${REPOSITORY}/${EDUMEET_SERVER}:${TAG}
     ## use host mode for the media ports
     network_mode: "host"
     stdin_open: true
@@ -41,6 +43,7 @@ services:
         - BRANCH_CLIENT=${BRANCH_CLIENT}
       context: .
       dockerfile: Dockerfile-client
+    image: ${REPOSITORY}/${EDUMEET_CLIENT}:${TAG}
     ports:
         - "80:80"
         - "443:443"
@@ -60,6 +63,7 @@ services:
         - BRANCH_MN_SERVER=${BRANCH_MN_SERVER}
       context: .
       dockerfile: Dockerfile-medianode
+    image: ${REPOSITORY}/${EDUMEET_MN_SERVER}:${TAG}
     ports:
         - "3000:3000"
   # build edumeet-translator instance

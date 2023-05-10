@@ -1,10 +1,6 @@
 {
-	"listenPort": "8443",
-	"listenHost": "0.0.0.0",
-	"tls": {
-		"cert": "./certs/edumeet-demo-cert.pem",
-		"key": "./certs/edumeet-demo-key.pem"
-	},
+	"listenPort": "8000",
+	"listenHost": "edumeet.example.com",
 	"mediaNodes": [{
 		"hostname": "localhost",
 		"port": 3000,
