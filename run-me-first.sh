@@ -60,7 +60,7 @@ proxy_pass          http://edumeet.example.com:8000;
 -> 
 ${RED}proxy_pass          http://$(hostname -I | awk '{print $1}'):<port>;
 ${NOCOLOR}
-In configs/server change ip and port:
+In configs/server change IP and port:
 ${RED}\"listenPort\": \"<port>\",
 \"listenHost\": \"$(hostname -I | awk '{print $1}')\",
 ${NOCOLOR}
