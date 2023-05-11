@@ -34,16 +34,23 @@ do
 done
 
 # Update TAG version
+# VERSION=$(curl -s "https://raw.githubusercontent.com/edumeet/${EDUMEET_SERVER}/${BRANCH_SERVER}/package.json" | grep version | sed -e 's/^.*:\ \"\(.*\)\",/\1/')
 echo -e "
 
 ${GREEN}Step 2.${NOCOLOR}
 Updating TAG version in .env file extracted from edumeet version"
-VERSION=$(curl -s "https://raw.githubusercontent.com/edumeet/${EDUMEET_SERVER}/${BRANCH_SERVER}/package.json" | grep version | sed -e 's/^.*:\ \"\(.*\)\",/\1/')
+VERSION=4.x-$(date '+%Y%m%d')-nightly
 sed -i "s/^.*TAG.*$/TAG=${VERSION}/" .env
-echo -e "Current tag: ${RED}${VERSION}${GREEN}"
+echo -e "Current tag: ${RED}${VERSION}${NOCOLOR}
+
+To get latest images run the following or build it:
+${GREEN}
+docker pull edumeet/${EDUMEET_MN_SERVER}:${VERSION}
+docker pull edumeet/${EDUMEET_CLIENT}:${VERSION}
+docker pull edumeet/${EDUMEET_SERVER}:${VERSION}
+"
 
 echo -e "
 DONE!
-
 ${RED}Please see README file for further configuration instructions.${NOCOLOR}
 "
