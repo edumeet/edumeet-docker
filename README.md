@@ -29,6 +29,10 @@ For further (more generic) information take a look at [eduMEET repository](https
 git clone https://github.com/edumeet/edumeet-docker.git
 cd edumeet-docker
 ```
+# Install jq
+```bash
+sudo apt install jq
+```
 ## `run-me-first.sh` - update and set configuration files
 Step 1: Set your desired release branch in .env file. Branch names (for example 4.0) should match for client and server side.
 
