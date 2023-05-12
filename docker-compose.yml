@@ -16,7 +16,6 @@ services:
         - REPOSITORY=${REPOSITORY}
         - EDUMEET_SERVER=${EDUMEET_SERVER}
         - BRANCH_SERVER=${BRANCH_SERVER}
-        - BRANCH_MN_SERVER_SECRET=${BRANCH_MN_SERVER_SECRET}
       context: .
       dockerfile: Dockerfile-server
     image: ${REPOSITORY}/${EDUMEET_SERVER}:${TAG}
@@ -66,20 +65,22 @@ services:
     image: ${REPOSITORY}/${EDUMEET_MN_SERVER}:${TAG}
     ports:
         - "3000:3000"
+        - "40000-40249:40000-40249"
   # build edumeet-translator instance
- # edumeet-translator:
- #   env_file: .env
- #   container_name: edumeet-translator
- #   #image: ${REPOSITORY}/edumeet-translator:${TAG}
- #   ## TODO
- #   build:
- #     args:
- #       - BASEDIR=${BASEDIR}
- #       - GIT_SERVER=${GIT_SERVER}
- #       - REPOSITORY=${REPOSITORY}
- #       - EDUMEET_CLIENT=${EDUMEET_CLIENT}
- #       - BRANCH_CLIENT=${BRANCH_CLIENT}
- #     context: .
- #     dockerfile: Dockerfile-translator
- #   ports:
- #       - "8080:80"
+  # edumeet-translator:
+  #   env_file: .env
+  #   container_name: edumeet-translator
+  #   #image: ${REPOSITORY}/edumeet-translator:${TAG}
+  #   ## TODO
+  #   build:
+  #     args:
+  #       - BASEDIR=${BASEDIR}
+  #       - GIT_SERVER=${GIT_SERVER}
+  #       - REPOSITORY=${REPOSITORY}
+  #       - EDUMEET_CLIENT=${EDUMEET_CLIENT}
+  #       - BRANCH_CLIENT=${BRANCH_CLIENT}
+  #     context: .
+  #     dockerfile: Dockerfile-translator
+  #   ports:
+  #       - "8080:80"
+ 
