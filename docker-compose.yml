@@ -66,6 +66,38 @@ services:
     ports:
         - "3000:3000"
         - "40000-40249:40000-40249"
+  edumeet-db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=edumeet
+      - POSTGRES_PASSWORD=edumeet
+    ports:
+      - '5432:5432'
+    volumes: 
+      - edumeet-db:/var/lib/postgresql/data
+
+  edumeet-management-server:
+    env_file: .env
+    container_name: edumeet-management-server
+    volumes:
+      - ${PWD}/configs/mgmt:/usr/src/app/config
+    #image: ${REPOSITORY}/${EDUMEET_CLIENT}:${TAG}
+    # Comment out whole build-section to build edumeet-room-server and not pulling from docher-hub
+    build:
+      args:
+        - GIT_SERVER=${GIT_SERVER}
+        - REPOSITORY=${REPOSITORY}
+        - EDUMEET_MGMT_SERVER=${EDUMEET_MGMT_SERVER}
+        - BRANCH_MGMT_SERVER=${BRANCH_MGMT_SERVER}
+      context: .
+      dockerfile: Dockerfile-management-server
+    image: ${REPOSITORY}/${EDUMEET_MGMT_SERVER}:${TAG}
+    ports:
+        - "3030:3030"
+    depends_on: 
+      - edumeet-db
+  
   # build edumeet-translator instance
   # edumeet-translator:
   #   env_file: .env
@@ -84,3 +116,7 @@ services:
   #   ports:
   #       - "8080:80"
  
+volumes:
+  edumeet-db:
+    driver: local
+  

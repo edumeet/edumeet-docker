@@ -1,0 +1,37 @@
+FROM node:18-bullseye-slim
+
+ARG EDUMEET_MGMT_SERVER
+ARG GIT_SERVER
+ARG REPOSITORY
+ARG BRANCH_MGMT_SERVER
+
+WORKDIR /app
+
+#install server build dependency
+RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash jq build-essential python python3-pip openssl pkg-config;apt-get clean
+
+#checkout code
+RUN git clone --single-branch --branch ${BRANCH_MGMT_SERVER} ${GIT_SERVER}/${REPOSITORY}/${EDUMEET_MGMT_SERVER}.git
+
+WORKDIR /app/${EDUMEET_MGMT_SERVER}
+
+RUN mv  /app/${EDUMEET_MGMT_SERVER} /usr/src/app/
+
+WORKDIR /usr/src/app
+
+RUN npm i
+RUN npm run compile # Compile TypeScript source
+COPY configs/mgmt/default.json /usr/src/app/config
+RUN cat config/default.json 
+# wont work here because the db is not yet running 
+#RUN npm run migrate # Run migrations to set up the database
+ARG MM_DEBUG
+ENTRYPOINT npm run migrate && DEBUG=${MM_DEBUG} yarn dev $0 $@
+
+
+
+
+
+
+
+
