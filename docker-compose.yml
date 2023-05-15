@@ -68,6 +68,7 @@ services:
         - "40000-40249:40000-40249"
   edumeet-db:
     image: postgres:14.1-alpine
+    container_name: edumeet-db
     restart: always
     environment:
       - POSTGRES_USER=edumeet
@@ -97,7 +98,17 @@ services:
         - "3030:3030"
     depends_on: 
       - edumeet-db
-  
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: edumeet@edu.meet
+      PGADMIN_DEFAULT_PASSWORD: edumeet
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
   # build edumeet-translator instance
   # edumeet-translator:
   #   env_file: .env
@@ -119,4 +130,5 @@ services:
 volumes:
   edumeet-db:
     driver: local
-  
+  pgadmin-data:
+    driver: local
