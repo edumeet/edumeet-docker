@@ -109,6 +109,25 @@ services:
       PGADMIN_DEFAULT_PASSWORD: edumeet
     volumes:
       - pgadmin-data:/var/lib/pgadmin
+
+  edumeet-management-client:
+    env_file: .env
+    container_name: edumeet-management-client
+    volumes:
+      - ${PWD}/configs/mgmt-client:/usr/src/app/public/config
+    #image: ${REPOSITORY}/${EDUMEET_CLIENT}:${TAG}
+    # Comment out whole build-section to build edumeet-room-server and not pulling from docher-hub
+    build:
+      args:
+        - GIT_SERVER=${GIT_SERVER}
+        - REPOSITORY=${REPOSITORY}
+        - EDUMEET_MGMT_CLIENT=${EDUMEET_MGMT_CLIENT}
+        - BRANCH_MGMT_CLIENT=${BRANCH_MGMT_CLIENT}
+      context: .
+      dockerfile: Dockerfile-management-client
+    image: ${REPOSITORY}/${EDUMEET_MGMT_CLIENT}:${TAG}
+    ports:
+        - "3001:3000"
   # build edumeet-translator instance
   # edumeet-translator:
   #   env_file: .env

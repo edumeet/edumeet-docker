@@ -3,7 +3,10 @@
 	"port": 3030,
 	"public": "./public/",
 	"origins": [
-		"http://localhost:3030"
+		"http://localhost",
+		"http://localhost:3001",
+		"http://edumeet.example.com:3001",
+		"http://edumeet.example.com:3030"
 	],
 	"paginate": {
 		"default": 10,

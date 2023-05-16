@@ -25,8 +25,8 @@ COPY configs/mgmt/default.json /usr/src/app/config
 RUN cat config/default.json 
 # wont work here because the db is not yet running 
 #RUN npm run migrate # Run migrations to set up the database
-ARG MM_DEBUG
-ENTRYPOINT npm run migrate && DEBUG=${MM_DEBUG} yarn dev $0 $@
+ARG MGMT_DEBUG
+ENTRYPOINT npm run migrate && DEBUG=${MGMT_DEBUG} yarn dev $0 $@
 
 
 
