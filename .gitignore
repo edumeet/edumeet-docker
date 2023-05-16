@@ -1,11 +1,15 @@
 /certs/*
 /configs/app/*
 /configs/server/*
+/configs/mgmt/*
+/configs/mgmt-client/*
 /configs/nginx/*
 /configs/redis/*
 !/certs/*-demo-*
 !/configs/app/*.example.*
 !/configs/server/*.example.*
+!/configs/mgmt/*.example.*
+!/configs/mgmt-client/*.example.*
 !/configs/nginx/*.example.*
 !/configs/redis/*.example.*
 /images
