@@ -17,7 +17,7 @@ echo -e "Updating configuration example files from upstream ${EDUMEET_CLIENT}/${
 # edumeet-room-server
 curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEET_SERVER}/${BRANCH_SERVER}/config/config.example.json" -o "configs/server/config.example.json"
 
-for confDir in {app,nginx,server}
+for confDir in {app,nginx,server,mgmt,mgmt-client}
 do
   for exConfFile in $(echo ./configs/${confDir}/*example*)
     do
