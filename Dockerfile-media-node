@@ -14,6 +14,9 @@ ENV RTC_MIN_PORT=$rtcMinPort
 ARG rtcMaxPort=40249
 ENV RTC_MAX_PORT=$rtcMaxPort
 
+ARG numberOfWorkers=1
+ENV MN_NUMBER_OF_WORKERS=numberOfWorkers
+
 WORKDIR /app
 
 #install server build dependency
@@ -36,9 +39,7 @@ EXPOSE ${RTC_MIN_PORT}-${RTC_MAX_PORT}/udp
 EXPOSE ${RTC_MIN_PORT}-${RTC_MAX_PORT}/tcp
 
 ARG MN_DEBUG
-ENTRYPOINT DEBUG=${MN_DEBUG} yarn run prodstart --listenPort ${LISTEN_PORT} --rtcMinPort ${RTC_MIN_PORT} --rtcMaxPort ${RTC_MAX_PORT} --ip "0.0.0.0" --secret ${BRANCH_MN_SERVER_SECRET} $0 $@
-
-
+ENTRYPOINT DEBUG=${MN_DEBUG} yarn run prodstart --listenPort ${LISTEN_PORT} --rtcMinPort ${RTC_MIN_PORT} --rtcMaxPort ${RTC_MAX_PORT} --ip "0.0.0.0" --numberOfWorkers ${MN_NUMBER_OF_WORKERS} --secret ${BRANCH_MN_SERVER_SECRET} $0 $@
 
 
 
