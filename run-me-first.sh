@@ -37,14 +37,6 @@ done
 # Update TAG version
 # VERSION=$(curl -s "https://raw.githubusercontent.com/edumeet/${EDUMEET_SERVER}/${BRANCH_SERVER}/package.json" | grep version | sed -e 's/^.*:\ \"\(.*\)\",/\1/')
 
-#update number of workers
-# get cores
-#NUMBER_OF_WORKERS=$(grep ^cpu\\scores /proc/cpuinfo | uniq |  awk '{printf $4}')
-# get threads
-NUMBER_OF_WORKERS=$(grep siblings /proc/cpuinfo | uniq |  awk '{printf $3}')
-
-sed -i "s/^.*MN_NUMBER_OF_WORKERS.*$/MN_NUMBER_OF_WORKERS=${NUMBER_OF_WORKERS}/" .env
-
 
 echo -e "
 
