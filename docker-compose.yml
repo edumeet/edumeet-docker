@@ -17,7 +17,7 @@ services:
         - EDUMEET_SERVER=${EDUMEET_SERVER}
         - BRANCH_SERVER=${BRANCH_SERVER}
       context: .
-      dockerfile: Dockerfile-server
+      dockerfile: Dockerfile-room-server
     image: ${REPOSITORY}/${EDUMEET_SERVER}:${TAG}
     ## use host mode for the media ports
     network_mode: "host"
