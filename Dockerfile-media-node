@@ -38,10 +38,8 @@ EXPOSE ${LISTEN_PORT}
 EXPOSE ${RTC_MIN_PORT}-${RTC_MAX_PORT}/udp
 EXPOSE ${RTC_MIN_PORT}-${RTC_MAX_PORT}/tcp
 
-ARG MM_DEBUG
-ENTRYPOINT DEBUG=${MM_DEBUG} yarn run prodstart --listenPort ${LISTEN_PORT} --rtcMinPort ${RTC_MIN_PORT} --rtcMaxPort ${RTC_MAX_PORT} --ip "0.0.0.0" --numberOfWorkers ${MN_NUMBER_OF_WORKERS} --secret ${BRANCH_MN_SERVER_SECRET} $0 $@
-
-
+ARG MN_DEBUG
+ENTRYPOINT DEBUG=${MN_DEBUG} yarn run prodstart --listenPort ${LISTEN_PORT} --rtcMinPort ${RTC_MIN_PORT} --rtcMaxPort ${RTC_MAX_PORT} --ip "0.0.0.0" --numberOfWorkers ${MN_NUMBER_OF_WORKERS} --secret ${BRANCH_MN_SERVER_SECRET} $0 $@
 
 
 
