@@ -24,6 +24,9 @@ RUN git clone --single-branch --branch ${BRANCH_MN_SERVER} ${GIT_SERVER}/${REPOS
 
 WORKDIR /app/${EDUMEET_MN_SERVER}
 
+#remove unused files from image
+RUN rm -r .git .gitignore .github __tests__ __mocks__
+
 RUN yarn install --frozen-lockfile
 RUN yarn run build
 
