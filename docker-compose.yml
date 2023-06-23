@@ -78,26 +78,27 @@ services:
     volumes: 
       - edumeet-db:/var/lib/postgresql/data
 
-  edumeet-management-server:
-    env_file: .env
-    container_name: edumeet-management-server
-    volumes:
-      - ${PWD}/configs/mgmt:/usr/src/app/config
-    #image: ${REPOSITORY}/${EDUMEET_CLIENT}:${TAG}
-    # Comment out whole build-section to build edumeet-room-server and not pulling from docher-hub
-    build:
-      args:
-        - GIT_SERVER=${GIT_SERVER}
-        - REPOSITORY=${REPOSITORY}
-        - EDUMEET_MGMT_SERVER=${EDUMEET_MGMT_SERVER}
-        - BRANCH_MGMT_SERVER=${BRANCH_MGMT_SERVER}
-      context: .
-      dockerfile: Dockerfile-management-server
-    image: ${REPOSITORY}/${EDUMEET_MGMT_SERVER}:${TAG}
-    ports:
-        - "3030:3030"
-    depends_on: 
-      - edumeet-db
+  #edumeet-management-server:
+  #  env_file: .env
+  #  container_name: edumeet-management-server
+  #  volumes:
+  #    - ${PWD}/configs/mgmt:/usr/src/app/config
+  #  #image: ${REPOSITORY}/${EDUMEET_CLIENT}:${TAG}
+  #  # Comment out whole build-section to build edumeet-room-server and not pulling from docher-hub
+  #  build:
+  #    args:
+  #      - GIT_SERVER=${GIT_SERVER}
+  #      - REPOSITORY=${REPOSITORY}
+  #      - EDUMEET_MGMT_SERVER=${EDUMEET_MGMT_SERVER}
+  #      - BRANCH_MGMT_SERVER=${BRANCH_MGMT_SERVER}
+  #    context: .
+  #    dockerfile: Dockerfile-management-server
+  #  image: ${REPOSITORY}/${EDUMEET_MGMT_SERVER}:${TAG}
+  #  ports:
+  #      - "3030:3030"
+  #  depends_on: 
+  #    - edumeet-db
+
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin4_container
@@ -128,6 +129,28 @@ services:
     image: ${REPOSITORY}/${EDUMEET_MGMT_CLIENT}:${TAG}
     ports:
         - "3001:3000"
+
+
+  keycloak:
+    container_name: edumeet_keycloak
+    volumes:
+      - ${PWD}/certs:/opt/keycloak/conf
+      - ${PWD}/configs/kc:/opt/keycloak/data/import
+    environment:
+      KEYCLOAK_ADMIN: admin2 
+      KEYCLOAK_ADMIN_PASSWORD: adminpwgenedumeet 
+      KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/conf/edumeet-demo-cert.pem 
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/conf/edumeet-demo-key.pem
+    image: quay.io/keycloak/keycloak:latest
+    # /opt/keycloak/bin/kc.sh export --file dev --realm dev      
+    # /opt/keycloak/bin/kc.sh import --file /opt/keycloak/data/import/dev.json --override true
+    command: start-dev --import-realm
+
+    ports:
+      # - "28443:8080"
+      - "28080:8443"
+    restart: unless-stopped
+    
   # build edumeet-translator instance
   # edumeet-translator:
   #   env_file: .env

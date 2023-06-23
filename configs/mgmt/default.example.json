@@ -1,12 +1,9 @@
 {
-	"host": "localhost",
+	"host": "edumeet.example.com",
 	"port": 3030,
 	"public": "./public/",
 	"origins": [
-		"http://localhost",
-		"http://localhost:3001",
-		"http://edumeet.example.com:3001",
-		"http://edumeet.example.com:3030"
+		"*"
 	],
 	"paginate": {
 		"default": 10,
@@ -29,7 +26,7 @@
 			"header": {
 				"typ": "access"
 			},
-			"audience": "http://localhost:3030",
+			"audience": "https://edumeet.example.com/mgmt",
 			"algorithm": "RS256",
 			"expiresIn": "1d"
 		},
@@ -38,9 +35,10 @@
 			"passwordField": "password"
 		},
 		"oauth": {
-			"auth0": {
-				"key": "<Client ID>",
-				"secret": "<Client secret>"
+			"tenant": {
+				"oauth": 2,
+				"dynamic": [ "key", "secret", "authorize_url", "access_url", "profile_url", "scope_delimiter", "scope" ],
+				"redirect_uri": "https://edumeet.example.com/mgmt/oauth/tenant/callback"
 			}
 		}
 	}

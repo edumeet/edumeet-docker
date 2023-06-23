@@ -13,3 +13,4 @@
 !/configs/nginx/*.example.*
 !/configs/redis/*.example.*
 /images
+.env
