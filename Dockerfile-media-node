@@ -1,0 +1,48 @@
+FROM node:18-bullseye-slim
+
+ARG EDUMEET_MN_SERVER
+ARG GIT_SERVER
+ARG REPOSITORY
+ARG BRANCH_MN_SERVER
+ARG BRANCH_MN_SERVER_SECRET
+ARG listenPort=3000
+ENV LISTEN_PORT=$listenPort
+
+ARG rtcMinPort=40000
+ENV RTC_MIN_PORT=$rtcMinPort
+
+ARG rtcMaxPort=40249
+ENV RTC_MAX_PORT=$rtcMaxPort
+
+WORKDIR /app
+
+#install server build dependency
+RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash jq build-essential python python3-pip openssl pkg-config;apt-get clean
+
+#checkout code
+RUN git clone --single-branch --branch ${BRANCH_MN_SERVER} ${GIT_SERVER}/${REPOSITORY}/${EDUMEET_MN_SERVER}.git
+
+WORKDIR /app/${EDUMEET_MN_SERVER}
+
+#remove unused files from image
+RUN rm -r .git .gitignore .github __tests__ __mocks__
+
+RUN yarn install --frozen-lockfile
+RUN yarn run build
+
+RUN mv  /app/${EDUMEET_MN_SERVER} /usr/src/app/
+
+WORKDIR /usr/src/app
+
+EXPOSE ${LISTEN_PORT}
+EXPOSE ${RTC_MIN_PORT}-${RTC_MAX_PORT}/udp
+EXPOSE ${RTC_MIN_PORT}-${RTC_MAX_PORT}/tcp
+
+ARG MN_DEBUG
+ENTRYPOINT DEBUG=${MN_DEBUG} yarn run prodstart --listenPort ${LISTEN_PORT} --rtcMinPort ${RTC_MIN_PORT} --rtcMaxPort ${RTC_MAX_PORT} --ip "0.0.0.0" --secret ${BRANCH_MN_SERVER_SECRET} $0 $@
+
+
+
+
+
+
