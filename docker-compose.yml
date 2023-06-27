@@ -116,8 +116,6 @@ services:
       context: .
       dockerfile: Dockerfiles/Dockerfile-management-server
     image: '${REPOSITORY}/${EDUMEET_MGMT_SERVER}:${TAG}'
-    #links:
-    # - "keycloak:edumeet.sth.sze.hu"
     networks:
       - inter
       - back
