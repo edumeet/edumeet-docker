@@ -19,7 +19,7 @@ RUN yarn add eslint-config-react-app@v6 -D
 RUN yarn run build
 
 # create edumeet-client image
-FROM nginx
+FROM nginx:stable-alpine
 WORKDIR /usr/share/nginx/html/
 ARG EDUMEET_CLIENT
 COPY --from=edumeet-builder /app/${EDUMEET_CLIENT}/build/   /usr/share/nginx/html/

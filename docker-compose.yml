@@ -1,123 +1,170 @@
-version: "3.3"
+version: '3.3'
+networks:
+  front:
+    name: front
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: dockerfront
+  inter:
+    name: inter
+    driver: bridge
+    #internal: true
+    driver_opts:
+      com.docker.network.bridge.name: dockerinter
 services:
-  ## build edumeet-room-server
   edumeet-room-server:
     env_file: .env
     restart: unless-stopped
     volumes:
-      - ${PWD}/configs/server:/usr/src/app/dist/config
-      - ${PWD}/certs:/usr/src/app/certs
+      - '${PWD}/configs/server:/usr/src/app/dist/config'
+      # If running separately and you need certs
+      # - ${PWD}/certs:/usr/src/app/certs
     container_name: edumeet-room-server
-    #image: ${REPOSITORY}/${EDUMEET_SERVER}-room-server:${TAG}
     # Comment out whole build-section to build edumeet-room-server and not pulling from docher-hub
     build:
       args:
-        - GIT_SERVER=${GIT_SERVER}
-        - REPOSITORY=${REPOSITORY}
-        - EDUMEET_SERVER=${EDUMEET_SERVER}
-        - BRANCH_SERVER=${BRANCH_SERVER}
+        - 'GIT_SERVER=${GIT_SERVER}'
+        - 'REPOSITORY=${REPOSITORY}'
+        - 'EDUMEET_SERVER=${EDUMEET_SERVER}'
+        - 'BRANCH_SERVER=${BRANCH_SERVER}'
       context: .
-      dockerfile: Dockerfile-room-server
-    image: ${REPOSITORY}/${EDUMEET_SERVER}:${TAG}
-    ## use host mode for the media ports
-    network_mode: "host"
-    stdin_open: true
-    tty: true
-
-  ## build edumeet-client instance + web proxy
+      dockerfile: Dockerfiles/Dockerfile-room-server
+    image: '${REPOSITORY}/${EDUMEET_SERVER}:${TAG}'
+    networks:
+      - inter
+    ports:
+      - '8000:8000'
   edumeet-client:
     env_file: .env
     volumes:
-      - ${PWD}/configs/app:/usr/share/nginx/html/config
-      - ${PWD}/configs/nginx:/etc/nginx/conf.d
-      - ${PWD}/certs:/etc/edumeet/certs
+      - '${PWD}/configs/app:/usr/share/nginx/html/config'
+      - '${PWD}/configs/nginx:/etc/nginx/conf.d'
+      - '${PWD}/certs:/etc/edumeet/certs'
+    links:
+     - "keycloak:kc"
+     - "edumeet-room-server:io"
+     - "edumeet-management-server:mgmt"
+     - "pgadmin:pgadmin"
     container_name: edumeet-client
-    #image: ${REPOSITORY}/${EDUMEET_CLIENT}:${TAG}
-    # Comment out whole build-section to build edumeet-room-server and not pulling from docher-hub
     build:
       args:
-        - GIT_SERVER=${GIT_SERVER}
-        - REPOSITORY=${REPOSITORY}
-        - EDUMEET_CLIENT=${EDUMEET_CLIENT}
-        - BRANCH_CLIENT=${BRANCH_CLIENT}
+        - 'GIT_SERVER=${GIT_SERVER}'
+        - 'REPOSITORY=${REPOSITORY}'
+        - 'EDUMEET_CLIENT=${EDUMEET_CLIENT}'
+        - 'BRANCH_CLIENT=${BRANCH_CLIENT}'
       context: .
-      dockerfile: Dockerfile-client
-    image: ${REPOSITORY}/${EDUMEET_CLIENT}:${TAG}
+      dockerfile: Dockerfiles/Dockerfile-client
+    image: '${REPOSITORY}/${EDUMEET_CLIENT}:${TAG}'
+    networks:
+      - front
+      - inter
     ports:
-        - "80:80"
-        - "443:443"
-        ## build edumeet-client instance + web proxy
+      - '80:80'
+      - '443:443'
   edumeet-media-node:
     env_file: .env
     volumes:
-      - ${PWD}/configs/app:/usr/share/nginx/html/config
+      - '${PWD}/configs/app:/usr/share/nginx/html/config'
     container_name: edumeet-media-node
-    #image: ${REPOSITORY}/${EDUMEET_CLIENT}:${TAG}
-    # Comment out whole build-section to build edumeet-room-server and not pulling from docher-hub
     build:
       args:
-        - GIT_SERVER=${GIT_SERVER}
-        - REPOSITORY=${REPOSITORY}
-        - EDUMEET_MN_SERVER=${EDUMEET_MN_SERVER}
-        - BRANCH_MN_SERVER=${BRANCH_MN_SERVER}
+        - 'GIT_SERVER=${GIT_SERVER}'
+        - 'REPOSITORY=${REPOSITORY}'
+        - 'EDUMEET_MN_SERVER=${EDUMEET_MN_SERVER}'
+        - 'BRANCH_MN_SERVER=${BRANCH_MN_SERVER}'
       context: .
-      dockerfile: Dockerfile-media-node
-    image: ${REPOSITORY}/${EDUMEET_MN_SERVER}:${TAG}
+      dockerfile: Dockerfiles/Dockerfile-media-node
+    image: '${REPOSITORY}/${EDUMEET_MN_SERVER}:${TAG}'
+    networks:
+      - front
+      - inter
     ports:
-        - "3000:3000"
-        - "40000-40249:40000-40249"
+      - '3000:3000'
+      - '40000-40249:40000-40249'
   edumeet-db:
-    image: postgres:14.1-alpine
+    image: 'postgres:14.1-alpine'
     container_name: edumeet-db
     restart: always
     environment:
       - POSTGRES_USER=edumeet
       - POSTGRES_PASSWORD=edumeet
+    networks:
+      - inter
     ports:
       - '5432:5432'
-    volumes: 
-      - edumeet-db:/var/lib/postgresql/data
-
-  #edumeet-management-server:
-  #  env_file: .env
-  #  container_name: edumeet-management-server
-  #  volumes:
-  #    - ${PWD}/configs/mgmt:/usr/src/app/config
-  #  #image: ${REPOSITORY}/${EDUMEET_CLIENT}:${TAG}
-  #  # Comment out whole build-section to build edumeet-room-server and not pulling from docher-hub
-  #  build:
-  #    args:
-  #      - GIT_SERVER=${GIT_SERVER}
-  #      - REPOSITORY=${REPOSITORY}
-  #      - EDUMEET_MGMT_SERVER=${EDUMEET_MGMT_SERVER}
-  #      - BRANCH_MGMT_SERVER=${BRANCH_MGMT_SERVER}
-  #    context: .
-  #    dockerfile: Dockerfile-management-server
-  #  image: ${REPOSITORY}/${EDUMEET_MGMT_SERVER}:${TAG}
-  #  ports:
-  #      - "3030:3030"
-  #  depends_on: 
-  #    - edumeet-db
-
+    volumes:
+      - 'edumeet-db:/var/lib/postgresql/data'
+  edumeet-management-server:
+    env_file: .env
+    container_name: edumeet-management-server
+    volumes:
+      - '${PWD}/configs/mgmt:/usr/src/app/config'
+    build:
+      args:
+        - 'GIT_SERVER=${GIT_SERVER}'
+        - 'REPOSITORY=${REPOSITORY}'
+        - 'EDUMEET_MGMT_SERVER=${EDUMEET_MGMT_SERVER}'
+        - 'BRANCH_MGMT_SERVER=${BRANCH_MGMT_SERVER}'
+        - 'NODE_TLS_REJECT_UNAUTHORIZED=${NODE_TLS_REJECT_UNAUTHORIZED}'
+      context: .
+      dockerfile: Dockerfiles/Dockerfile-management-server
+    image: '${REPOSITORY}/${EDUMEET_MGMT_SERVER}:${TAG}'
+    #links:
+    # - "keycloak:edumeet.sth.sze.hu"
+    networks:
+      - inter
+      - front
+    ports:
+      - '3030:3030'
+    depends_on:
+      - edumeet-db
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin4_container
     restart: always
+    networks:
+      - inter
     ports:
-      - "5050:80"
+      - '5050:80'
     environment:
       PGADMIN_DEFAULT_EMAIL: edumeet@edu.meet
       PGADMIN_DEFAULT_PASSWORD: edumeet
     volumes:
-      - pgadmin-data:/var/lib/pgadmin
-
+      - 'edumeet-db-data:/var/lib/pgadmin'
+  keycloak:
+    container_name: edumeet_keycloak
+    volumes:
+      - '${PWD}/certs:/opt/keycloak/conf'
+      - '${PWD}/configs/kc:/opt/keycloak/data/import'
+    environment:
+      KEYCLOAK_ADMIN: admin2
+      KEYCLOAK_ADMIN_PASSWORD: adminpwgenedumeet
+      KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/conf/edumeet-demo-cert.pem
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/conf/edumeet-demo-key.pem
+      KC_HTTP_RELATIVE_PATH: /kc
+      KC_HOSTNAME_STRICT: 'false'
+      KC_HOSTNAME_STRICT_HTTPS: 'false'
+      KC_METRICS_ENABLED: 'true'
+      KC_HTTP_ENABLED: 'true'
+      PROXY_ADDRESS_FORWARDING: 'true'
+      KC_HOSTNAME_STRICT_BACKCHANNEL: 'false'
+    image: 'quay.io/keycloak/keycloak:latest'
+    command:
+      - start
+      - '--auto-build'
+      - '--import-realm'
+      - '--proxy=passthrough'
+    networks:
+      - inter
+    ports:
+      - '8080:8080'
+      - '8443:8443'
+    restart: unless-stopped
   edumeet-management-client:
     env_file: .env
     container_name: edumeet-management-client
     volumes:
       - ${PWD}/configs/mgmt-client:/usr/src/app/public/config
-    #image: ${REPOSITORY}/${EDUMEET_CLIENT}:${TAG}
-    # Comment out whole build-section to build edumeet-room-server and not pulling from docher-hub
     build:
       args:
         - GIT_SERVER=${GIT_SERVER}
@@ -125,52 +172,31 @@ services:
         - EDUMEET_MGMT_CLIENT=${EDUMEET_MGMT_CLIENT}
         - BRANCH_MGMT_CLIENT=${BRANCH_MGMT_CLIENT}
       context: .
-      dockerfile: Dockerfile-management-client
+      dockerfile: Dockerfiles/Dockerfile-management-client
     image: ${REPOSITORY}/${EDUMEET_MGMT_CLIENT}:${TAG}
+    networks:
+      - front
     ports:
         - "3001:3000"
-
-
-  keycloak:
-    container_name: edumeet_keycloak
-    volumes:
-      - ${PWD}/certs:/opt/keycloak/conf
-      - ${PWD}/configs/kc:/opt/keycloak/data/import
-    environment:
-      KEYCLOAK_ADMIN: admin2 
-      KEYCLOAK_ADMIN_PASSWORD: adminpwgenedumeet 
-      KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/conf/edumeet-demo-cert.pem 
-      KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/conf/edumeet-demo-key.pem
-    image: quay.io/keycloak/keycloak:latest
-    # /opt/keycloak/bin/kc.sh export --file dev --realm dev      
-    # /opt/keycloak/bin/kc.sh import --file /opt/keycloak/data/import/dev.json --override true
-    command: start-dev --import-realm
-
-    ports:
-      # - "28443:8080"
-      - "28080:8443"
-    restart: unless-stopped
-    
-  # build edumeet-translator instance
-  # edumeet-translator:
-  #   env_file: .env
-  #   container_name: edumeet-translator
-  #   #image: ${REPOSITORY}/edumeet-translator:${TAG}
-  #   ## TODO
-  #   build:
-  #     args:
-  #       - BASEDIR=${BASEDIR}
-  #       - GIT_SERVER=${GIT_SERVER}
-  #       - REPOSITORY=${REPOSITORY}
-  #       - EDUMEET_CLIENT=${EDUMEET_CLIENT}
-  #       - BRANCH_CLIENT=${BRANCH_CLIENT}
-  #     context: .
-  #     dockerfile: Dockerfile-translator
-  #   ports:
-  #       - "8080:80"
- 
+  edumeet-translator:
+     env_file: .env
+     container_name: edumeet-translator
+     build:
+        args:
+         - BASEDIR=${BASEDIR}
+         - GIT_SERVER=${GIT_SERVER}
+         - REPOSITORY=${REPOSITORY}
+         - EDUMEET_CLIENT=${EDUMEET_CLIENT}
+         - BRANCH_CLIENT=${BRANCH_CLIENT}
+        context: .
+        dockerfile: Dockerfiles/Dockerfile-translator
+     image: ${REPOSITORY}/edumeet-translator:${TAG}
+     networks:
+      - front
+     ports:
+         - "9080:80"
 volumes:
   edumeet-db:
     driver: local
-  pgadmin-data:
+  edumeet-db-data:
     driver: local

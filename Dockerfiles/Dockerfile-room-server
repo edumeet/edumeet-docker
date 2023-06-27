@@ -15,7 +15,6 @@ RUN git clone --single-branch --branch ${BRANCH_SERVER} ${GIT_SERVER}/${REPOSITO
 
 WORKDIR /app/${EDUMEET_SERVER}
 
-COPY  certs/ /app/${EDUMEET_SERVER}/certs
 COPY  configs/server/config.json /app/${EDUMEET_SERVER}/config/config.json
 
 RUN mv  /app/${EDUMEET_SERVER}/ /usr/src/app/
@@ -29,4 +28,4 @@ EXPOSE 8443
 
 ARG SERVER_DEBUG
 
-ENTRYPOINT DEBUG=${SERVER_DEBUG} yarn run prodstart $0 $@
+ENTRYPOINT DEBUG=${SERVER_DEBUG} MANAGEMENT_USERNAME=edumeet-admin@localhost MANAGEMENT_PASSWORD=supersecret yarn run prodstart $0 $@

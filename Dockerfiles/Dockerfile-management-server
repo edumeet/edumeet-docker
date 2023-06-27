@@ -4,6 +4,7 @@ ARG EDUMEET_MGMT_SERVER
 ARG GIT_SERVER
 ARG REPOSITORY
 ARG BRANCH_MGMT_SERVER
+ARG NODE_TLS_REJECT_UNAUTHORIZED
 
 WORKDIR /app
 
@@ -18,17 +19,15 @@ WORKDIR /app/${EDUMEET_MGMT_SERVER}
 RUN mv  /app/${EDUMEET_MGMT_SERVER} /usr/src/app/
 
 WORKDIR /usr/src/app
-
 RUN npm i
 RUN rm -fr /usr/src/app/test/
+#COPY configs/mgmt/default.json /usr/src/app/config
+# Compile TypeScript source
+RUN npm run compile 
 
-RUN cat config/default.json 
-# wont work here because the db is not yet running 
-RUN npm run compile # Compile TypeScript source
-COPY configs/mgmt/default.json /usr/src/app/config
-#RUN npm run migrate # Run migrations to set up the database
 ARG MGMT_DEBUG
-ENTRYPOINT npm run migrate && NODE_TLS_REJECT_UNAUTHORIZED=0 DEBUG=${MGMT_DEBUG} yarn dev $0 $@
+# Run migrations to set up the database
+ENTRYPOINT npm run migrate && NODE_TLS_REJECT_UNAUTHORIZED=${NODE_TLS_REJECT_UNAUTHORIZED} DEBUG=${MGMT_DEBUG} yarn dev $0 $@
 
 
 
