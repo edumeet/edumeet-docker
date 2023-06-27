@@ -5,6 +5,11 @@ networks:
     driver: bridge
     driver_opts:
       com.docker.network.bridge.name: dockerfront
+  back:
+    name: back
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: dockerback
   inter:
     name: inter
     driver: bridge
@@ -32,6 +37,7 @@ services:
     image: '${REPOSITORY}/${EDUMEET_SERVER}:${TAG}'
     networks:
       - inter
+      - back
     ports:
       - '8000:8000'
 
@@ -114,7 +120,7 @@ services:
     # - "keycloak:edumeet.sth.sze.hu"
     networks:
       - inter
-      - front
+      - back
     ports:
       - '3030:3030'
     depends_on:
