@@ -6,7 +6,7 @@ NOCOLOR='\033[0m'
 
 source .env                                                                                                                                                                                
 
-URL=https://edumeet.vidkonf.einfra.hu/mgmt
+URL=https://edumeet.example.com/mgmt
 
 ACCESSTOKEN=$(curl "$URL/authentication/" \
   -H 'Content-Type: application/json' \
