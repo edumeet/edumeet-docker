@@ -56,16 +56,26 @@ docker pull edumeet/${EDUMEET_SERVER}:${VERSION}
 "
 echo -e "
 ${GREEN}Step 4.${NOCOLOR}
-In configs/nginx/default.conf change IP :
-proxy_pass          http://edumeet.example.com:8000;
--> 
-${RED}proxy_pass          http://$(hostname -I | awk '{print $1}'):<port>;
+
+In configs/app change:
+${RED}managementUrl: 'http://localhost:3030',${NOCOLOR}
+In configs/kc change:
+${RED}
+"rootUrl" : "https://edumeet.sth.sze.hu:28080/",
+"adminUrl" : "https://edumeet.sth.sze.hu/mgmt/*",
+"redirectUris" : [ "https://edumeet.sth.sze.hu/mgmt/*" ],
 ${NOCOLOR}
-In configs/server/config.json change IP and port:
-${RED}\"listenPort\": \"<port>\",
-\"listenHost\": \"$(hostname -I | awk '{print $1}')\",
+In configs/mgmt change:
+${RED}"host": "edumeet.example.com",
 ${NOCOLOR}
+In configs/mgmt-client change:
+${RED}#todo
+${NOCOLOR}
+Check ports in configs/nginx!
+
 ${GREEN}Step 5.${NOCOLOR}
+Set debug values in env file
+
 DONE!
 ${RED}Please see README file for further configuration instructions.${NOCOLOR}
 "
