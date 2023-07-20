@@ -7,15 +7,13 @@
 
 // eslint-disable-next-line
 var config = {
-
-	managementUrl:"https://edumeet.example.com/mgmt",
-
-
 	// If ability to log in is enabled.
 	loginEnabled: true,
 
+	managementUrl:"https://edumeet.example.com/mgmt",
+
 	// The development server listening port.
-	developmentPort: 3443,
+	developmentPort: 8000,
 
 	// The production server listening port.
 	productionPort: 443,
@@ -166,7 +164,7 @@ var config = {
 			'play': '/sounds/notify-hand.mp3'
 		},
 		'default': {
-			'delay': 5000,
+			'debounce': 5000,
 			'play': '/sounds/notify.mp3'
 		}
 	},
@@ -193,9 +191,9 @@ var config = {
 		// If not null, it shows the logo loaded from the specified URL, otherwise it shows the title.
 		logo: 'images/logo.edumeet.svg',
 		activeSpeakerBorder: '1px solid rgba(255, 255, 255, 1.0)',
-		peerBackroundColor: 'rgba(49, 49, 49, 0.9)',
-		peerShadow: '1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12)',
-		peerAvatar: 'images/buddy.svg',
+		videoBackroundColor: 'rgba(49, 49, 49, 0.9)',
+		videoShadow: '1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12)',
+		videoAvatarImage: 'images/buddy.svg',
 		chatColor: 'rgba(224, 224, 224, 0.52)',
 	},
 

@@ -15,12 +15,14 @@ services:
         - 'REPOSITORY=${REPOSITORY}'
         - 'EDUMEET_SERVER=${EDUMEET_SERVER}'
         - 'BRANCH_SERVER=${BRANCH_SERVER}'
+        - 'SERVER_MANAGEMENT_PASSWORD=${SERVER_MANAGEMENT_PASSWORD}'
+        - 'SERVER_MANAGEMENT_USERNAME=${SERVER_MANAGEMENT_USERNAME}'
+        
       context: .
       dockerfile: Dockerfiles/Dockerfile-room-server
     image: '${REPOSITORY}/${EDUMEET_SERVER}:${TAG}'
-#    ports:
-#      - '8000:8000'
-
+    links:
+     - "edumeet-management-server:mgmt"
   edumeet-client:
     env_file: .env
     volumes:
@@ -45,10 +47,11 @@ services:
     ports:
       - '80:80'
       - '443:443'
+      - '8000:8000'
   edumeet-media-node:
     env_file: .env
     volumes:
-      - '${PWD}/configs/app:/usr/share/nginx/html/config'
+      - '${PWD}/certs:/usr/src/app/certs'
     container_name: edumeet-media-node
     build:
       args:
@@ -56,12 +59,16 @@ services:
         - 'REPOSITORY=${REPOSITORY}'
         - 'EDUMEET_MN_SERVER=${EDUMEET_MN_SERVER}'
         - 'BRANCH_MN_SERVER=${BRANCH_MN_SERVER}'
+        - 'MM_IP=${MM_IP}'
       context: .
       dockerfile: Dockerfiles/Dockerfile-media-node
     image: '${REPOSITORY}/${EDUMEET_MN_SERVER}:${TAG}'
-    ports:
+    network_mode: "host"
+#    ports:
+#      - '40000-40249:40000-40249'
 #      - '3000:3000'
-      - '40000-40249:40000-40249'
+
+      
   edumeet-db:
     image: 'postgres:14.1-alpine'
     container_name: edumeet-db
@@ -69,8 +76,6 @@ services:
     environment:
       - POSTGRES_USER=edumeet
       - POSTGRES_PASSWORD=edumeet
-#    ports:
- #     - '5432:5432'
     volumes:
       - 'edumeet-db:/var/lib/postgresql/data'
   edumeet-management-server:
@@ -120,51 +125,45 @@ services:
       KC_METRICS_ENABLED: 'true'
       KC_HTTP_ENABLED: 'true'
       PROXY_ADDRESS_FORWARDING: 'true'
-      KC_HOSTNAME_STRICT_BACKCHANNEL: 'false'
+      KC_PROXY: "edge"
     image: 'quay.io/keycloak/keycloak:latest'
     command:
       - start
       - '--auto-build'
       - '--import-realm'
-      - '--proxy=passthrough'
-    
-#    ports:
-#      - '8080:8080'
-#      - '8443:8443'
+    # ports:
+    #   - '8080:8080'
+    #   - '8443:8443'
     restart: unless-stopped
-  edumeet-management-client:
-    env_file: .env
-    container_name: edumeet-management-client
-    volumes:
-      - ${PWD}/configs/mgmt-client:/usr/src/app/public/config
-    build:
-      args:
-        - GIT_SERVER=${GIT_SERVER}
-        - REPOSITORY=${REPOSITORY}
-        - EDUMEET_MGMT_CLIENT=${EDUMEET_MGMT_CLIENT}
-        - BRANCH_MGMT_CLIENT=${BRANCH_MGMT_CLIENT}
-      context: .
-      dockerfile: Dockerfiles/Dockerfile-management-client
-    image: ${REPOSITORY}/${EDUMEET_MGMT_CLIENT}:${TAG}
-
+  #edumeet-management-client:
+  #  env_file: .env
+  #  container_name: edumeet-management-client
+  #  volumes:
+  #    - ${PWD}/configs/mgmt-client:/usr/src/app/public/config
+  #  build:
+  #    args:
+  #      - GIT_SERVER=${GIT_SERVER}
+  #      - REPOSITORY=${REPOSITORY}
+  #      - EDUMEET_MGMT_CLIENT=${EDUMEET_MGMT_CLIENT}
+  #      - BRANCH_MGMT_CLIENT=${BRANCH_MGMT_CLIENT}
+  #    context: .
+  #    dockerfile: Dockerfiles/Dockerfile-management-client
+  #  image: ${REPOSITORY}/${EDUMEET_MGMT_CLIENT}:${TAG}
     #ports:
     #    - "3001:3000"
-  edumeet-translator:
-     env_file: .env
-     container_name: edumeet-translator
-     build:
-        args:
-         - BASEDIR=${BASEDIR}
-         - GIT_SERVER=${GIT_SERVER}
-         - REPOSITORY=${REPOSITORY}
-         - EDUMEET_CLIENT=${EDUMEET_CLIENT}
-         - BRANCH_CLIENT=${BRANCH_CLIENT}
-        context: .
-        dockerfile: Dockerfiles/Dockerfile-translator
-     image: ${REPOSITORY}/edumeet-translator:${TAG}
-
-     #ports:
-     #    - "9080:80"
+  #edumeet-translator:
+  #   env_file: .env
+  #   container_name: edumeet-translator
+  #   build:
+  #      args:
+  #       - BASEDIR=${BASEDIR}
+  #       - GIT_SERVER=${GIT_SERVER}
+  #       - REPOSITORY=${REPOSITORY}
+  #       - EDUMEET_CLIENT=${EDUMEET_CLIENT}
+  #       - BRANCH_CLIENT=${BRANCH_CLIENT}
+  #      context: .
+  #      dockerfile: Dockerfiles/Dockerfile-translator
+  #   image: ${REPOSITORY}/edumeet-translator:${TAG}
 volumes:
   edumeet-db:
     driver: local

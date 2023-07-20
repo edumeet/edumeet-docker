@@ -45,7 +45,13 @@ Updating TAG version in .env file extracted from edumeet version"
 #VERSION=4.x-$(date '+%Y%m%d')-nightly
 VERSION=$(curl -L --fail -s "https://hub.docker.com/v2/repositories/${REPOSITORY}/${EDUMEET_CLIENT}/tags/?page_size=1000" |	jq '.results | .[] | .name' -r | 	sed 's/latest//' | 	sort --version-sort | tail -n 1 | grep 4)
 sed -i "s/^.*TAG.*$/TAG=${VERSION}/" .env
+MM_IP=$(hostname -I | awk '{print $1}')
+sed -i "s/^.*MM_IP.*$/MM_IP=${MM_IP}/" .env
+
+
 echo -e "Current tag: ${RED}${VERSION}${NOCOLOR}
+IP set to : ${RED}${MM_IP}${NOCOLOR}
+
 ${GREEN}Step 3.${NOCOLOR}
 To get latest images run the following or build it with running \"docker-compose up\":
 
@@ -54,18 +60,18 @@ docker pull edumeet/${EDUMEET_MN_SERVER}:${VERSION}
 docker pull edumeet/${EDUMEET_CLIENT}:${VERSION}
 docker pull edumeet/${EDUMEET_SERVER}:${VERSION}
 "
+ACK=$(ack edumeet.example.sze.hu --ignore-file=is:README.md --ignore-file=is:run-me-first.sh)
+
 echo -e "
 ${GREEN}Step 4.${NOCOLOR}
-In configs/nginx/default.conf change IP :
-proxy_pass          http://edumeet.example.com:8000;
--> 
-${RED}proxy_pass          http://$(hostname -I | awk '{print $1}'):<port>;
-${NOCOLOR}
-In configs/server/config.json change IP and port:
-${RED}\"listenPort\": \"<port>\",
-\"listenHost\": \"$(hostname -I | awk '{print $1}')\",
-${NOCOLOR}
+Change domain in the following files:
+${ACK}
 ${GREEN}Step 5.${NOCOLOR}
 DONE!
+*Dont forget to update cert files.
 ${RED}Please see README file for further configuration instructions.${NOCOLOR}
 "
+
+
+
+

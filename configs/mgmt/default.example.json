@@ -1,9 +1,10 @@
 {
-	"host": "edumeet.example.com",
+	"host": "0.0.0.0",
 	"port": 3030,
 	"public": "./public/",
 	"origins": [
 		"*"
+
 	],
 	"paginate": {
 		"default": 10,
@@ -26,7 +27,7 @@
 			"header": {
 				"typ": "access"
 			},
-			"audience": "https://edumeet.example.com/mgmt",
+			"audience": "https://edumeet.example.com/",
 			"algorithm": "RS256",
 			"expiresIn": "1d"
 		},
