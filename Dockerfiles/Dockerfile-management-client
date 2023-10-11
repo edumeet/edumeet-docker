@@ -1,6 +1,7 @@
 FROM node:18-bullseye-slim
 
 ARG EDUMEET_MGMT_CLIENT
+ARG PUBLIC_URL
 ARG GIT_SERVER
 ARG REPOSITORY
 ARG BRANCH_MGMT_CLIENT
@@ -23,7 +24,7 @@ RUN npm i
 # wont work here because the db is not yet running 
 #RUN npm run migrate # Run migrations to set up the database
 ARG MGMT_CLIENT_DEBUG
-ENTRYPOINT DEBUG=${MGMT_CLIENT_DEBUG} yarn start $0 $@
+ENTRYPOINT DEBUG=${MGMT_CLIENT_DEBUG} PUBLIC_URL=${PUBLIC_URL} yarn start $0 $@
 
 
 

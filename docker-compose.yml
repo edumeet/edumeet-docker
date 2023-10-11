@@ -30,6 +30,7 @@ services:
       - '${PWD}/configs/nginx:/etc/nginx/conf.d'
       - '${PWD}/certs:/etc/edumeet/certs'
     links:
+     - "edumeet-management-client:emc"
      - "keycloak:kc"
      - "edumeet-room-server:io"
      - "edumeet-management-server:mgmt"
@@ -47,6 +48,7 @@ services:
     ports:
       - '80:80'
       - '443:443'
+      - '3002:3002'
       - '8000:8000'
   edumeet-media-node:
     env_file: .env
@@ -135,20 +137,21 @@ services:
     #   - '8080:8080'
     #   - '8443:8443'
     restart: unless-stopped
-  #edumeet-management-client:
-  #  env_file: .env
-  #  container_name: edumeet-management-client
-  #  volumes:
-  #    - ${PWD}/configs/mgmt-client:/usr/src/app/public/config
-  #  build:
-  #    args:
-  #      - GIT_SERVER=${GIT_SERVER}
-  #      - REPOSITORY=${REPOSITORY}
-  #      - EDUMEET_MGMT_CLIENT=${EDUMEET_MGMT_CLIENT}
-  #      - BRANCH_MGMT_CLIENT=${BRANCH_MGMT_CLIENT}
-  #    context: .
-  #    dockerfile: Dockerfiles/Dockerfile-management-client
-  #  image: ${REPOSITORY}/${EDUMEET_MGMT_CLIENT}:${TAG}
+  edumeet-management-client:
+    env_file: .env
+    container_name: edumeet-management-client
+    volumes:
+      - ${PWD}/configs/mgmt-client:/usr/src/app/public/config
+    build:
+      args:
+        - GIT_SERVER=${GIT_SERVER}
+        - REPOSITORY=${REPOSITORY}
+        - EDUMEET_MGMT_CLIENT=${EDUMEET_MGMT_CLIENT}
+        - BRANCH_MGMT_CLIENT=${BRANCH_MGMT_CLIENT}
+        - PUBLIC_URL=${PUBLIC_URL}
+      context: .
+      dockerfile: Dockerfiles/Dockerfile-management-client
+    image: ${REPOSITORY}/${EDUMEET_MGMT_CLIENT}:${TAG}
     #ports:
     #    - "3001:3000"
   #edumeet-translator:
