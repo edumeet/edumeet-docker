@@ -60,7 +60,7 @@ docker pull edumeet/${EDUMEET_MN_SERVER}:${VERSION}
 docker pull edumeet/${EDUMEET_CLIENT}:${VERSION}
 docker pull edumeet/${EDUMEET_SERVER}:${VERSION}
 "
-ACK=$(ack edumeet.example.sze.hu --ignore-file=is:README.md --ignore-file=is:run-me-first.sh)
+ACK=$(ack edumeet.example.com --ignore-file=is:README.md --ignore-file=is:run-me-first.sh)
 
 echo -e "
 ${GREEN}Step 4.${NOCOLOR}
