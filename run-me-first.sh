@@ -50,7 +50,7 @@ sed -i "s/^.*MN_IP.*$/MN_IP=${MN_IP}/" .env
 
 
 echo -e "Current tag: ${RED}${VERSION}${NOCOLOR}
-IP set to : ${RED}${MM_IP}${NOCOLOR}
+IP set to : ${RED}${MN_IP}${NOCOLOR}
 
 ${GREEN}Step 3.${NOCOLOR}
 To get latest images run the following or build it with running \"docker-compose up\":
