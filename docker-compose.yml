@@ -61,7 +61,7 @@ services:
         - 'REPOSITORY=${REPOSITORY}'
         - 'EDUMEET_MN_SERVER=${EDUMEET_MN_SERVER}'
         - 'BRANCH_MN_SERVER=${BRANCH_MN_SERVER}'
-        - 'MM_IP=${MM_IP}'
+        - 'MN_IP=${MN_IP}'
       context: .
       dockerfile: Dockerfiles/Dockerfile-media-node
     image: '${REPOSITORY}/${EDUMEET_MN_SERVER}:${TAG}'
@@ -69,15 +69,11 @@ services:
 #    ports:
 #      - '40000-40249:40000-40249'
 #      - '3000:3000'
-
-      
   edumeet-db:
+    env_file: .env
     image: 'postgres:14.1-alpine'
     container_name: edumeet-db
     restart: always
-    environment:
-      - POSTGRES_USER=edumeet
-      - POSTGRES_PASSWORD=edumeet
     volumes:
       - 'edumeet-db:/var/lib/postgresql/data'
   edumeet-management-server:
@@ -100,34 +96,20 @@ services:
     depends_on:
       - edumeet-db
   pgadmin:
+    env_file: .env
     image: dpage/pgadmin4
     container_name: pgadmin4_container
     restart: always
-    
     #ports:
     #  - '5050:80'
-    environment:
-      PGADMIN_DEFAULT_EMAIL: edumeet@edu.meet
-      PGADMIN_DEFAULT_PASSWORD: edumeet
     volumes:
       - 'edumeet-db-data:/var/lib/pgadmin'
   keycloak:
+    env_file: .env
     container_name: edumeet_keycloak
     volumes:
       - '${PWD}/certs:/opt/keycloak/conf'
       - '${PWD}/configs/kc:/opt/keycloak/data/import'
-    environment:
-      KEYCLOAK_ADMIN: admin2
-      KEYCLOAK_ADMIN_PASSWORD: adminpwgenedumeet
-      KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/conf/edumeet-demo-cert.pem
-      KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/conf/edumeet-demo-key.pem
-      KC_HTTP_RELATIVE_PATH: /kc
-      KC_HOSTNAME_STRICT: 'false'
-      KC_HOSTNAME_STRICT_HTTPS: 'false'
-      KC_METRICS_ENABLED: 'true'
-      KC_HTTP_ENABLED: 'true'
-      PROXY_ADDRESS_FORWARDING: 'true'
-      KC_PROXY: "edge"
     image: 'quay.io/keycloak/keycloak:latest'
     command:
       - start

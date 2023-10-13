@@ -5,16 +5,12 @@ GREEN='\033[0;32m'
 NOCOLOR='\033[0m'
 
 source .env                                                                                                                                                                                
-
-URL=https://edumeet.example.com/mgmt
-DOMAIN=edumeet.example.com
 #DOMAIN ,REALM TODO
-
-echo "curl \"$URL/authentication/\" \
+echo "curl \"$MGMT_URL/authentication/\" \
   -H 'Content-Type: application/json' \
   --data-binary '{ \"strategy\": \"local\", \"email\": \"edumeet-admin@localhost\", \"password\": \"supersecret\" }' -s | jq -r '.accessToken'";
 
-ACCESSTOKEN=$(curl --insecure "$URL/authentication/" \
+ACCESSTOKEN=$(curl --insecure "$MGMT_URL/authentication/" \
   -H 'Content-Type: application/json' \
   --data-binary '{ "strategy": "local", "email": "edumeet-admin@localhost", "password": "supersecret" }' -s | jq -r '.accessToken' )
 echo -e "
@@ -30,14 +26,14 @@ fi
 
 
 # Get tennants 
-echo $(curl --insecure "$URL/tenants" \
+echo $(curl --insecure "$MGMT_URL/tenants" \
   -H 'Content-Type: application/json' \
   -H "Authorization: Bearer $ACCESSTOKEN" -s)
 
 # add tennant
 echo -e "
 ${GREEN}Add tenant : ${NOCOLOR}
-curl \"$URL/tenants\" \
+curl \"$MGMT_URL/tenants\" \
   -H 'Content-Type: application/json' \
   -H \"Authorization: Bearer $ACCESSTOKEN\" \
   --data-binary '{\"name\":\"dev\"}'
@@ -46,41 +42,41 @@ curl \"$URL/tenants\" \
 
 # Get fqdn 
 
-echo $(curl --insecure "$URL/tenantFQDNs" \
+echo $(curl --insecure "$MGMT_URL/tenantFQDNs" \
   -H 'Content-Type: application/json' \
   -H "Authorization: Bearer $ACCESSTOKEN" -s)
 #add fqdn
 echo -e "
 ${GREEN}Add fqdn : ${NOCOLOR}
-curl \"$URL/tenantFQDNs\" \
+curl \"$MGMT_URL/tenantFQDNs\" \
   -H 'Content-Type: application/json' \
   -H \"Authorization: Bearer $ACCESSTOKEN\" \
-  --data-binary '{\"tenantId\":1,\"fqdn\":\"${DOMAIN}\"}'
+  --data-binary '{\"tenantId\":1,\"fqdn\":\"${EDUMEET_DOMAIN_NAME}\"}'
 "
 
 # Get tenantOAuths
 
-echo $(curl --insecure "$URL/tenantOAuths" \
+echo $(curl --insecure "$MGMT_URL/tenantOAuths" \
   -H 'Content-Type: application/json' \
   -H "Authorization: Bearer $ACCESSTOKEN" -s)
 
 echo -e "
 ${GREEN}Add tenantOAuths : ${NOCOLOR}
-curl \"$URL/tenantOAuths\" \
+curl \"$MGMT_URL/tenantOAuths\" \
   -H 'Content-Type: application/json' \
   -H \"Authorization: Bearer $ACCESSTOKEN\" \
-  --data-binary '{  \"tenantId\":1,\"key\":\"edumeet-dev-client\",\"secret\":\"1MAJARGQM0nYhSmRNDSHCLIgBfuZXkv6\",  \"authorize_url\":\"https://${DOMAIN}/kc/realms/dev/protocol/openid-connect/auth\",\"access_url\":\"https://${DOMAIN}/kc/realms/dev/protocol/openid-connect/token\",\"profile_url\":  \"https://${DOMAIN}/kc/realms/dev/protocol/openid-connect/userinfo\",\"redirect_uri\": \"https://${DOMAIN}/mgmt/oauth/tenant/callback\",\"scope\":\"openid profile email\",\"scope_delimiter\":\" \"}'
+  --data-binary '{  \"tenantId\":1,\"key\":\"edumeet-dev-client\",\"secret\":\"1MAJARGQM0nYhSmRNDSHCLIgBfuZXkv6\",  \"authorize_url\":\"https://${EDUMEET_DOMAIN_NAME}/kc/realms/dev/protocol/openid-connect/auth\",\"access_url\":\"https://${EDUMEET_DOMAIN_NAME}/kc/realms/dev/protocol/openid-connect/token\",\"profile_url\":  \"https://${EDUMEET_DOMAIN_NAME}/kc/realms/dev/protocol/openid-connect/userinfo\",\"redirect_uri\": \"https://${EDUMEET_DOMAIN_NAME}/mgmt/oauth/tenant/callback\",\"scope\":\"openid profile email\",\"scope_delimiter\":\" \"}'
 "
 
 # get rooms
-curl --insecure "$URL/rooms" \
+curl --insecure "$MGMT_URL/rooms" \
   -H 'Content-Type: application/json' \
   -H "Authorization: Bearer $ACCESSTOKEN"
 
 # add room 
 echo -e "
 ${GREEN}Add room (with the user jwt token): ${NOCOLOR}
-curl '"$URL/rooms"' \\
+curl '"$MGMT_URL/rooms"' \\
   -H 'Content-Type: application/json' \\
   -H '"Authorization: Bearer $ACCESSTOKEN"' \\
   --data-binary '{ \"name\": \"testroom2\",\"description\": \"testdesc\",\"maxActiveVideos\":4, \"tenantId\":1}'

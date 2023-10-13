@@ -13,7 +13,7 @@ ENV RTC_MIN_PORT=$rtcMinPort
 
 ARG rtcMaxPort=40249
 ENV RTC_MAX_PORT=$rtcMaxPort
-ARG MM_IP
+ARG MN_IP
 
 WORKDIR /app
 
@@ -36,9 +36,9 @@ EXPOSE ${LISTEN_PORT}
 EXPOSE ${RTC_MIN_PORT}-${RTC_MAX_PORT}/udp
 EXPOSE ${RTC_MIN_PORT}-${RTC_MAX_PORT}/tcp
 
-ARG MM_DEBUG
+ARG MN_DEBUG
 
-ENTRYPOINT DEBUG=${MM_DEBUG} yarn run prodstart --listenPort ${LISTEN_PORT} --rtcMinPort ${RTC_MIN_PORT} --rtcMaxPort ${RTC_MAX_PORT} --ip ${MM_IP}  --secret ${BRANCH_MN_SERVER_SECRET} $0 $@
+ENTRYPOINT DEBUG=${MN_DEBUG} yarn run prodstart --listenPort ${LISTEN_PORT} --rtcMinPort ${RTC_MIN_PORT} --rtcMaxPort ${RTC_MAX_PORT} --ip ${MN_IP}  --secret ${BRANCH_MN_SERVER_SECRET} $0 $@
 
 
 

@@ -45,8 +45,8 @@ Updating TAG version in .env file extracted from edumeet version"
 #VERSION=4.x-$(date '+%Y%m%d')-nightly
 VERSION=$(curl -L --fail -s "https://hub.docker.com/v2/repositories/${REPOSITORY}/${EDUMEET_CLIENT}/tags/?page_size=1000" |	jq '.results | .[] | .name' -r | 	sed 's/latest//' | 	sort --version-sort | tail -n 1 | grep 4)
 sed -i "s/^.*TAG.*$/TAG=${VERSION}/" .env
-MM_IP=$(hostname -I | awk '{print $1}')
-sed -i "s/^.*MM_IP.*$/MM_IP=${MM_IP}/" .env
+MN_IP=$(hostname -I | awk '{print $1}')
+sed -i "s/^.*MN_IP.*$/MN_IP=${MN_IP}/" .env
 
 
 echo -e "Current tag: ${RED}${VERSION}${NOCOLOR}
@@ -61,11 +61,23 @@ docker pull edumeet/${EDUMEET_CLIENT}:${VERSION}
 docker pull edumeet/${EDUMEET_SERVER}:${VERSION}
 "
 ACK=$(ack edumeet.example.com --ignore-file=is:README.md --ignore-file=is:run-me-first.sh)
+ACK_LOCALHOST=$(ack localhost --ignore-file=is:README.md --ignore-file=is:run-me-first.sh --ignore-file=is:.env  --ignore-file=is:mgmt.sh)
 
 echo -e "
 ${GREEN}Step 4.${NOCOLOR}
+
+Change configs to your desired configuration.
+By default (single domain setup):
+- configs/server/config.json
+  'host' shoud be 'http://mgmt:3030',
+  'hostname' shoud be your domain name   '${EDUMEET_DOMAIN_NAME}',
+- configs/app/config.js
+   managementUrl shoud be domain name 'https://${EDUMEET_DOMAIN_NAME}/mgmt'
+
+
 Change domain in the following files:
 ${ACK}
+${ACK_LOCALHOST}
 ${GREEN}Step 5.${NOCOLOR}
 DONE!
 *Dont forget to update cert files.
