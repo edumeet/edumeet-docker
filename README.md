@@ -17,6 +17,7 @@ For further (more generic) information take a look at [eduMEET repository](https
   - [edumeet-room-server](https://github.com/edumeet/edumeet-room-server)
   - [edumeet-media-node](https://github.com/edumeet/edumeet-media-node)
   - [edumeet-management-server](https://github.com/edumeet/edumeet-management-server)
+  - [edumeet-management-client](https://github.com/edumeet/edumeet-management-client)
 
 
 # Update, configure, build and run.
@@ -29,6 +30,27 @@ cd edumeet-docker
 ```bash
 sudo apt install jq docker docker-compose ack
 ```
+
+https://docs.docker.com/engine/install/debian/#install-using-the-repository
+
+```bash
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl gnupg -y 
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+```
+
 Optional (add current user to docker group )
 ```bash
 sudo groupadd docker
@@ -96,21 +118,28 @@ Run with `docker-compose`
 ```sh
   $ sudo docker-compose up --detach
 ```
+To build: 
+1. change TAG in .env file to your desired name.
+2. Build and run:
+```sh
+  $ sudo docker-compose build
+  $ sudo docker-compose up -d
+```
 
 ## Default ports for firewall setting
-| Port | protocol | description |
-| ---- | ----------- | ----------- |
-|  80 | tcp | edumeet-client webserver (redirect to 443) |
-|  443 | tcp | edumeet-client https webserver and signaling proxy |
-|  8000 | tcp | edumeet-room-server webserver and signaling |
-|  40000-49999 | udp | edumeet-room-server media ports |
-
-If other ports are required, they have to be set in configuration files and exposed Dockerfiles
-
-| Port | protocol | description |
-| ---- | ----------- | ----------- |
-|  3030 | tcp | edumeet-management-server port |
-|  5050 | tcp | pgAdmin |
+| Port | protocol | description | network | path |
+| ---- | ----------- | ----------- | ----------- | ----------- |
+|  80 | tcp | edumeet-client webserver (redirect to 443) | host network (proxy) | / | 
+|  443 | tcp | edumeet-client https webserver and signaling proxy | host network (proxy) |  / |
+|  3000 |  | edumeet-media-node port | host network | - |
+|  8000 | tcp | edumeet-room-server webserver and signaling | host network (proxy) | /mgmt/ |
+|  40000-49999 | udp | edumeet-media-node ports | host network | - |
+| | | | | |
+|  3000 | tcp | edumeet-management-server port | docker internal only (available via proxy) | /mgmt/ |
+|  3002 | tcp | edumeet-management-cli port | docker internal only (available via proxy) | /cli/ |
+|  8080 | tcp | keycloak | docker internal only (available via proxy) | /kc/ |
+|  5050 | tcp | pgAdmin | internal only (available via proxy) | /pgadmin4/ |
+|  5432 | tcp | edumeet-db | docker internal only | - |
 
 ## Load balanced installation
 
