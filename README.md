@@ -27,7 +27,7 @@ cd edumeet-docker
 ```
 # Install dependencies
 ```bash
-sudo apt install jq docker docker-compose
+sudo apt install jq docker docker-compose ack
 ```
 Optional (add current user to docker group )
 ```bash
