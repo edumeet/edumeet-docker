@@ -59,8 +59,8 @@ sudo usermod -aG docker $USER
 
 #  Configure
 ## Step 1: 
-* Set your desired release branch in .env file. Branch names (for example 4.0) should match for client and server side.
 * Edit docker-compose.yml for services that you want.
+* Set your domain name in .env file
 
 ## Step 2: 
 * start `run-me-first.sh` script. This script will download newest Dockerfile(s) and config.example.* files from the repository, also it will generate and set Redis password.
@@ -69,34 +69,34 @@ sudo usermod -aG docker $USER
 ```
 
 ## Step 3: 
-* Configure `configs/app/config.js`, `configs/server/config.json`, `configs/nginx/default.conf`
+* Set your desired release branch in .env file. Branch names (for example 4.0) should match for client and server side.
 
-### Edit nginx config and server config.json with the ip of the server
-* nginx example
+Change configs to your desired configuration.
+By default (single domain setup):
 ```
-    proxy_pass          http://<ip>:<port of the server>;
-    -> 
-    proxy_pass          http://172.24.208.161:8000;
-```
-* edumeet-room-server example
-```
-{
-	"listenPort": "8000",
-	"listenHost": "172.24.208.161",
-	"mediaNodes": [{
-		"hostname": "localhost",
-		"port": 3000,
-		"secret": "secret-shared-with-media-node",
-		"latitude": 63.430481,
-		"longitude": 10.394964
-	}]
-}
-```
+- configs/server/config.json
+   **remove tls options (behind proxy it is not needed)**
+  'host' shoud be 'http://mgmt:3030',
+  'hostname' shoud be your domain name   'edumeet.example.com',
+- configs/app/config.js
+   managementUrl shoud be domain name 'https://edumeet.example.com/mgmt'
 
+Change domain in the following files:
+configs/kc/dev.json:535:    "rootUrl" : "https://edumeet.example.com/",
+configs/kc/dev.json:536:    "adminUrl" : "https://edumeet.example.com/mgmt/*",
+configs/mgmt-client/config.js:3:    serverApiUrl: "https://edumeet.example.com/mgmt",
+configs/mgmt-client/config.js:4:    hostname: "https://edumeet.example.com",
+configs/mgmt/default.json:30:                   "audience": "https://edumeet.example.com/",
+configs/mgmt/default.json:42:                           "redirect_uri": "https://edumeet.example.com/mgmt/oauth/tenant/callback"
+configs/nginx/default.conf:84:  #server_name  edumeet.example.com;
+.env:2:EDUMEET_DOMAIN_NAME=edumeet.example.com
+configs/server/config.json:9:           "host": "http://localhost:3030",
+configs/server/config.json:15:          "hostname": "localhost",
+configs/app/config.js:11:       managementUrl: 'http://localhost:3030',
+```
 - Additional configuration documentation is located in [edumeet-client](https://github.com/edumeet/edumeet-client/) and [edumeet-room-server](https://github.com/edumeet/edumeet-room-server) repositories.
 
 NOTE! Certficates are selfsigned, for a production service you need to set YOUR signed certificate in nginx and  server configuration files
-
 `in nginx/default.conf`
 ```bash
   server_name  edumeet.example.com; 
@@ -126,6 +126,22 @@ To build:
   $ sudo docker-compose up -d
 ```
 
+## Initial setup after first run
+1. visit yourdomain/kc/ and set up your keycloak instance
+By default there is a dev configuration according to https://github.com/edumeet/edumeet-management-server/wiki/Keycloak-setup-(OAuth-openid-connect)
+There is one test user :
+- Username: edumeet
+- Password: edumeet
+2. visit yourdomain/cli/ and set up your management server config
+   - add a tenant
+   - add a tenant fqdn / domain
+   - add authetntication
+3. Logout 
+4. Visit your domain (Login)
+5. Visit yourdomain/cli/ and as the logged in user create a room
+6. Join the room
+
+
 ## Default ports for firewall setting
 | Port | protocol | description | network | path |
 | ---- | ----------- | ----------- | ----------- | ----------- |
@@ -141,33 +157,13 @@ To build:
 |  5050 | tcp | pgAdmin | internal only (available via proxy) | /pgadmin4/ |
 |  5432 | tcp | edumeet-db | docker internal only | - |
 
-## Load balanced installation
-
-To deploy this as a load balanced cluster, have a look at [HAproxy](HAproxy.md).
-
-## Learning management integration
-
-To integrate with an LMS (e.g. Moodle), have a look at [LTI](LTI/LTI.md).
-
-## TURN configuration
-
-For clients located behind restrictive firewalls, You will need an additional [TURN](https://github.com/coturn/coturn)-server 
-Add your server and credentials to `server/config/config.json`
-
-```json
-    "turnAPIKey" : "Your API key",
-    "turnAPIURI" : "https://host.domain.tld/turn",
-```
-If you are [eduGAIN](https://edugain.org/) member, you can generate your turn api key at [https://turn.geant.org/](https://turn.geant.org/)
 
 ## Docker networking
-
 edumeet-room-server container works in "host" network mode, because bridge mode has the following issue: ["Docker hangs when attempting to bind a large number of ports"](https://success.docker.com/article/docker-compose-and-docker-run-hang-when-binding-a-large-port-range)
 
 ## Building images locally for Development
 In order to build docker images you can uncomment the build-sections in `docker-compose.yml` for the images you want. 
 
 ## Further Informations
-
 Read more about configs and settings in [eduMEET](https://github.com/edumeet/edumeet) README.
 
