@@ -83,10 +83,10 @@ By default (single domain setup):
 ```
 - configs/server/config.json
    **remove tls options (behind proxy it is not needed)**
-  'host' shoud be 'http://mgmt:3030',
-  'hostname' shoud be your domain name   'edumeet.example.com',
+  'host' should be 'http://mgmt:3030',
+  'hostname' should be your domain name   'edumeet.example.com',
 - configs/app/config.js
-   managementUrl shoud be domain name 'https://edumeet.example.com/mgmt'
+   managementUrl should be domain name 'https://edumeet.example.com/mgmt'
 
 Change domain in the following files:
 configs/kc/dev.json:535:    "rootUrl" : "https://edumeet.example.com/",
