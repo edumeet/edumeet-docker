@@ -19,6 +19,21 @@ For further (more generic) information take a look at [eduMEET repository](https
   - [edumeet-management-server](https://github.com/edumeet/edumeet-management-server)
   - [edumeet-management-client](https://github.com/edumeet/edumeet-management-client)
 
+In edumeet-docker components are linked together via the edumeet-client docker image.
+
+The edumeet-client docker image uses an nginx proxy to serve most of the other components.
+
+By default it is using the built in docker networking hostnames to connect/link components.
+
+It also makes certificate renewal easy since on a single domain setup you only need to change the cert in the certs folder.
+
+- "edumeet-management-client:emc"
+- "keycloak:kc"
+- "edumeet-room-server:io"
+- "edumeet-management-server:mgmt"
+- "pgadmin:pgadmin"
+
+Edumeet media node currently uses a certificate without the proxy, in a more direct way because it needs host network see the bottom of the repository.
 
 # Install dependencies
 ```bash
