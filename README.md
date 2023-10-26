@@ -25,6 +25,8 @@ The edumeet-client docker image uses an nginx proxy to serve most of the other c
 
 By default it is using the built in docker networking hostnames to connect/link components.
 
+Since some components need the hostname / domain name / IP to function it is included in every config and can be changed depending on the use case.
+
 It also makes certificate renewal easy since on a single domain setup you only need to change the cert in the certs folder.
 
 - "edumeet-management-client:emc"
