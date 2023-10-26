@@ -59,6 +59,9 @@ ${RED}
 docker pull edumeet/${EDUMEET_MN_SERVER}:${VERSION}
 docker pull edumeet/${EDUMEET_CLIENT}:${VERSION}
 docker pull edumeet/${EDUMEET_SERVER}:${VERSION}
+docker pull edumeet/${EDUMEET_MGMT_SERVER}:${VERSION}
+docker pull edumeet/${EDUMEET_MGMT_CLIENT}:${VERSION}
+
 "
 ACK=$(ack edumeet.example.com --ignore-file=is:README.md --ignore-file=is:run-me-first.sh)
 ACK_LOCALHOST=$(ack localhost --ignore-file=is:README.md --ignore-file=is:run-me-first.sh --ignore-file=is:.env  --ignore-file=is:mgmt.sh)
@@ -69,6 +72,7 @@ ${GREEN}Step 4.${NOCOLOR}
 Change configs to your desired configuration.
 By default (single domain setup):
 - configs/server/config.json
+  'tls' options shoud be removed when running behind proxy
   'host' shoud be 'http://mgmt:3030',
   'hostname' shoud be your domain name   '${EDUMEET_DOMAIN_NAME}',
 - configs/app/config.js
