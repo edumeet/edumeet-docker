@@ -37,6 +37,9 @@ It also makes certificate renewal easy since on a single domain setup you only n
 
 Edumeet media node currently uses a certificate without the proxy, in a more direct way because it needs host network see the bottom of the repository.
 
+ # ![Architecture](/images/arch-white.drawio%20(1).png)
+
+
 # Install dependencies
 ```bash
 sudo apt install jq ack
