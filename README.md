@@ -189,4 +189,8 @@ By default there is one test user in dev realm :
 ## Docker networking
 edumeet-room-server container works in "host" network mode, because bridge mode has the following issue: ["Docker hangs when attempting to bind a large number of ports"](https://success.docker.com/article/docker-compose-and-docker-run-hang-when-binding-a-large-port-range)
 
+## FAQ
+Q: I get "Cannot find module erros" regarding config files
+
+A: You are probably having a relative path issue with docker check if you are in the correct directory. (edumeet-docker folder)
 
