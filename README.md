@@ -129,13 +129,17 @@ To build:
 ## Initial setup after first run
 1. visit yourdomain/kc/ and set up your keycloak instance
 By default there is a dev configuration according to https://github.com/edumeet/edumeet-management-server/wiki/Keycloak-setup-(OAuth-openid-connect)
-There is one test user :
+
+By default there is one test user in dev realm :
 - Username: edumeet
 - Password: edumeet
 2. visit yourdomain/cli/ and set up your management server config
    - add a tenant
    - add a tenant fqdn / domain
    - add authetntication
+ # ![auth](/images/mgmt-client-setup-1.png)
+
+     
 3. Logout 
 4. Visit your domain (Login)
 5. Visit yourdomain/cli/ and as the logged in user create a room
