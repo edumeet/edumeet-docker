@@ -20,42 +20,29 @@ For further (more generic) information take a look at [eduMEET repository](https
   - [edumeet-management-client](https://github.com/edumeet/edumeet-management-client)
 
 
+# Install dependencies
+```bash
+sudo apt install jq ack
+```
+Install docker V2
+
+```bash
+https://docs.docker.com/engine/install/debian/#install-using-the-repository
+```
+Optional (add current user to docker group )
+```bash
+sudo groupadd docker
+sudo usermod -aG docker $USER
+```
+
+
 # Update, configure, build and run.
 ## Clone repository to your (docker) host, and cd into the folder:
 ```bash
 git clone https://github.com/edumeet/edumeet-docker.git
 cd edumeet-docker
 ```
-# Install dependencies
-```bash
-sudo apt install jq docker docker-compose ack
-```
 
-https://docs.docker.com/engine/install/debian/#install-using-the-repository
-
-```bash
-# Add Docker's official GPG key:
-sudo apt-get update
-sudo apt-get install ca-certificates curl gnupg -y 
-sudo install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-sudo chmod a+r /etc/apt/keyrings/docker.gpg
-
-# Add the repository to Apt sources:
-echo \
-  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
-  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update
-
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
-```
-
-Optional (add current user to docker group )
-```bash
-sudo groupadd docker
-sudo usermod -aG docker $USER
-```
 
 #  Configure
 ## Step 1: 
@@ -63,7 +50,7 @@ sudo usermod -aG docker $USER
 * Set your domain name in .env file
 
 ## Step 2: 
-* start `run-me-first.sh` script. This script will download newest Dockerfile(s) and config.example.* files from the repository, also it will generate and set Redis password.
+* start `run-me-first.sh` script. This script will download newest Dockerfile(s) and config.example.* files from the repository.
 ```
 ./run-me-first.sh
 ```
@@ -103,11 +90,12 @@ NOTE! Certficates are selfsigned, for a production service you need to set YOUR 
   ssl_certificate     /etc/edumeet/edumeet-demo-cert.pem;
   ssl_certificate_key /etc/edumeet/edumeet-demo-key.pem; 
 ```
-# Download or build images (run-me-first generates the latest ones):
+### Download or build images (run-me-first generates the latest ones):
 ```
-docker pull edumeet/edumeet-media-node:4.x-20230510-nightly
-docker pull edumeet/edumeet-room-server:4.x-20230510-nightly
-docker pull edumeet/edumeet-client:4.x-20230510-nightly
+docker pull edumeet/edumeet-media-node:TAG
+docker pull edumeet/edumeet-room-server:TAG
+docker pull edumeet/edumeet-client:TAG
+...
 ```
 
 ## Run
@@ -165,9 +153,4 @@ By default there is one test user in dev realm :
 ## Docker networking
 edumeet-room-server container works in "host" network mode, because bridge mode has the following issue: ["Docker hangs when attempting to bind a large number of ports"](https://success.docker.com/article/docker-compose-and-docker-run-hang-when-binding-a-large-port-range)
 
-## Building images locally for Development
-In order to build docker images you can uncomment the build-sections in `docker-compose.yml` for the images you want. 
-
-## Further Informations
-Read more about configs and settings in [eduMEET](https://github.com/edumeet/edumeet) README.
 
