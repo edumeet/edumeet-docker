@@ -39,13 +39,13 @@ Edumeet media node currently uses a certificate without the proxy, in a more dir
 
  # ![Architecture](/images/arch-white.drawio.png)
 
-### In general this architecture can be scaled and consinst of many of the components.
+### In general this architecture can be scaled and can consinst of many of the components.
 
 Media nodes can be selected with GeoIP.
 
 Edumeet-client frontends can run on many different servers.
 
-Management server can host many tenants/domains. The management server database be clustered.
+Management server can host many tenants/domains. The management server database can be clustered.
 
 Keycloak can support a number of Realms.
 
