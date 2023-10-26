@@ -95,10 +95,14 @@ By default (single domain setup):
 - configs/server/config.json
    **remove tls options (behind proxy it is not needed)**
   'host' should be 'http://mgmt:3030',
+  # The room-server will try to connect to the media node with valid SSL.
   'hostname' should be your domain name   'edumeet.example.com',
 - configs/app/config.js
+   # The client will try to get mgmt informations from the URL specified.
    managementUrl should be domain name 'https://edumeet.example.com/mgmt'
-
+```
+The run-me-first.sh will scan for files with the default example domain/localhost occurances that shoud be changed:   
+```
 Change domain in the following files:
 configs/kc/dev.json:535:    "rootUrl" : "https://edumeet.example.com/",
 configs/kc/dev.json:536:    "adminUrl" : "https://edumeet.example.com/mgmt/*",
