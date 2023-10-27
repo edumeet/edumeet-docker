@@ -88,6 +88,98 @@ DONE!
 ${RED}Please see README file for further configuration instructions.${NOCOLOR}
 "
 
+# Room server
+if grep -Fq '"tls":' configs/server/config.json
+then
+    read -e -p "
+Do you want to remove tls option from server/config.json (recommended)? [Y/n] " YN
+
+    if  [[ $YN == "y" || $YN == "Y" || $YN == "" ]] 
+    then 
+        sed -i '/\"tls\"/,/}/ d; /^$/d' configs/server/config.json && echo "done"
+    fi
+else
+    echo "room-server will run in proxy mode(http) OK"
+fi
+
+if grep -Fq 'localhost' configs/server/config.json
+then
+    read -e -p "
+Do you want to set host configuration to domain name from .env file and docker hostname to mgmt in server/config.json (recommended)? [Y/n] " YN
+
+    if  [[ $YN == "y" || $YN == "Y" || $YN == "" ]] 
+    then 
+        sed -i '/"host"/c \"host\": \"http://mgmt:3030\",' configs/server/config.json
+        sed -i "/"hostname"/c \"hostname\": \"${EDUMEET_DOMAIN_NAME}\","  configs/server/config.json
+        echo "done"
+    fi
+else
+    echo "room-server OK
+media-node OK"
+fi
+
+# APP/ CLIENT
+if grep -Fq 'localhost' configs/app/config.js
+then
+    read -e -p "
+Do you want to set managementUrl to https://${EDUMEET_DOMAIN_NAME}/mgmt from .env file in app/config.js (recommended)? [Y/n] " YN
+
+    if  [[ $YN == "y" || $YN == "Y" || $YN == "" ]] 
+    then 
+        sed -i "/"managementUrl"/c managementUrl: \"https://${EDUMEET_DOMAIN_NAME}/mgmt\","  configs/app/config.js
+        echo "done"
+    fi
+else
+    echo "room-client OK"
+fi
+
+
+# MGMT-SERVER
+if grep -Fq 'edumeet.example.com' configs/mgmt/default.json 
+then
+    read -e -p "
+Do you want to replace edumeet.example.com domain in management-server config files to ${EDUMEET_DOMAIN_NAME} in mgmt/default.json (recommended)?[Y/n] " YN
+    if  [[ $YN == "y" || $YN == "Y" || $YN == "" ]]
+    then 
+        sed -i -e "s/edumeet.example.com/${EDUMEET_DOMAIN_NAME}/g" configs/mgmt/default.json 
+        
+        echo "done"
+    fi
+fi
+# KEYCLOAK( auth )
+if grep -Fq 'edumeet.example.com' configs/kc/dev.json
+then
+    read -e -p "
+Do you want to update Keycloak dev realm to your domain : ${EDUMEET_DOMAIN_NAME} from .env file in kc/dev.json (recommended)? [Y/n] " YN
+
+    if  [[ $YN == "y" || $YN == "Y" || $YN == "" ]] 
+    then 
+        sed -i "/"adminUrl"/c \"adminUrl\": \"https://${EDUMEET_DOMAIN_NAME}/mgmt/*\","  configs/kc/dev.json
+        sed -i "/"edumeet.example.com"/c \"rootUrl\": \"https://${EDUMEET_DOMAIN_NAME}/\","  configs/kc/dev.json
+
+        echo "done"
+    fi
+else
+    echo "keycloak dev realm OK"
+fi
+# MGMT-CLIENT
+if grep -Fq 'edumeet.example.com' configs/mgmt-client/config.js
+then
+    read -e -p "
+Do you want to set up edumeet-management-client to https://${EDUMEET_DOMAIN_NAME}/cli from .env file in mgmt-client/config.js (recommended)? [Y/n] " YN
+
+    if  [[ $YN == "y" || $YN == "Y" || $YN == "" ]] 
+    then 
+        sed -i "/"serverApiUrl"/c serverApiUrl: \"https://${EDUMEET_DOMAIN_NAME}/mgmt\","  configs/mgmt-client/config.js
+        sed -i "/"hostname"/c hostname: \"https://${EDUMEET_DOMAIN_NAME}\","  configs/mgmt-client/config.js
+        echo "done"
+    fi
+else
+    echo "management-client OK"
+fi
+
+echo "You can start the application"
+
 
 
 
