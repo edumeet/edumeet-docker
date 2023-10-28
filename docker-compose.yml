@@ -4,9 +4,9 @@ services:
     env_file: .env
     restart: unless-stopped
     volumes:
-      - '${PWD}/configs/server:/usr/src/app/dist/config'
+      - './configs/server:/usr/src/app/dist/config'
       # If running separately and you need certs
-      # - ${PWD}/certs:/usr/src/app/certs
+      # - ./certs:/usr/src/app/certs
     container_name: edumeet-room-server
     # Comment out whole build-section to build edumeet-room-server and not pulling from docher-hub
     build:
@@ -26,9 +26,9 @@ services:
   edumeet-client:
     env_file: .env
     volumes:
-      - '${PWD}/configs/app:/usr/share/nginx/html/config'
-      - '${PWD}/configs/nginx:/etc/nginx/conf.d'
-      - '${PWD}/certs:/etc/edumeet/certs'
+      - './configs/app:/usr/share/nginx/html/config'
+      - './configs/nginx:/etc/nginx/conf.d'
+      - './certs:/etc/edumeet/certs'
     links:
      - "edumeet-management-client:emc"
      - "keycloak:kc"
@@ -53,7 +53,7 @@ services:
   edumeet-media-node:
     env_file: .env
     volumes:
-      - '${PWD}/certs:/usr/src/app/certs'
+      - './certs:/usr/src/app/certs'
     container_name: edumeet-media-node
     build:
       args:
@@ -80,7 +80,7 @@ services:
     env_file: .env
     container_name: edumeet-management-server
     volumes:
-      - '${PWD}/configs/mgmt:/usr/src/app/config'
+      - './configs/mgmt:/usr/src/app/config'
     build:
       args:
         - 'GIT_SERVER=${GIT_SERVER}'
@@ -108,8 +108,8 @@ services:
     env_file: .env
     container_name: edumeet_keycloak
     volumes:
-      - '${PWD}/certs:/opt/keycloak/conf'
-      - '${PWD}/configs/kc:/opt/keycloak/data/import'
+      - './certs:/opt/keycloak/conf'
+      - './configs/kc:/opt/keycloak/data/import'
     image: 'quay.io/keycloak/keycloak:latest'
     command:
       - start
@@ -123,7 +123,7 @@ services:
     env_file: .env
     container_name: edumeet-management-client
     volumes:
-      - ${PWD}/configs/mgmt-client:/usr/src/app/public/config
+      - ./configs/mgmt-client:/usr/src/app/public/config
     build:
       args:
         - GIT_SERVER=${GIT_SERVER}
