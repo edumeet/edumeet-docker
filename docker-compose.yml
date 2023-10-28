@@ -49,7 +49,7 @@ services:
       - '80:80'
       - '443:443'
       - '3002:3002'
-      - '8000:8000'
+      - '8443:8443'
   edumeet-media-node:
     env_file: .env
     volumes:
