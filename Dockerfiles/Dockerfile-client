@@ -27,4 +27,4 @@ COPY --from=edumeet-builder /app/${EDUMEET_CLIENT}/build/   /usr/share/nginx/htm
 # Web PORTS
 EXPOSE 80
 EXPOSE 443
-EXPOSE 8000
+EXPOSE 8443
