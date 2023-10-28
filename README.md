@@ -176,7 +176,7 @@ By default there is one test user in dev realm :
 |  443 | tcp | edumeet-client https webserver and signaling proxy | host network (proxy) |  / |
 |  3000 |  | edumeet-media-node port | host network | - |
 |  3002 | tcp | edumeet-management-cli port | host network (proxy) | /cli/ |
-|  8000 | tcp | edumeet-room-server webserver and signaling | host network (proxy) | /mgmt/ |
+|  8443 | tcp | edumeet-room-server webserver and signaling | host network (proxy) | /mgmt/ |
 |  40000-49999 | udp | edumeet-media-node ports | host network | - |
 | | | | | |
 |  3000 | tcp | edumeet-management-server port | docker internal only (available via proxy) | /mgmt/ |
