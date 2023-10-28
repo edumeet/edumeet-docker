@@ -95,8 +95,8 @@ By default (single domain setup):
 - configs/server/config.json
    **remove tls options (behind proxy it is not needed)**
   'host' should be 'http://mgmt:3030',
-  # The room-server will try to connect to the media node with valid SSL.
-  'hostname' should be your domain name   'edumeet.example.com',
+  # The room-server will try to connect to the media node.
+  'hostname' should be your media-node IP,
 - configs/app/config.js
    # The client will try to get mgmt informations from the URL specified.
    managementUrl should be domain name 'https://edumeet.example.com/mgmt'
