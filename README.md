@@ -77,8 +77,8 @@ cd edumeet-docker
 
 #  Configure
 ## Step 1: 
-* Edit docker-compose.yml for services that you want.
 * Set your domain name in .env file
+* (optional) Edit docker-compose.yml for services that you want.
 
 ## Step 2: 
 * start `run-me-first.sh` script. This script will download newest Dockerfile(s) and config.example.* files from the repository.
@@ -135,25 +135,20 @@ NOTE! Certficates are selfsigned, for a production service you need to set YOUR 
   ssl_certificate     /etc/edumeet/edumeet-demo-cert.pem;
   ssl_certificate_key /etc/edumeet/edumeet-demo-key.pem; 
 ```
-### Download or build images (run-me-first generates the latest ones):
-```
-docker pull edumeet/edumeet-media-node:TAG
-docker pull edumeet/edumeet-room-server:TAG
-docker pull edumeet/edumeet-client:TAG
-...
-```
 
 ## Run
-
 Run with `docker-compose` 
 / [install docker compose](https://docs.docker.com/compose/install/) /
 
 ```sh
   $ sudo docker-compose up --detach
 ```
+*without the detach option you will see the logs
+
 To build: 
-1. change TAG in .env file to your desired name.
-2. Build and run:
+1. Change TAG in .env file to your desired name.
+2. In .env file set to your desired BRANCH.
+3. Build and run:
 ```sh
   $ sudo docker-compose build
   $ sudo docker-compose up -d
@@ -171,8 +166,7 @@ By default there is one test user in dev realm :
    - add a tenant fqdn / domain
    - add authetntication
  # ![auth](/images/mgmt-client-setup-1.png)
-
-     
+    
 3. Logout 
 4. Visit your domain (Login)
 5. Visit yourdomain/cli/ and as the logged in user create a room
@@ -180,20 +174,20 @@ By default there is one test user in dev realm :
 
 
 ## Default ports for firewall setting
-| Port | protocol | description | network | path |
-| ---- | ----------- | ----------- | ----------- | ----------- |
-|  80 | tcp | edumeet-client webserver (redirect to 443) | host network (proxy) | / | 
-|  443 | tcp | edumeet-client https webserver and signaling proxy | host network (proxy) |  / |
-|  3000 |  | edumeet-media-node port | host network | - |
-|  3002 | tcp | edumeet-management-cli port | host network (proxy) | /cli/ |
-|  8443 | tcp | edumeet-room-server webserver and signaling | host network (proxy) | /mgmt/ |
-|  40000-49999 | udp | edumeet-media-node ports | host network | - |
+| Port | protocol | description | network | path | firewall advice | 
+| ---- | ----------- | ----------- | ----------- | ----------- |--------------|
+|  80 | tcp | edumeet-client webserver (redirect to 443) | host network (proxy) | / | |
+|  443 | tcp | edumeet-client https webserver and signaling proxy | host network (proxy) |  / | |
+|  3000 |  | edumeet-media-node port | host network | - | should be limited so only the room-server can access it |
+|  3002 | tcp | edumeet-management-cli port | host network (proxy) | /cli/ | |
+|  8443 | tcp | edumeet-room-server webserver and signaling | host network (proxy) | /mgmt/ | |
+|  40000-49999 | udp | edumeet-media-node ports | host network | - | |
 | | | | | |
-|  3000 | tcp | edumeet-management-server port | docker internal only (available via proxy) | /mgmt/ |
-|  3002 | tcp | edumeet-management-cli port | docker internal only (available via proxy) | /cli/ |
-|  8080 | tcp | keycloak | docker internal only (available via proxy) | /kc/ |
-|  5050 | tcp | pgAdmin | internal only (available via proxy) | /pgadmin4/ |
-|  5432 | tcp | edumeet-db | docker internal only | - |
+|  3000 | tcp | edumeet-management-server port | docker internal only (available via proxy) | /mgmt/ | |
+|  3002 | tcp | edumeet-management-cli port | docker internal only (available via proxy) | /cli/ | |
+|  8080 | tcp | keycloak | docker internal only (available via proxy) | /kc/ | administrator access should be limited |
+|  5050 | tcp | pgAdmin | internal only (available via proxy) | /pgadmin4/ | administrator access should be limited OR turned off if not needed|
+|  5432 | tcp | edumeet-db | docker internal only | - | |
 
 
 ## Docker networking
