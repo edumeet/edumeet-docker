@@ -103,18 +103,28 @@ By default (single domain setup):
 ```
 The run-me-first.sh will scan for files with the default example domain/localhost occurances that shoud be changed:   
 ```
-Change domain in the following files:
-configs/kc/dev.json:535:    "rootUrl" : "https://edumeet.example.com/",
-configs/kc/dev.json:536:    "adminUrl" : "https://edumeet.example.com/mgmt/*",
-configs/mgmt-client/config.js:3:    serverApiUrl: "https://edumeet.example.com/mgmt",
-configs/mgmt-client/config.js:4:    hostname: "https://edumeet.example.com",
-configs/mgmt/default.json:30:                   "audience": "https://edumeet.example.com/",
-configs/mgmt/default.json:42:                           "redirect_uri": "https://edumeet.example.com/mgmt/oauth/tenant/callback"
-configs/nginx/default.conf:84:  #server_name  edumeet.example.com;
-.env:2:EDUMEET_DOMAIN_NAME=edumeet.example.com
-configs/server/config.json:9:           "host": "http://localhost:3030",
-configs/server/config.json:15:          "hostname": "localhost",
 configs/app/config.js:11:       managementUrl: 'http://localhost:3030',
+...
+```
+There are automated steps to change the configs:
+```
+Do you want to remove tls option from server/config.json (recommended)? [Y/n] y
+done
+
+Do you want to set host configuration to domain name from .env file and docker hostname to mgmt in server/config.json (recommended)? [Y/n] y
+done
+
+Do you want to set managementUrl to https://edumeet.sth.sze.hu/mgmt from .env file in app/config.js (recommended)? [Y/n] y
+done
+
+Do you want to replace edumeet.example.com domain in management-server config files to edumeet.sth.sze.hu in mgmt/default.json (recommended)?[Y/n] y
+done
+
+Do you want to update Keycloak dev realm to your domain : edumeet.sth.sze.hu from .env file in kc/dev.json (recommended)? [Y/n] y
+done
+
+Do you want to set up edumeet-management-client to https://edumeet.sth.sze.hu/cli from .env file in mgmt-client/config.js (recommended)? [Y/n] y
+done
 ```
 - Additional configuration documentation is located in [edumeet-client](https://github.com/edumeet/edumeet-client/) and [edumeet-room-server](https://github.com/edumeet/edumeet-room-server) repositories.
 
