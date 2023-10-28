@@ -74,7 +74,7 @@ By default (single domain setup):
 - configs/server/config.json
   'tls' options shoud be removed when running behind proxy
   'host' shoud be 'http://mgmt:3030',
-  'hostname' shoud be your domain name   '${EDUMEET_DOMAIN_NAME}',
+  'hostname' shoud be your IP:   '${MN_IP}',
 - configs/app/config.js
    managementUrl shoud be domain name 'https://${EDUMEET_DOMAIN_NAME}/mgmt'
 
@@ -110,7 +110,7 @@ Do you want to set host configuration to domain name from .env file and docker h
     if  [[ $YN == "y" || $YN == "Y" || $YN == "" ]] 
     then 
         sed -i '/"host"/c \"host\": \"http://mgmt:3030\",' configs/server/config.json
-        sed -i "/"hostname"/c \"hostname\": \"${EDUMEET_DOMAIN_NAME}\","  configs/server/config.json
+        sed -i "/"hostname"/c \"hostname\": \"${MN_IP}\","  configs/server/config.json
         echo "done"
     fi
 else
