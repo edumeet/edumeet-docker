@@ -72,6 +72,7 @@ sudo usermod -aG docker $USER
 ```bash
 git clone https://github.com/edumeet/edumeet-docker.git
 cd edumeet-docker
+git checkout <branch>
 ```
 
 
@@ -84,22 +85,6 @@ cd edumeet-docker
 * start `run-me-first.sh` script. This script will download newest Dockerfile(s) and config.example.* files from the repository.
 ```
 ./run-me-first.sh
-```
-
-## Step 3: 
-* Set your desired release branch in .env file. Branch names (for example 4.0) should match for client and server side.
-
-Change configs to your desired configuration.
-By default (single domain setup):
-```
-- configs/server/config.json
-   **remove tls options (behind proxy it is not needed)**
-  'host' should be 'http://mgmt:3030',
-  # The room-server will try to connect to the media node.
-  'hostname' should be your media-node IP,
-- configs/app/config.js
-   # The client will try to get mgmt informations from the URL specified.
-   managementUrl should be domain name 'https://edumeet.example.com/mgmt'
 ```
 The run-me-first.sh will scan for files with the default example domain/localhost occurances that shoud be changed:   
 ```
@@ -128,8 +113,31 @@ done
 ```
 - Additional configuration documentation is located in [edumeet-client](https://github.com/edumeet/edumeet-client/) and [edumeet-room-server](https://github.com/edumeet/edumeet-room-server) repositories.
 
-NOTE! Certficates are selfsigned, for a production service you need to set YOUR signed certificate in nginx and  server configuration files
-`in nginx/default.conf`
+## Step 3 (Optional): 
+### Set your desired release branch in .env file if you wish to run an other branch.
+Branch names (for example 4.0) should match for client and server side.
+
+## Step 4:
+### NOTE! Certficates are selfsigned, for a production service you need to set YOUR signed certificate in nginx and  server configuration files:
+Update certficates:
+`in edumeet-docker/certs/` 
+
+Default cert files:  ( edumeet-demo-cert.pem and edumeet-demo-key.pem)
+
+#### If cert names change you shoud update it in .env:
+
+
+`KC_HTTPS_CERTIFICATE_FILE,
+KC_HTTPS_CERTIFICATE_KEY_FILE`
+
+and 
+
+`MN_EXTRA_PARAMS='--cert ./certs/edumeet-demo-cert.pem --key ./certs/edumeet-demo-key.pem'`
+
+and 
+
+
+`in nginx/default.conf` :
 ```bash
   server_name  edumeet.example.com; 
   ssl_certificate     /etc/edumeet/edumeet-demo-cert.pem;
@@ -137,11 +145,10 @@ NOTE! Certficates are selfsigned, for a production service you need to set YOUR 
 ```
 
 ## Run
-Run with `docker-compose` 
-/ [install docker compose](https://docs.docker.com/compose/install/) /
+Run with `docker compose` 
 
 ```sh
-  $ sudo docker-compose up --detach
+  $ sudo docker compose up --detach
 ```
 *without the detach option you will see the logs
 
@@ -150,8 +157,8 @@ To build:
 2. In .env file set to your desired BRANCH.
 3. Build and run:
 ```sh
-  $ sudo docker-compose build
-  $ sudo docker-compose up -d
+  $ sudo docker compose build
+  $ sudo docker compose up -d
 ```
 
 ## Initial setup after first run
