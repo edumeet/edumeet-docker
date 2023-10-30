@@ -36,12 +36,74 @@ done
 
 # Update TAG version
 # VERSION=$(curl -s "https://raw.githubusercontent.com/edumeet/${EDUMEET_SERVER}/${BRANCH_SERVER}/package.json" | grep version | sed -e 's/^.*:\ \"\(.*\)\",/\1/')
-while [ $EDUMEET_DOMAIN_NAME == "" ] || [ $EDUMEET_DOMAIN_NAME == "edumeet.example.com" ]; do
+while [ -z "$EDUMEET_DOMAIN_NAME" ] || [ $EDUMEET_DOMAIN_NAME == "edumeet.example.com" ]; do
     read -e -p "
 UPDATE DOMAIN NAME (edumeet.example.com): " EDUMEET_DOMAIN_NAME
 done
 
 sed -i "s/^.*EDUMEET_DOMAIN_NAME=.*$/EDUMEET_DOMAIN_NAME=${EDUMEET_DOMAIN_NAME}/" .env
+
+
+while [ -z "$SERVER_MANAGEMENT_USERNAME" ] || [ $SERVER_MANAGEMENT_USERNAME == "edumeet-admin@localhost" ]; do
+    read -e -p "
+UPDATE management-server admin user in mail format (edumeet-admin@localhost): " SERVER_MANAGEMENT_USERNAME
+done
+
+while [ -z $SERVER_MANAGEMENT_PASSWORD ] || [ $SERVER_MANAGEMENT_PASSWORD == "supersecret" ]; do
+    RECOMMENDED_PW=`tr -dc A-Za-z0-9 </dev/urandom | head -c 13 ; echo ''`
+    read -e -p "
+UPDATE management-server admin user (supersecret ->reccommended: ${RECOMMENDED_PW}): " SERVER_MANAGEMENT_PASSWORD
+    if [ -z $SERVER_MANAGEMENT_PASSWORD ]
+    then
+        SERVER_MANAGEMENT_PASSWORD=$RECOMMENDED_PW
+    fi
+done
+
+sed -i -e "s/edumeet-admin@localhost/${SERVER_MANAGEMENT_USERNAME}/g" configs/_mgmt_pwchange/202310300000000_migrate.ts
+sed -i -e "s/supersecret2/${SERVER_MANAGEMENT_PASSWORD}/g" configs/_mgmt_pwchange/202310300000000_migrate.ts
+
+sed -i "s/^.*SERVER_MANAGEMENT_USERNAME=.*$/SERVER_MANAGEMENT_USERNAME=${SERVER_MANAGEMENT_USERNAME}/" .env
+sed -i "s/^.*SERVER_MANAGEMENT_PASSWORD=.*$/SERVER_MANAGEMENT_PASSWORD=${SERVER_MANAGEMENT_PASSWORD}/" .env
+
+
+while [ -z "$KEYCLOAK_ADMIN" ] || [ $KEYCLOAK_ADMIN == "edumeet" ]; do
+    read -e -p "
+UPDATE KEYCLOAK_ADMIN user: " KEYCLOAK_ADMIN
+done
+
+while [ -z $KEYCLOAK_ADMIN_PASSWORD ] || [ $KEYCLOAK_ADMIN_PASSWORD == "edumeet" ]; do
+    RECOMMENDED_PW=`tr -dc A-Za-z0-9 </dev/urandom | head -c 13 ; echo ''`
+    read -e -p "
+UPDATE KEYCLOAK_ADMIN_PASSWORD (edumeet ->reccommended: ${RECOMMENDED_PW}): " KEYCLOAK_ADMIN_PASSWORD
+    if [ -z $KEYCLOAK_ADMIN_PASSWORD ]
+    then
+        KEYCLOAK_ADMIN_PASSWORD=$RECOMMENDED_PW
+    fi
+done
+
+sed -i "s/^.*KEYCLOAK_ADMIN=.*$/KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN}/" .env
+sed -i "s/^.*KEYCLOAK_ADMIN_PASSWORD=.*$/KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}/" .env
+
+regex="^(([-a-zA-Z0-9\!#\$%\&\'*+/=?^_\`{\|}~]+|(\"([][,:;<>\&@a-zA-Z0-9\!#\$%\&\'*+/=?^_\`{\|}~-]|(\\\\[\\ \"]))+\"))\.)*([-a-zA-Z0-9\!#\$%\&\'*+/=?^_\`{\|}~]+|(\"([][,:;<>\&@a-zA-Z0-9\!#\$%\&\'*+/=?^_\`{\|}~-]|(\\\\[\\ \"]))+\"))@\w((-|\w)*\w)*\.(\w((-|\w)*\w)*\.)*\w{2,4}$"
+
+
+while [ -z "$PGADMIN_DEFAULT_EMAIL" ] || [ $PGADMIN_DEFAULT_EMAIL == "edumeet@edu.meet" ] || [[ ! "$PGADMIN_DEFAULT_EMAIL" =~ $regex ]]; do
+    read -e -p "
+UPDATE PGADMIN_DEFAULT_EMAIL user: " PGADMIN_DEFAULT_EMAIL
+done
+
+while [ -z $PGADMIN_DEFAULT_PASSWORD ] || [ $PGADMIN_DEFAULT_PASSWORD == "edumeet" ]; do
+    RECOMMENDED_PW=`tr -dc A-Za-z0-9 </dev/urandom | head -c 13 ; echo ''`
+    read -e -p "
+UPDATE PGADMIN_DEFAULT_PASSWORD (supersecret ->reccommended: ${RECOMMENDED_PW}): " PGADMIN_DEFAULT_PASSWORD
+    if [ -z $PGADMIN_DEFAULT_PASSWORD ]
+    then
+        PGADMIN_DEFAULT_PASSWORD=$RECOMMENDED_PW
+    fi
+done
+
+sed -i "s/^.*PGADMIN_DEFAULT_EMAIL=.*$/PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}/" .env
+sed -i "s/^.*PGADMIN_DEFAULT_PASSWORD=.*$/PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}/" .env
 
 echo -e "
 

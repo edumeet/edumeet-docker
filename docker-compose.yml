@@ -82,6 +82,7 @@ services:
     container_name: edumeet-management-server
     volumes:
       - './configs/mgmt:/usr/src/app/config'
+      - './configs/_mgmt_pwchange/202310300000000_migrate.ts:/usr/src/app/migrations/202310300000000_migrate.ts'
     build:
       args:
         - 'GIT_SERVER=${GIT_SERVER}'
