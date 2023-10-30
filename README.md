@@ -78,14 +78,16 @@ git checkout <branch>
 
 #  Configure
 ## Step 1: 
-* Set your domain name in .env file
-* (optional) Edit docker-compose.yml for services that you want.
-
-## Step 2: 
 * start `run-me-first.sh` script. This script will download newest Dockerfile(s) and config.example.* files from the repository.
 ```
 ./run-me-first.sh
 ```
+
+#### Set your domain name in .env file
+```
+SET DOMAIN NAME (edumeet.example.com): yourdomain.com
+```
+
 The run-me-first.sh will scan for files with the default example domain/localhost occurances that shoud be changed:   
 ```
 configs/app/config.js:11:       managementUrl: 'http://localhost:3030',
@@ -113,11 +115,13 @@ done
 ```
 - Additional configuration documentation is located in [edumeet-client](https://github.com/edumeet/edumeet-client/) and [edumeet-room-server](https://github.com/edumeet/edumeet-room-server) repositories.
 
-## Step 3 (Optional): 
+## Step 2 (Optional): 
 ### Set your desired release branch in .env file if you wish to run an other branch.
 Branch names (for example 4.0) should match for client and server side.
 
-## Step 4:
+### Edit docker-compose.yml for services that you want.
+
+## Step 3:
 ### NOTE! Certficates are selfsigned, for a production service you need to set YOUR signed certificate in nginx and  server configuration files:
 Update certficates:
 `in edumeet-docker/certs/` 
@@ -132,7 +136,7 @@ KC_HTTPS_CERTIFICATE_KEY_FILE`
 
 and 
 
-`MN_EXTRA_PARAMS=--cert ./certs/edumeet-demo-cert.pem --key ./certs/edumeet-demo-key.pem`
+`MN_EXTRA_PARAMS='--cert ./certs/edumeet-demo-cert.pem --key ./certs/edumeet-demo-key.pem'`
 
 and 
 
@@ -144,7 +148,7 @@ and
   ssl_certificate_key /etc/edumeet/edumeet-demo-key.pem; 
 ```
 
-## Run
+## Step 4 Run:
 Run with `docker compose` 
 
 ```sh
@@ -161,7 +165,7 @@ To build:
   $ sudo docker compose up -d
 ```
 
-## Initial setup after first run
+## Step 5 Initial setup after first run:
 1. visit yourdomain/kc/ and set up your keycloak instance
 By default there is a dev configuration according to https://github.com/edumeet/edumeet-management-server/wiki/Keycloak-setup-(OAuth-openid-connect)
 
