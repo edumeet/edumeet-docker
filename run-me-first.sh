@@ -4,7 +4,7 @@ RED='\033[1;31m'
 GREEN='\033[0;32m'
 NOCOLOR='\033[0m'
 
-source .env                                                                                                                                                                                
+source .env
 
 echo -e "
 ${GREEN}Step 1.${NOCOLOR}
@@ -36,6 +36,12 @@ done
 
 # Update TAG version
 # VERSION=$(curl -s "https://raw.githubusercontent.com/edumeet/${EDUMEET_SERVER}/${BRANCH_SERVER}/package.json" | grep version | sed -e 's/^.*:\ \"\(.*\)\",/\1/')
+while [ $EDUMEET_DOMAIN_NAME == "" ] || [ $EDUMEET_DOMAIN_NAME == "edumeet.example.com" ]; do
+    read -e -p "
+UPDATE DOMAIN NAME (edumeet.example.com): " EDUMEET_DOMAIN_NAME
+done
+
+sed -i "s/^.*EDUMEET_DOMAIN_NAME=.*$/EDUMEET_DOMAIN_NAME=${EDUMEET_DOMAIN_NAME}/" .env
 
 echo -e "
 
