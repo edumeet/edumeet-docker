@@ -62,6 +62,7 @@ services:
         - 'EDUMEET_MN_SERVER=${EDUMEET_MN_SERVER}'
         - 'BRANCH_MN_SERVER=${BRANCH_MN_SERVER}'
         - 'MN_IP=${MN_IP}'
+        - 'MN_EXTRA_PARAMS=${MN_EXTRA_PARAMS}'
       context: .
       dockerfile: Dockerfiles/Dockerfile-media-node
     image: '${REPOSITORY}/${EDUMEET_MN_SERVER}:${TAG}'
