@@ -132,7 +132,7 @@ KC_HTTPS_CERTIFICATE_KEY_FILE`
 
 and 
 
-`MN_EXTRA_PARAMS='--cert ./certs/edumeet-demo-cert.pem --key ./certs/edumeet-demo-key.pem'`
+`MN_EXTRA_PARAMS=--cert ./certs/edumeet-demo-cert.pem --key ./certs/edumeet-demo-key.pem`
 
 and 
 
