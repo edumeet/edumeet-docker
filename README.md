@@ -11,7 +11,7 @@ For further (more generic) information take a look at [eduMEET repository](https
 # Architecture
 - Current stable eduMEET consists of these components:
   - [edumeet-client](https://github.com/edumeet/edumeet-client/)
-  - [edumeet-room-server](https://github.com/edumeet/edumeet/tree/master/server)) from edumeet-repo /server folder
+  - [edumeet-room-server](https://github.com/edumeet/edumeet/tree/master/server) from edumeet-repo /server folder
 - Next generation eduMEET:
   - [edumeet-client](https://github.com/edumeet/edumeet-client/)
   - [edumeet-room-server](https://github.com/edumeet/edumeet-room-server)
