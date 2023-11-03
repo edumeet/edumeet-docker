@@ -27,6 +27,7 @@ services:
     env_file: .env
     volumes:
       - './configs/app:/usr/share/nginx/html/config'
+      - './images/logo.edumeet.svg:/usr/share/nginx/html/images/logo.edumeet.svg'
       - './configs/nginx:/etc/nginx/conf.d'
       - './certs:/etc/edumeet/certs'
     links:
