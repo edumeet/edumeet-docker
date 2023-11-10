@@ -1,4 +1,5 @@
 FROM node:18-bullseye-slim AS edumeet-builder
+RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash jq build-essential python python3-pip openssl pkg-config;apt-get clean
 
 # Args
 ARG EDUMEET_CLIENT
@@ -8,7 +9,6 @@ ARG BRANCH_CLIENT
 
 WORKDIR /app
 
-RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash jq build-essential python python3-pip openssl pkg-config;apt-get clean
 #checkout code
 RUN git clone --single-branch --branch ${BRANCH_CLIENT} ${GIT_SERVER}/${REPOSITORY}/${EDUMEET_CLIENT}.git
 WORKDIR /app/${EDUMEET_CLIENT}
