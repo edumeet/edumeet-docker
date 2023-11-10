@@ -1,5 +1,9 @@
 FROM node:18-bullseye-slim
 
+#install server build dependency
+RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash jq build-essential python python3-pip openssl pkg-config;apt-get clean
+
+
 ARG EDUMEET_MGMT_SERVER
 ARG GIT_SERVER
 ARG REPOSITORY
@@ -7,9 +11,6 @@ ARG BRANCH_MGMT_SERVER
 ARG NODE_TLS_REJECT_UNAUTHORIZED
 
 WORKDIR /app
-
-#install server build dependency
-RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash jq build-essential python python3-pip openssl pkg-config;apt-get clean
 
 #checkout code
 RUN git clone --single-branch --branch ${BRANCH_MGMT_SERVER} ${GIT_SERVER}/${REPOSITORY}/${EDUMEET_MGMT_SERVER}.git
@@ -19,11 +20,11 @@ WORKDIR /app/${EDUMEET_MGMT_SERVER}
 RUN mv  /app/${EDUMEET_MGMT_SERVER} /usr/src/app/
 
 WORKDIR /usr/src/app
-RUN npm i
+RUN yarn
 RUN rm -fr /usr/src/app/test/
 #COPY configs/mgmt/default.json /usr/src/app/config
 # Compile TypeScript source
-RUN npm run compile 
+RUN yarn compile 
 
 ARG MGMT_DEBUG
 # Run migrations to set up the database

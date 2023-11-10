@@ -1,5 +1,8 @@
 FROM node:18-bullseye-slim
 
+#install server build dependency
+RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash jq build-essential python python3-pip openssl pkg-config;apt-get clean
+
 ARG EDUMEET_MN_SERVER
 ARG GIT_SERVER
 ARG REPOSITORY
@@ -17,9 +20,6 @@ ARG MN_IP
 ARG MN_EXTRA_PARAMS
 
 WORKDIR /app
-
-#install server build dependency
-RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash jq build-essential python python3-pip openssl pkg-config;apt-get clean
 
 #checkout code
 RUN git clone --single-branch --branch ${BRANCH_MN_SERVER} ${GIT_SERVER}/${REPOSITORY}/${EDUMEET_MN_SERVER}.git
