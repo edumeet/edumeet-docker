@@ -208,4 +208,28 @@ edumeet-room-server container works in "host" network mode, because bridge mode 
 Q: I get "Cannot find module erros" regarding config files
 
 A: You are probably having a relative path issue with docker check if you are in the correct directory. (edumeet-docker folder)
+_________________
+
+Q: Docker-compose started, but some components are restarting.
+
+A: You are probably having a config or permission problem. Try starting with "docker compose" without the detach parameter to see logs.
+Or alternatively with:
+docker logs -f <edumeet_container_name>
+_________________
+
+Q: KeyCloak won't start
+
+A: KeyCloak is sensitive to permission settings on cert files. Please check 
+_________________
+
+Q: I get network conflicts with docker
+
+A: You will most likely running an old version of docker, that doesn't handle links between containers
+_________________
+
+Q: I get network problems with room-server and media node  within docker when using ufw
+
+A: ufw by default blocks incoming traffic, and  thinks that media control port is accessed outside of the network.
+
+
 
