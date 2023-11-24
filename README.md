@@ -259,7 +259,7 @@ Keycloak can support a number of Realms.
 
 
 ## Docker networking
-edumeet-room-server container works in "host" network mode, because bridge mode has the following issue: ["Docker hangs when attempting to bind a large number of ports"](https://success.docker.com/article/docker-compose-and-docker-run-hang-when-binding-a-large-port-range)
+edumeet-media-node container works in "host" network mode, because bridge mode has the following issue: ["Docker hangs when attempting to bind a large number of ports"](https://success.docker.com/article/docker-compose-and-docker-run-hang-when-binding-a-large-port-range)
 
 ## FAQ
 Q: I get "Cannot find module erros" regarding config files
