@@ -165,7 +165,9 @@ To build:
   $ sudo docker compose up -d
 ```
 
-## Step 5 Initial setup after first run:
+## Step 5 Initial setup after first run (optional):
+- Authentication is optional but if you want to enable it, you should remove defualtroom paremeters from the config.json at configs/server/ and follow these steps:
+
 1. visit yourdomain/kc/ and set up your keycloak instance
 By default there is a dev configuration according to https://github.com/edumeet/edumeet-management-server/wiki/Keycloak-setup-(OAuth-openid-connect)
 
@@ -180,7 +182,7 @@ By default there is one test user in dev realm :
     
 3. Logout 
 4. Visit your domain (Login)
-5. Visit yourdomain/cli/ and as the logged in user create a room
+5. Visit yourdomain/cli/ and as the logged in user create a room ( You will be assigned as a room owner and gain all permissions after login, but you can also set permissions for other users too. )
 6. Join the room
 
 
@@ -213,7 +215,9 @@ _________________
 Q: Docker-compose started, but some components are restarting.
 
 A: You are probably having a config or permission problem. Try starting with "docker compose" without the detach parameter to see logs.
+
 Or alternatively with:
+
 docker logs -f <edumeet_container_name>
 _________________
 
