@@ -8,7 +8,8 @@ It will setup a production eduMEET instance, and help you with setting up a deve
 
 For further (more generic) information take a look at [eduMEET repository](https://github.com/edumeet/edumeet)
 
-# Architecture
+_________________
+
 - Current stable eduMEET consists of these components:
   - [edumeet-client](https://github.com/edumeet/edumeet-client/)
   - [edumeet-room-server](https://github.com/edumeet/edumeet/tree/master/server) from edumeet-repo /server folder
@@ -18,6 +19,30 @@ For further (more generic) information take a look at [eduMEET repository](https
   - [edumeet-media-node](https://github.com/edumeet/edumeet-media-node)
   - [edumeet-management-server](https://github.com/edumeet/edumeet-management-server)
   - [edumeet-management-client](https://github.com/edumeet/edumeet-management-client)
+
+### Recommended configuration of VM / server:
+|   | Specs | 
+| ---- | ----------- |
+|  CPU | typical modern CPU (8 cores) | 
+|  RAM | 8 GB | 
+|  HDD | 100GB | 
+|  network | 1 network adapter (1Gb/s) | 
+| OS | Ubuntu / Debian | 
+|| public IP address (without any NAT) |
+|| domain name assigned (for certificates) |
+
+
+ # ![General Architecture](/images/general-arch.png)
+
+
+
+
+
+## Guides :
+
+
+<details>
+  <summary>Architecture</summary>
 
 In edumeet-docker components are linked together via the edumeet-client docker image.
 
@@ -35,22 +60,15 @@ It also makes certificate renewal easy since on a single domain setup you only n
 - "edumeet-management-server:mgmt"
 - "pgadmin:pgadmin"
 
-Edumeet media node currently uses a certificate without the proxy, in a more direct way because it needs host network see the bottom of the repository.
+Edumeet media node currently uses a certificate indepndently and not through the proxy, in a more direct way because it needs host network see the bottom of the repository.
 
  # ![Architecture](/images/arch-white.drawio.png)
 
-### In general this architecture can be scaled and can consinst of many of the components.
+</details>
 
-Media nodes can be selected with GeoIP.
-
-Edumeet-client frontends can run on many different servers.
-
-Management server can host many tenants/domains. The management server database can be clustered.
-
-Keycloak can support a number of Realms.
-
- # ![General Architecture](/images/general-arch.png)
-
+<details>
+  <summary>Installation ⬅</summary>
+  
 # Install dependencies
 ```bash
 sudo apt install jq ack
@@ -76,8 +94,8 @@ git checkout <branch>
 ```
 
 
-#  Configure
-## Step 1: 
+##  Update, configure
+### Step 1: 
 * start `run-me-first.sh` script. This script will download newest Dockerfile(s) and config.example.* files from the repository.
 ```
 ./run-me-first.sh
@@ -120,6 +138,7 @@ done
 Branch names (for example 4.0) should match for client and server side.
 
 ### Edit docker-compose.yml for services that you want.
+For example want to separe media node(s) to different servers, or remove the included pgadmin interface.
 
 ## Step 3:
 ### NOTE! Certficates are selfsigned, for a production service you need to set YOUR signed certificate in nginx and  server configuration files:
@@ -165,8 +184,16 @@ To build:
   $ sudo docker compose up -d
 ```
 
-## Step 5 Initial setup after first run (optional):
-- Authentication is optional but if you want to enable it, you should remove defualtroom paremeters from the config.json at configs/server/ and follow these steps:
+</details>
+
+<details>
+  <summary>Authentication (optional)</summary>
+
+  ## Initial setup after first run
+
+Supported types: OIDC, SAML, Local DB (KeyCloak)
+
+*  Authentication is optional but if you want to enable it, you should remove defualtroom paremeters from the config.json at configs/server/ and follow these steps:
 
 1. visit yourdomain/kc/ and set up your keycloak instance
 By default there is a dev configuration according to https://github.com/edumeet/edumeet-management-server/wiki/Keycloak-setup-(OAuth-openid-connect)
@@ -174,19 +201,29 @@ By default there is a dev configuration according to https://github.com/edumeet/
 By default there is one test user in dev realm :
 - Username: edumeet
 - Password: edumeet
+
 2. visit yourdomain/cli/ and set up your management server config
    - add a tenant
    - add a tenant fqdn / domain
    - add authetntication
  # ![auth](/images/mgmt-client-setup-1.png)
+
+   *  Credential is located in keycloak admin console/ <yourrealm> / clients / <yourclient> / credentials
+   *  Credential is not generated for default dev.json, change it in KeyCloak 
     
 3. Logout 
 4. Visit your domain (Login)
 5. Visit yourdomain/cli/ and as the logged in user create a room ( You will be assigned as a room owner and gain all permissions after login, but you can also set permissions for other users too. )
 6. Join the room
 
+  
+</details>
 
-## Default ports for firewall setting
+
+<details>
+  <summary>Firewall ports and recommendations</summary>
+
+  ## Default ports for firewall setting
 | Port | protocol | description | network | path | firewall advice | 
 | ---- | ----------- | ----------- | ----------- | ----------- |--------------|
 |  80 | tcp | edumeet-client webserver (redirect to 443) | host network (proxy) | / | |
@@ -201,6 +238,24 @@ By default there is one test user in dev realm :
 |  8080 | tcp | keycloak | docker internal only (available via proxy) | /kc/ | administrator access should be limited |
 |  5050 | tcp | pgAdmin | internal only (available via proxy) | /pgadmin4/ | administrator access should be limited OR turned off if not needed|
 |  5432 | tcp | edumeet-db | docker internal only | - | |
+  
+</details>
+
+<details>
+  <summary>Architecture (scaling tips)</summary>
+  
+### In general this architecture can be scaled and can consinst of many of the components.
+
+Media nodes can be selected with GeoIP.
+
+Edumeet-client frontends can run on many different servers.
+
+Management server can host many tenants/domains. The management server database can be clustered.
+
+Keycloak can support a number of Realms.
+
+</details>
+
 
 
 ## Docker networking
@@ -216,9 +271,11 @@ Q: Docker-compose started, but some components are restarting.
 
 A: You are probably having a config or permission problem. Try starting with "docker compose" without the detach parameter to see logs.
 
+
 Or alternatively with:
 
-docker logs -f <edumeet_container_name>
+
+```docker logs -f <edumeet_container_name>```
 _________________
 
 Q: KeyCloak won't start
