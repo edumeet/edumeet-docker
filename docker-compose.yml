@@ -98,15 +98,15 @@ services:
 #      - '3030:3030'
     depends_on:
       - edumeet-db
-  pgadmin:
-    env_file: .env
-    image: dpage/pgadmin4
-    container_name: pgadmin4_container
-    restart: always
+#  pgadmin:
+#    env_file: .env
+#    image: dpage/pgadmin4
+#    container_name: pgadmin4_container
+#    restart: always
     #ports:
     #  - '5050:80'
-    volumes:
-      - 'edumeet-db-data:/var/lib/pgadmin'
+#    volumes:
+#      - 'edumeet-db-data:/var/lib/pgadmin'
   keycloak:
     env_file: .env
     container_name: edumeet_keycloak
@@ -116,7 +116,7 @@ services:
     image: 'quay.io/keycloak/keycloak:latest'
     command:
       - start
-      - '--auto-build'
+      #- '--auto-build'
       - '--import-realm'
     # ports:
     #   - '8080:8080'
