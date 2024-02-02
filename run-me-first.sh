@@ -111,7 +111,7 @@ ${GREEN}Step 2.${NOCOLOR}
 Updating TAG version in .env file extracted from edumeet version"
 
 #VERSION=4.x-$(date '+%Y%m%d')-nightly
-VERSION=$(curl -L --fail -s "https://hub.docker.com/v2/repositories/${REPOSITORY}/${EDUMEET_CLIENT}/tags/?page_size=1000" |	jq '.results | .[] | .name' -r | 	sed 's/latest//' | 	sort --version-sort | tail -n 1 | grep 4)
+VERSION=$(curl -L --fail -s "https://hub.docker.com/v2/repositories/${REPOSITORY}/${EDUMEET_CLIENT}/tags/?page_size=1000&name=stable" |	jq '.results | .[] | .name' -r | 	sed 's/latest//' | 	sort --version-sort | tail -n 1 | grep 4)
 sed -i "s/^.*TAG.*$/TAG=${VERSION}/" .env
 MN_IP=$(hostname -I | awk '{print $1}')
 sed -i "s/^.*MN_IP.*$/MN_IP=${MN_IP}/" .env
