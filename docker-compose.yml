@@ -35,7 +35,7 @@ services:
      - "keycloak:kc"
      - "edumeet-room-server:io"
      - "edumeet-management-server:mgmt"
-     - "pgadmin:pgadmin"
+    # - "pgadmin:pgadmin"
     container_name: edumeet-client
     build:
       args:
