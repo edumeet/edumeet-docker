@@ -67,6 +67,8 @@ services:
       context: .
       dockerfile: Dockerfiles/Dockerfile-media-node
     image: '${REPOSITORY}/${EDUMEET_MN_SERVER}:${TAG}'
+    security_opt:
+      - seccomp:unconfined
     network_mode: "host"
 #    ports:
 #      - '40000-40249:40000-40249'
