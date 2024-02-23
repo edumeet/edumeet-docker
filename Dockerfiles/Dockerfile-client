@@ -12,7 +12,6 @@ WORKDIR /app
 #checkout code
 RUN git clone --single-branch --branch ${BRANCH_CLIENT} ${GIT_SERVER}/${REPOSITORY}/${EDUMEET_CLIENT}.git
 WORKDIR /app/${EDUMEET_CLIENT}
-COPY  configs/app/config.js /app/${EDUMEET_CLIENT}/public/config/config.js
 
 RUN yarn install --frozen-lockfile
 RUN yarn add eslint-config-react-app@v6 -D
