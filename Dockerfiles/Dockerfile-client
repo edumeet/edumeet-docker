@@ -16,7 +16,7 @@ COPY  configs/app/config.js /app/${EDUMEET_CLIENT}/public/config/config.js
 
 RUN yarn install --frozen-lockfile
 RUN yarn add eslint-config-react-app@v6 -D
-RUN yarn run build
+RUN NODE_ENV=production yarn run build
 
 # create edumeet-client image
 FROM nginx:stable-alpine
