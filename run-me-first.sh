@@ -43,7 +43,7 @@ done
 
 sed -i "s/^.*MAIN_DOMAIN=.*$/MAIN_DOMAIN=${MAIN_DOMAIN}/" .env
 
-while [ -z "$MAIN_DOMAIN" ] || [ $MAIN_DOMAIN == "edumeet.example.com" ]; do
+while [ -z "$MEDIA_DOMAIN" ] || [ $MEDIA_DOMAIN == "edumeet.example.com" ]; do
     read -e -p "
 UPDATE MEDIA_DOMAIN (media.edumeet.example.com): " MEDIA_DOMAIN
 done
