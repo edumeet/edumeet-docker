@@ -36,12 +36,21 @@ done
 
 # Update TAG version
 # VERSION=$(curl -s "https://raw.githubusercontent.com/edumeet/${EDUMEET_SERVER}/${BRANCH_SERVER}/package.json" | grep version | sed -e 's/^.*:\ \"\(.*\)\",/\1/')
-while [ -z "$EDUMEET_DOMAIN_NAME" ] || [ $EDUMEET_DOMAIN_NAME == "edumeet.example.com" ]; do
+while [ -z "$MAIN_DOMAIN" ] || [ $MAIN_DOMAIN == "edumeet.example.com" ]; do
     read -e -p "
-UPDATE DOMAIN NAME (edumeet.example.com): " EDUMEET_DOMAIN_NAME
+UPDATE DOMAIN NAME (edumeet.example.com): " MAIN_DOMAIN
 done
 
-sed -i "s/^.*EDUMEET_DOMAIN_NAME=.*$/EDUMEET_DOMAIN_NAME=${EDUMEET_DOMAIN_NAME}/" .env
+sed -i "s/^.*MAIN_DOMAIN=.*$/MAIN_DOMAIN=${MAIN_DOMAIN}/" .env
+
+while [ -z "$MAIN_DOMAIN" ] || [ $MAIN_DOMAIN == "edumeet.example.com" ]; do
+    read -e -p "
+UPDATE MEDIA_DOMAIN (media.edumeet.example.com): " MEDIA_DOMAIN
+done
+
+sed -i "s/^.*MEDIA_DOMAIN=.*$/MEDIA_DOMAIN=${MEDIA_DOMAIN}/" .env
+
+
 
 
 while [ -z "$SERVER_MANAGEMENT_USERNAME" ] || [ $SERVER_MANAGEMENT_USERNAME == "edumeet-admin@localhost" ]; do
@@ -113,13 +122,16 @@ Updating TAG version in .env file extracted from edumeet version"
 #VERSION=4.x-$(date '+%Y%m%d')-nightly
 VERSION=$(curl -L --fail -s "https://hub.docker.com/v2/repositories/${REPOSITORY}/${EDUMEET_CLIENT}/tags/?page_size=1000&name=stable" |	jq '.results | .[] | .name' -r | 	sed 's/latest//' | 	sort --version-sort | tail -n 1 | grep 4)
 sed -i "s/^.*TAG.*$/TAG=${VERSION}/" .env
-MN_IP=$(hostname -I | awk '{print $1}')
-sed -i "s/^.*MN_IP.*$/MN_IP=${MN_IP}/" .env
+LISTEN_IP=$(hostname -I | awk '{print $1}')
+sed -i "s/^.*LISTEN_IP.*$/LISTEN_IP=${LISTEN_IP}/" .env
+EXTERNAL_IP=$(hostname -I | awk '{print $1}')
+sed -i "s/^.*EXTERNAL_IP.*$/EXTERNAL_IP=${EXTERNAL_IP}/" .env
+
 
 
 echo -e "Current tag: ${RED}${VERSION}${NOCOLOR}
-IP set to : ${RED}${MN_IP}${NOCOLOR}
-
+IP set to : ${RED}${LISTEN_IP}${NOCOLOR}
+External IP set to : ${RED}${EXTERNAL_IP}${NOCOLOR}
 ${GREEN}Step 3.${NOCOLOR}
 To get latest images run the following or build it with running \"docker-compose up\":
 
@@ -142,9 +154,9 @@ By default (single domain setup):
 - configs/server/config.json
   'tls' options shoud be removed when running behind proxy
   'host' shoud be 'http://mgmt:3030',
-  'hostname' shoud be your IP:   '${MN_IP}',
+  'hostname' shoud be your IP:   '${LISTEN_IP}',
 - configs/app/config.js
-   managementUrl shoud be domain name 'https://${EDUMEET_DOMAIN_NAME}/mgmt'
+   managementUrl shoud be domain name 'https://${MAIN_DOMAIN}/mgmt'
 
 
 Change domain in the following files:
@@ -170,31 +182,16 @@ else
     echo "room-server will run in proxy mode(http) OK"
 fi
 
-if grep -Fq 'localhost' configs/server/config.json
-then
-    read -e -p "
-Do you want to set host configuration to domain name from .env file and docker hostname to mgmt in server/config.json (recommended)? [Y/n] " YN
-
-    if  [[ $YN == "y" || $YN == "Y" || $YN == "" ]] 
-    then 
-        sed -i '/"host"/c \"host\": \"http://mgmt:3030\",' configs/server/config.json
-        sed -i "/"hostname"/c \"hostname\": \"${MN_IP}\","  configs/server/config.json
-        echo "done"
-    fi
-else
-    echo "room-server OK
-media-node OK"
-fi
 
 # APP/ CLIENT
 if grep -Fq 'localhost' configs/app/config.js
 then
     read -e -p "
-Do you want to set managementUrl to https://${EDUMEET_DOMAIN_NAME}/mgmt from .env file in app/config.js (recommended)? [Y/n] " YN
+Do you want to set managementUrl to https://${MAIN_DOMAIN}/mgmt from .env file in app/config.js (recommended)? [Y/n] " YN
 
     if  [[ $YN == "y" || $YN == "Y" || $YN == "" ]] 
     then 
-        sed -i "/"managementUrl"/c managementUrl: \"https://${EDUMEET_DOMAIN_NAME}/mgmt\","  configs/app/config.js
+        sed -i "/"managementUrl"/c managementUrl: \"https://${MAIN_DOMAIN}/mgmt\","  configs/app/config.js
         echo "done"
     fi
 else
@@ -206,10 +203,10 @@ fi
 if grep -Fq 'edumeet.example.com' configs/mgmt/default.json 
 then
     read -e -p "
-Do you want to replace edumeet.example.com domain in management-server config files to ${EDUMEET_DOMAIN_NAME} in mgmt/default.json (recommended)?[Y/n] " YN
+Do you want to replace edumeet.example.com domain in management-server config files to ${MAIN_DOMAIN} in mgmt/default.json (recommended)?[Y/n] " YN
     if  [[ $YN == "y" || $YN == "Y" || $YN == "" ]]
     then 
-        sed -i -e "s/edumeet.example.com/${EDUMEET_DOMAIN_NAME}/g" configs/mgmt/default.json 
+        sed -i -e "s/edumeet.example.com/${MAIN_DOMAIN}/g" configs/mgmt/default.json 
         
         echo "done"
     fi
@@ -218,12 +215,12 @@ fi
 if grep -Fq 'edumeet.example.com' configs/kc/dev.json
 then
     read -e -p "
-Do you want to update Keycloak dev realm to your domain : ${EDUMEET_DOMAIN_NAME} from .env file in kc/dev.json (recommended)? [Y/n] " YN
+Do you want to update Keycloak dev realm to your domain : ${MAIN_DOMAIN} from .env file in kc/dev.json (recommended)? [Y/n] " YN
 
     if  [[ $YN == "y" || $YN == "Y" || $YN == "" ]] 
     then 
-        sed -i "/"adminUrl"/c \"adminUrl\": \"https://${EDUMEET_DOMAIN_NAME}/mgmt/*\","  configs/kc/dev.json
-        sed -i "/"edumeet.example.com"/c \"rootUrl\": \"https://${EDUMEET_DOMAIN_NAME}/\","  configs/kc/dev.json
+        sed -i "/"adminUrl"/c \"adminUrl\": \"https://${MAIN_DOMAIN}/mgmt/*\","  configs/kc/dev.json
+        sed -i "/"edumeet.example.com"/c \"rootUrl\": \"https://${MAIN_DOMAIN}/\","  configs/kc/dev.json
 
         echo "done"
     fi
@@ -234,19 +231,20 @@ fi
 if grep -Fq 'edumeet.example.com' configs/mgmt-client/config.js
 then
     read -e -p "
-Do you want to set up edumeet-management-client to https://${EDUMEET_DOMAIN_NAME}/cli from .env file in mgmt-client/config.js (recommended)? [Y/n] " YN
+Do you want to set up edumeet-management-client to https://${MAIN_DOMAIN}/cli from .env file in mgmt-client/config.js (recommended)? [Y/n] " YN
 
     if  [[ $YN == "y" || $YN == "Y" || $YN == "" ]] 
     then 
-        sed -i "/"serverApiUrl"/c serverApiUrl: \"https://${EDUMEET_DOMAIN_NAME}/mgmt\","  configs/mgmt-client/config.js
-        sed -i "/"hostname"/c hostname: \"https://${EDUMEET_DOMAIN_NAME}\","  configs/mgmt-client/config.js
+        sed -i "/"serverApiUrl"/c serverApiUrl: \"https://${MAIN_DOMAIN}/mgmt\","  configs/mgmt-client/config.js
+        sed -i "/"hostname"/c hostname: \"https://${MAIN_DOMAIN}\","  configs/mgmt-client/config.js
         echo "done"
     fi
 else
     echo "management-client OK"
 fi
 
-echo "You can start the application"
+echo "If you want to generate cert(s) with Let's Encrypt run gen-cert.sh"
+echo "You can start the application with gen-cert.sh or docker compose up"
 
 
 

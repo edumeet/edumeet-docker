@@ -12,18 +12,12 @@ WORKDIR /app
 #checkout code
 RUN git clone --single-branch --branch ${BRANCH_CLIENT} ${GIT_SERVER}/${REPOSITORY}/${EDUMEET_CLIENT}.git
 WORKDIR /app/${EDUMEET_CLIENT}
-
 RUN yarn install --frozen-lockfile
-RUN yarn add eslint-config-react-app@v6 -D
+RUN yarn add --dev eslint-config-react-app
+RUN yarn add --dev eslint-plugin-import
 RUN NODE_ENV=production yarn run build
-
-# create edumeet-client image
-FROM nginx:stable-alpine
-WORKDIR /usr/share/nginx/html/
+FROM steebchen/nginx-spa:stable
 ARG EDUMEET_CLIENT
-COPY --from=edumeet-builder /app/${EDUMEET_CLIENT}/build/   /usr/share/nginx/html/
-
-# Web PORTS
+COPY --from=edumeet-builder /app/${EDUMEET_CLIENT}/build/   /app
 EXPOSE 80
-EXPOSE 443
-EXPOSE 8443
+CMD ["nginx"]
