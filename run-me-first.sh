@@ -53,26 +53,26 @@ sed -i "s/^.*MEDIA_DOMAIN=.*$/MEDIA_DOMAIN=${MEDIA_DOMAIN}/" .env
 
 
 
-while [ -z "$SERVER_MANAGEMENT_USERNAME" ] || [ $SERVER_MANAGEMENT_USERNAME == "edumeet-admin@localhost" ]; do
+while [ -z "$MANAGEMENT_USERNAME" ] || [ $MANAGEMENT_USERNAME == "edumeet-admin@localhost" ]; do
     read -e -p "
-UPDATE management-server admin user in mail format (edumeet-admin@localhost): " SERVER_MANAGEMENT_USERNAME
+UPDATE management-server admin user in mail format (edumeet-admin@localhost): " MANAGEMENT_USERNAME
 done
 
-while [ -z $SERVER_MANAGEMENT_PASSWORD ] || [ $SERVER_MANAGEMENT_PASSWORD == "supersecret" ]; do
+while [ -z $MANAGEMENT_PASSWORD ] || [ $MANAGEMENT_PASSWORD == "supersecret" ]; do
     RECOMMENDED_PW=`tr -dc A-Za-z0-9 </dev/urandom | head -c 13 ; echo ''`
     read -e -p "
-UPDATE management-server admin user (supersecret ->reccommended: ${RECOMMENDED_PW}): " SERVER_MANAGEMENT_PASSWORD
-    if [ -z $SERVER_MANAGEMENT_PASSWORD ]
+UPDATE management-server admin user (supersecret ->reccommended: ${RECOMMENDED_PW}): " MANAGEMENT_PASSWORD
+    if [ -z $MANAGEMENT_PASSWORD ]
     then
-        SERVER_MANAGEMENT_PASSWORD=$RECOMMENDED_PW
+        MANAGEMENT_PASSWORD=$RECOMMENDED_PW
     fi
 done
 
-sed -i -e "s/edumeet-admin@localhost/${SERVER_MANAGEMENT_USERNAME}/g" configs/_mgmt_pwchange/202310300000000_migrate.ts
-sed -i -e "s/supersecret2/${SERVER_MANAGEMENT_PASSWORD}/g" configs/_mgmt_pwchange/202310300000000_migrate.ts
+sed -i -e "s/edumeet-admin@localhost/${MANAGEMENT_USERNAME}/g" configs/_mgmt_pwchange/202310300000000_migrate.ts
+sed -i -e "s/supersecret2/${MANAGEMENT_PASSWORD}/g" configs/_mgmt_pwchange/202310300000000_migrate.ts
 
-sed -i "s/^.*SERVER_MANAGEMENT_USERNAME=.*$/SERVER_MANAGEMENT_USERNAME=${SERVER_MANAGEMENT_USERNAME}/" .env
-sed -i "s/^.*SERVER_MANAGEMENT_PASSWORD=.*$/SERVER_MANAGEMENT_PASSWORD=${SERVER_MANAGEMENT_PASSWORD}/" .env
+sed -i "s/^.*MANAGEMENT_USERNAME=.*$/MANAGEMENT_USERNAME=${MANAGEMENT_USERNAME}/" .env
+sed -i "s/^.*MANAGEMENT_PASSWORD=.*$/MANAGEMENT_PASSWORD=${MANAGEMENT_PASSWORD}/" .env
 
 
 while [ -z "$KEYCLOAK_ADMIN" ] || [ $KEYCLOAK_ADMIN == "edumeet" ]; do
@@ -143,8 +143,8 @@ docker pull edumeet/${EDUMEET_MGMT_SERVER}:${VERSION}
 docker pull edumeet/${EDUMEET_MGMT_CLIENT}:${VERSION}
 
 "
-ACK=$(ack edumeet.example.com --ignore-file=is:README.md --ignore-file=is:run-me-first.sh)
-ACK_LOCALHOST=$(ack localhost --ignore-file=is:README.md --ignore-file=is:run-me-first.sh --ignore-file=is:.env  --ignore-file=is:mgmt.sh)
+ACK=$(ack edumeet.example.com --ignore-file=is:README.md --ignore-file=is:run-me-first.sh --ignore-file=is:gen_cert.sh)
+ACK_LOCALHOST=$(ack localhost --ignore-file=is:README.md --ignore-file=is:run-me-first.sh --ignore-file=is:.env  --ignore-file=is:mgmt.sh --ignore-file=is:gen_cert.sh)
 
 echo -e "
 ${GREEN}Step 4.${NOCOLOR}
