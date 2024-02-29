@@ -42,7 +42,7 @@ services:
         --listening-ip=${LISTEN_IP}
         --fingerprint
         --use-auth-secret
-        --static-auth-secret=${BRANCH_MN_SERVER_SECRET}
+        --static-auth-secret=${MEDIA_SECRET}
         --no-tls
         --no-dtls
         --no-udp
@@ -111,7 +111,7 @@ services:
       --rtcMinPort ${RTC_MIN_PORT}
       --rtcMaxPort ${RTC_MAX_PORT}
       --ip ${LISTEN_IP}
-      --secret ${BRANCH_MN_SERVER_SECRET} 
+      --secret ${MEDIA_SECRET} 
       --announcedIp ${EXTERNAL_IP}
     # ${MN_EXTRA_PARAMS}
     
