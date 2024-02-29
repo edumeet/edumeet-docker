@@ -1,10 +1,59 @@
 version: '3.3'
 services:
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+     - ./certbot/conf:/etc/letsencrypt
+     - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+  proxy:
+    image: nginx
+    restart: unless-stopped
+    volumes:
+     - ./configs/proxy:/etc/nginx/templates
+     - ./certbot/conf:/etc/letsencrypt
+     - ./certbot/www:/var/www/certbot
+    ports:
+     - "80:80"
+     - "443:443"
+    links:
+     - "edumeet-management-client:edumeet-management-client"
+     - "keycloak:keycloak"
+     - "edumeet-room-server:edumeet-room-server"
+     - "edumeet-management-server:edumeet-management-server"
+     - "edumeet-client:edumeet-client"
+    # - "pgadmin:pgadmin"
+    environment:
+     - MAIN_DOMAIN=${MAIN_DOMAIN}
+     - MEDIA_DOMAIN=${MEDIA_DOMAIN}
+     - LISTEN_IP=${LISTEN_IP}
+    command: "/bin/sh -c 'envsubst \"\\$${MAIN_DOMAIN},\\$${LISTEN_IP},\\$${MEDIA_DOMAIN}\" < /etc/nginx/templates/nginx.conf.template > /etc/nginx/nginx.conf && while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  turn:
+      image: coturn/coturn
+      restart: unless-stopped
+      network_mode: host
+      command: >
+        -n
+        --min-port=50000
+        --max-port=60000
+        --realm=${MEDIA_DOMAIN}
+        --external-ip=${EXTERNAL_IP}
+        --listening-ip=${LISTEN_IP}
+        --fingerprint
+        --use-auth-secret
+        --static-auth-secret=${BRANCH_MN_SERVER_SECRET}
+        --no-tls
+        --no-dtls
+        --no-udp
+        --no-multicast-peers
+        --no-cli
+
   edumeet-room-server:
     env_file: .env
     restart: unless-stopped
     volumes:
-      - './configs/server:/usr/src/app/dist/config'
+      - './configs/server:/usr/src/app/config'
       # If running separately and you need certs
       # - ./certs:/usr/src/app/certs
     container_name: edumeet-room-server
@@ -15,27 +64,16 @@ services:
         - 'REPOSITORY=${REPOSITORY}'
         - 'EDUMEET_SERVER=${EDUMEET_SERVER}'
         - 'BRANCH_SERVER=${BRANCH_SERVER}'
-        - 'SERVER_MANAGEMENT_PASSWORD=${SERVER_MANAGEMENT_PASSWORD}'
-        - 'SERVER_MANAGEMENT_USERNAME=${SERVER_MANAGEMENT_USERNAME}'
-        
       context: .
       dockerfile: Dockerfiles/Dockerfile-room-server
     image: '${REPOSITORY}/${EDUMEET_SERVER}:${TAG}'
     links:
      - "edumeet-management-server:mgmt"
+
   edumeet-client:
     env_file: .env
     volumes:
-      - './configs/app:/usr/share/nginx/html/config'
-      - './images/logo.edumeet.svg:/usr/share/nginx/html/images/logo.edumeet.svg'
-      - './configs/nginx:/etc/nginx/conf.d'
-      - './certs:/etc/edumeet/certs'
-    links:
-     - "edumeet-management-client:emc"
-     - "keycloak:kc"
-     - "edumeet-room-server:io"
-     - "edumeet-management-server:mgmt"
-    # - "pgadmin:pgadmin"
+      - './configs/app:/app/config'
     container_name: edumeet-client
     build:
       args:
@@ -46,15 +84,12 @@ services:
       context: .
       dockerfile: Dockerfiles/Dockerfile-client
     image: '${REPOSITORY}/${EDUMEET_CLIENT}:${TAG}'
-    ports:
-      - '80:80'
-      - '443:443'
-      - '3002:3002'
-      - '8443:8443'
+#    ports:
+#     - "8080:80"
+
+
   edumeet-media-node:
     env_file: .env
-    volumes:
-      - './certs:/usr/src/app/certs'
     container_name: edumeet-media-node
     build:
       args:
@@ -62,7 +97,7 @@ services:
         - 'REPOSITORY=${REPOSITORY}'
         - 'EDUMEET_MN_SERVER=${EDUMEET_MN_SERVER}'
         - 'BRANCH_MN_SERVER=${BRANCH_MN_SERVER}'
-        - 'MN_IP=${MN_IP}'
+        - 'LISTEN_IP=${LISTEN_IP}'
         - 'MN_EXTRA_PARAMS=${MN_EXTRA_PARAMS}'
       context: .
       dockerfile: Dockerfiles/Dockerfile-media-node
@@ -70,6 +105,17 @@ services:
     security_opt:
       - seccomp:unconfined
     network_mode: "host"
+    command: >
+      DEBUG=*
+      --listenPort ${LISTEN_PORT}
+      --rtcMinPort ${RTC_MIN_PORT}
+      --rtcMaxPort ${RTC_MAX_PORT}
+      --ip ${LISTEN_IP}
+      --secret ${BRANCH_MN_SERVER_SECRET} 
+      --announcedIp ${EXTERNAL_IP}
+    # ${MN_EXTRA_PARAMS}
+    
+    
 #    ports:
 #      - '40000-40249:40000-40249'
 #      - '3000:3000'
@@ -118,11 +164,7 @@ services:
     image: 'quay.io/keycloak/keycloak:latest'
     command:
       - start
-      #- '--auto-build'
       - '--import-realm'
-    # ports:
-    #   - '8080:8080'
-    #   - '8443:8443'
     restart: unless-stopped
   edumeet-management-client:
     env_file: .env
@@ -135,7 +177,7 @@ services:
         - REPOSITORY=${REPOSITORY}
         - EDUMEET_MGMT_CLIENT=${EDUMEET_MGMT_CLIENT}
         - BRANCH_MGMT_CLIENT=${BRANCH_MGMT_CLIENT}
-        - PUBLIC_URL=${PUBLIC_URL}
+        - MGMT_CLI_URL=${MGMT_CLI_URL}
       context: .
       dockerfile: Dockerfiles/Dockerfile-management-client
     image: ${REPOSITORY}/${EDUMEET_MGMT_CLIENT}:${TAG}

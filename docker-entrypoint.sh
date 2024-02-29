@@ -1,6 +1,7 @@
-#!/bin/bash 
-echo "Container starting up..." 
-set -e 
-node /opt/edumeet/server/dist/server.js
-#cd /opt/edumeet/server/dist/ && yarn start
-exec "$@"
+#!/bin/bash
+
+if [ "${TEMPLATE_REPLACE}" = "true" ]; then
+    envsubst < /usr/src/app/config/config.json.template > /usr/src/app/config/config.json
+fi
+
+DEBUG=${SERVER_DEBUG} yarn run prodstart $0 $@

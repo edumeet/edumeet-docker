@@ -51,7 +51,7 @@ ${GREEN}Add fqdn : ${NOCOLOR}
 curl \"$MGMT_URL/tenantFQDNs\" \
   -H 'Content-Type: application/json' \
   -H \"Authorization: Bearer $ACCESSTOKEN\" \
-  --data-binary '{\"tenantId\":1,\"fqdn\":\"${EDUMEET_DOMAIN_NAME}\"}'
+  --data-binary '{\"tenantId\":1,\"fqdn\":\"${MAIN_DOMAIN}\"}'
 "
 
 # Get tenantOAuths
@@ -65,7 +65,7 @@ ${GREEN}Add tenantOAuths : ${NOCOLOR}
 curl \"$MGMT_URL/tenantOAuths\" \
   -H 'Content-Type: application/json' \
   -H \"Authorization: Bearer $ACCESSTOKEN\" \
-  --data-binary '{  \"tenantId\":1,\"key\":\"edumeet-dev-client\",\"secret\":\"1MAJARGQM0nYhSmRNDSHCLIgBfuZXkv6\",  \"authorize_url\":\"https://${EDUMEET_DOMAIN_NAME}/kc/realms/dev/protocol/openid-connect/auth\",\"access_url\":\"https://${EDUMEET_DOMAIN_NAME}/kc/realms/dev/protocol/openid-connect/token\",\"profile_url\":  \"https://${EDUMEET_DOMAIN_NAME}/kc/realms/dev/protocol/openid-connect/userinfo\",\"redirect_uri\": \"https://${EDUMEET_DOMAIN_NAME}/mgmt/oauth/tenant/callback\",\"scope\":\"openid profile email\",\"scope_delimiter\":\" \"}'
+  --data-binary '{  \"tenantId\":1,\"key\":\"edumeet-dev-client\",\"secret\":\"1MAJARGQM0nYhSmRNDSHCLIgBfuZXkv6\",  \"authorize_url\":\"https://${MAIN_DOMAIN}/kc/realms/dev/protocol/openid-connect/auth\",\"access_url\":\"https://${MAIN_DOMAIN}/kc/realms/dev/protocol/openid-connect/token\",\"profile_url\":  \"https://${MAIN_DOMAIN}/kc/realms/dev/protocol/openid-connect/userinfo\",\"redirect_uri\": \"https://${MAIN_DOMAIN}/mgmt/oauth/tenant/callback\",\"scope\":\"openid profile email\",\"scope_delimiter\":\" \"}'
 "
 
 # get rooms
