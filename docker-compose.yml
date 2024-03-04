@@ -170,7 +170,7 @@ services:
     env_file: .env
     container_name: edumeet-management-client
     volumes:
-      - ./configs/mgmt-client:/usr/src/app/public/config
+      - ./configs/mgmt-client:/app/config
     build:
       args:
         - GIT_SERVER=${GIT_SERVER}

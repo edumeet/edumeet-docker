@@ -41,6 +41,10 @@ http {
 			proxy_pass					http://edumeet-client:80/;
 		}
 
+		location /cli/ {
+			proxy_pass					http://edumeet-management-client:80/;
+		}
+
 		location /socket.io/ {
 			proxy_pass					http://edumeet-room-server:8443/socket.io/;
 			proxy_http_version			1.1;

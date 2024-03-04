@@ -1,7 +1,7 @@
 FROM node:20-bookworm-slim
 
 #install server build dependency
-RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash jq build-essential python3 python3-pip openssl pkg-config gettext-base;apt-get clean
+RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash gettext-base;apt-get clean
 
 ARG EDUMEET_SERVER
 ARG GIT_SERVER

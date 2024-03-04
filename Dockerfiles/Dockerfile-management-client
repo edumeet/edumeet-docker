@@ -1,6 +1,8 @@
-FROM node:18-bullseye-slim
+FROM node:20-bookworm-slim AS edumeet-cli-builder
+
+
 #install server build dependency
-RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash jq build-essential python python3-pip openssl pkg-config;apt-get clean
+RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash gettext-base;apt-get clean
 
 ARG EDUMEET_MGMT_CLIENT
 ARG MGMT_CLI_URL
@@ -18,9 +20,12 @@ WORKDIR /app/${EDUMEET_MGMT_CLIENT}
 RUN mv  /app/${EDUMEET_MGMT_CLIENT} /usr/src/app/
 
 WORKDIR /usr/src/app
+RUN yarn install --frozen-lockfile
+RUN NODE_ENV=production yarn run build
+FROM steebchen/nginx-spa:stable
+ARG EDUMEET_CLIENT
+COPY --from=edumeet-cli-builder /usr/src/app/build/   /app
+EXPOSE 80
+CMD ["nginx"]
 
-RUN yarn
-# wont work here because the db is not yet running 
-#RUN npm run migrate # Run migrations to set up the database
-ARG MGMT_CLIENT_DEBUG
-ENTRYPOINT DEBUG=${MGMT_CLIENT_DEBUG} MGMT_CLI_URL=${MGMT_CLI_URL} yarn start $0 $@
+
