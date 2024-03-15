@@ -45,7 +45,6 @@ services:
         --static-auth-secret=${MEDIA_SECRET}
         --no-tls
         --no-dtls
-        --no-udp
         --no-multicast-peers
         --no-cli
 
