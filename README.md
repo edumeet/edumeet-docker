@@ -226,18 +226,13 @@ By default there is one test user in dev realm :
   ## Default ports for firewall setting
 | Port | protocol | description | network | path | firewall advice | 
 | ---- | ----------- | ----------- | ----------- | ----------- |--------------|
-|  80 | tcp | edumeet-client webserver (redirect to 443) | host network (proxy) | / | |
-|  443 | tcp | edumeet-client https webserver and signaling proxy | host network (proxy) |  / | |
+|  80 | tcp | edumeet-client webserver (redirect to 443) | host network | / | |
+|  443 | tcp | edumeet-client https webserver and signaling proxy | host network |  / | |
 |  3000 |  | edumeet-media-node port | host network | - | should be limited so only the room-server can access it |
-|  3002 | tcp | edumeet-management-cli port | host network (proxy) | /cli/ | |
-|  8443 | tcp | edumeet-room-server webserver and signaling | host network (proxy) | /mgmt/ | |
-|  40000-49999 | udp | edumeet-media-node ports | host network | - | |
-| | | | | |
-|  3000 | tcp | edumeet-management-server port | docker internal only (available via proxy) | /mgmt/ | |
-|  3002 | tcp | edumeet-management-cli port | docker internal only (available via proxy) | /cli/ | |
-|  8080 | tcp | keycloak | docker internal only (available via proxy) | /kc/ | administrator access should be limited |
-|  5050 | tcp | pgAdmin | internal only (available via proxy) | /pgadmin4/ | administrator access should be limited OR turned off if not needed|
-|  5432 | tcp | edumeet-db | docker internal only | - | |
+|  3479 |  | coturn port | host network | - | |
+|  40000-49999 | tcp/udp | edumeet-media-node ports | host network | - | |
+
+
   
 </details>
 
