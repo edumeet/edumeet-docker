@@ -142,7 +142,10 @@ For example want to separe media node(s) to different servers, or remove the inc
 
 ## Step 3:
 ### NOTE! Certficates are selfsigned, for a production service you need to set YOUR signed certificate in nginx and  server configuration files:
-Update certficates:
+
+Certificates are now generated with Let's Encrypt by default.
+
+Default certficates are in for applications that are behind proxy but still require one to start:
 `in edumeet-docker/certs/` 
 
 Default cert files:  ( edumeet-demo-cert.pem and edumeet-demo-key.pem)
@@ -157,10 +160,9 @@ and
 
 `MN_EXTRA_PARAMS='--cert ./certs/edumeet-demo-cert.pem --key ./certs/edumeet-demo-key.pem'`
 
-and 
+For proxy certs can be changed in the nginx proxy file:
 
-
-`in nginx/default.conf` :
+`in configs/proxy/nginx.conf.template` :
 ```bash
   server_name  edumeet.example.com; 
   ssl_certificate     /etc/edumeet/edumeet-demo-cert.pem;
