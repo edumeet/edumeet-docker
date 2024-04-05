@@ -96,23 +96,21 @@ sed -i "s/^.*KEYCLOAK_ADMIN_PASSWORD=.*$/KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMI
 regex="^(([-a-zA-Z0-9\!#\$%\&\'*+/=?^_\`{\|}~]+|(\"([][,:;<>\&@a-zA-Z0-9\!#\$%\&\'*+/=?^_\`{\|}~-]|(\\\\[\\ \"]))+\"))\.)*([-a-zA-Z0-9\!#\$%\&\'*+/=?^_\`{\|}~]+|(\"([][,:;<>\&@a-zA-Z0-9\!#\$%\&\'*+/=?^_\`{\|}~-]|(\\\\[\\ \"]))+\"))@\w((-|\w)*\w)*\.(\w((-|\w)*\w)*\.)*\w{2,4}$"
 
 
-while [ -z "$PGADMIN_DEFAULT_EMAIL" ] || [ $PGADMIN_DEFAULT_EMAIL == "edumeet@edu.meet" ] || [[ ! "$PGADMIN_DEFAULT_EMAIL" =~ $regex ]]; do
-    read -e -p "
-UPDATE PGADMIN_DEFAULT_EMAIL user: " PGADMIN_DEFAULT_EMAIL
-done
-
-while [ -z $PGADMIN_DEFAULT_PASSWORD ] || [ $PGADMIN_DEFAULT_PASSWORD == "edumeet" ]; do
-    RECOMMENDED_PW=`tr -dc A-Za-z0-9 </dev/urandom | head -c 13 ; echo ''`
-    read -e -p "
-UPDATE PGADMIN_DEFAULT_PASSWORD (supersecret ->reccommended: ${RECOMMENDED_PW}): " PGADMIN_DEFAULT_PASSWORD
-    if [ -z $PGADMIN_DEFAULT_PASSWORD ]
-    then
-        PGADMIN_DEFAULT_PASSWORD=$RECOMMENDED_PW
-    fi
-done
-
-sed -i "s/^.*PGADMIN_DEFAULT_EMAIL=.*$/PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}/" .env
-sed -i "s/^.*PGADMIN_DEFAULT_PASSWORD=.*$/PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}/" .env
+#while [ -z "$PGADMIN_DEFAULT_EMAIL" ] || [ $PGADMIN_DEFAULT_EMAIL == "edumeet@edu.meet" ] || [[ ! "$PGADMIN_DEFAULT_EMAIL" =~ $regex ]]; do
+#    read -e -p "
+#UPDATE PGADMIN_DEFAULT_EMAIL user: " PGADMIN_DEFAULT_EMAIL
+#done
+#while [ -z $PGADMIN_DEFAULT_PASSWORD ] || [ $PGADMIN_DEFAULT_PASSWORD == "edumeet" ]; do
+#    RECOMMENDED_PW=`tr -dc A-Za-z0-9 </dev/urandom | head -c 13 ; echo ''`
+#    read -e -p "
+#UPDATE PGADMIN_DEFAULT_PASSWORD (supersecret ->reccommended: ${RECOMMENDED_PW}): " PGADMIN_DEFAULT_PASSWORD
+#    if [ -z $PGADMIN_DEFAULT_PASSWORD ]
+#    then
+#        PGADMIN_DEFAULT_PASSWORD=$RECOMMENDED_PW
+#    fi
+#done
+#sed -i "s/^.*PGADMIN_DEFAULT_EMAIL=.*$/PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}/" .env
+#sed -i "s/^.*PGADMIN_DEFAULT_PASSWORD=.*$/PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}/" .env
 
 echo -e "
 
