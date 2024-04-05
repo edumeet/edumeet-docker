@@ -6,9 +6,7 @@ if ! [ -x "$(command -v curl)" ]; then
 fi
 
 # Load existing .env file if it exists
-if [ -f ".env" ]; then
-  export $(cat .env | xargs)
-fi
+source .env
 
 # Define other variables
 domains=($MAIN_DOMAIN $MEDIA_DOMAIN)
