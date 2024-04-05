@@ -271,6 +271,18 @@ Or alternatively with:
 
 
 ```docker logs -f <edumeet_container_name>```
+
+In the .env file there are a few log variables:
+
+SERVER_DEBUG=
+
+MGMT_DEBUG=
+
+MGMT_CLIENT_DEBUG=
+
+MN_DEBUG=
+
+Changing them to * will provide extended logs that can help  debugging problems.
 _________________
 
 Q: KeyCloak won't start
@@ -286,6 +298,7 @@ _________________
 Q: I get network problems with room-server and media node  within docker when using ufw
 
 A: ufw by default blocks incoming traffic, and  thinks that media control port is accessed outside of the network.
+Firewall can also cause issues with component internal communication.
 
 
 
