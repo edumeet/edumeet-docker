@@ -8,7 +8,8 @@ source .env
 
 echo -e "
 ${GREEN}Step 1.${NOCOLOR}
-Updating configuration example files from upstream ${EDUMEET_SERVER}/${BRANCH_SERVER} repository."
+Updating configuration example files can be done from https://github.com/edumeet components repository."
+
 # Update example configurations
 # edumeet-client
 #curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEET_CLIENT}/${BRANCH_CLIENT}/public/config/config.example.js" -o "configs/app/config.example.js"
