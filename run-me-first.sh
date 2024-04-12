@@ -182,6 +182,19 @@ Do you want to set managementUrl to https://${MAIN_DOMAIN}/mgmt from .env file i
 else
     echo "room-client OK"
 fi
+if grep -Fq 'edumeet.example.com' configs/app/config.js
+then
+    read -e -p "
+Do you want to set managementUrl to https://${MAIN_DOMAIN}/mgmt from .env file in app/config.js (recommended)? [Y/n] " YN
+
+    if  [[ $YN == "y" || $YN == "Y" || $YN == "" ]] 
+    then 
+        sed -i "/"managementUrl"/c managementUrl: \"https://${MAIN_DOMAIN}/mgmt\","  configs/app/config.js
+        echo "done"
+    fi
+else
+    echo "room-client OK"
+fi
 
 
 # MGMT-SERVER
