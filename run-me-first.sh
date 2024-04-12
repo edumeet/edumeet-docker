@@ -11,11 +11,11 @@ ${GREEN}Step 1.${NOCOLOR}
 Updating configuration example files from upstream ${EDUMEET_SERVER}/${BRANCH_SERVER} repository."
 # Update example configurations
 # edumeet-client
-curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEET_CLIENT}/${BRANCH_CLIENT}/public/config/config.example.js" -o "configs/app/config.example.js"
-echo -e "Updating configuration example files from upstream ${EDUMEET_CLIENT}/${BRANCH_CLIENT} repository.
-"
-# edumeet-room-server
-curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEET_SERVER}/${BRANCH_SERVER}/config/config.example.json" -o "configs/server/config.example.json"
+#curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEET_CLIENT}/${BRANCH_CLIENT}/public/config/config.example.js" -o "configs/app/config.example.js"
+#echo -e "Updating configuration example files from upstream ${EDUMEET_CLIENT}/${BRANCH_CLIENT} repository.
+#"
+## edumeet-room-server
+#curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEET_SERVER}/${BRANCH_SERVER}/config/config.example.json" -o "configs/server/config.example.json"
 
 for confDir in {app,nginx,server,mgmt,mgmt-client}
 do
@@ -166,19 +166,6 @@ DONE!
 ${RED}Please see README file for further configuration instructions.${NOCOLOR}
 "
 
-# Room server
-if grep -Fq '"tls":' configs/server/config.json
-then
-    read -e -p "
-Do you want to remove tls option from server/config.json (recommended)? [Y/n] " YN
-
-    if  [[ $YN == "y" || $YN == "Y" || $YN == "" ]] 
-    then 
-        sed -i '/\"tls\"/,/}/ d; /^$/d' configs/server/config.json && echo "done"
-    fi
-else
-    echo "room-server will run in proxy mode(http) OK"
-fi
 
 
 # APP/ CLIENT
