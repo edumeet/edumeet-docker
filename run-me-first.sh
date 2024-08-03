@@ -4,6 +4,24 @@ RED='\033[1;31m'
 GREEN='\033[0;32m'
 NOCOLOR='\033[0m'
 
+# Check curl is installed
+if ! [ -x "$(command -v curl)" ]; then
+  echo -e "${RED}Error: curl is not installed." >&2
+  exit 1
+fi
+
+# Check docker is installed
+if ! [ -x "$(command -v docker)" ]; then
+  echo -e "${RED}Error: docker is not installed." >&2
+  exit 1
+fi
+
+# Check jq is installed
+if ! [ -x "$(command -v jq)" ]; then
+    echo -e "${RED}Error: jq is not installed." >&2
+    exit 1
+fi
+
 source .env
 
 echo -e "
