@@ -8,6 +8,9 @@ It will setup a production eduMEET instance, and help you with setting up a deve
 
 For further (more generic) information take a look at [eduMEET repository](https://github.com/edumeet/edumeet)
 
+Setup guide in a video format can be found here: 
+[![Watch the video](https://img.youtube.com/vi/wtsRKQEZv9k/maxresdefault.jpg)](https://youtu.be/wtsRKQEZv9k)
+
 _________________
 
 - Current stable eduMEET consists of these components:
