@@ -115,7 +115,7 @@ git checkout <branch>
 ./run-me-first.sh
 ```
 
-#### Set your domain name in .env file
+#### By running run-me-first.sh your domain names + your IP (you might have to change it it is not your public IP) will be set in the .env file
 ```
 SET DOMAIN NAME (edumeet.example.com): yourdomain.com
 ```
