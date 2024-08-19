@@ -1,5 +1,5 @@
 # ![eduMEET](/images/logo.edumeet.svg) in Docker container
-Docker hub repository: [edumeet/edumeet](https://hub.docker.com/r/edumeet/edumeet)
+Docker hub repository: [edumeet](https://hub.docker.com/u/edumeet)
 
 This is "dockerized" version of the [eduMEET](https://github.com/edumeet/edumeet).
 (Successor of [multiparty meeting](https://github.com/havfo/multiparty-meeting) fork of mediasoup-demo)
@@ -7,21 +7,19 @@ This is "dockerized" version of the [eduMEET](https://github.com/edumeet/edumeet
 It will setup a production eduMEET instance, and help you with setting up a development environment.
 
 For further (more generic) information take a look at [eduMEET repository](https://github.com/edumeet/edumeet)
-
-Setup guide in a video format can be found here: 
-[![Watch the video](https://img.youtube.com/vi/wtsRKQEZv9k/maxresdefault.jpg)](https://youtu.be/wtsRKQEZv9k)
-
 _________________
 
 - Current stable eduMEET consists of these components:
-  - [edumeet-client](https://github.com/edumeet/edumeet-client/)
-  - [edumeet-room-server](https://github.com/edumeet/edumeet/tree/master/server) from edumeet-repo /server folder
-- Next generation eduMEET:
   - [edumeet-client](https://github.com/edumeet/edumeet-client/)
   - [edumeet-room-server](https://github.com/edumeet/edumeet-room-server)
   - [edumeet-media-node](https://github.com/edumeet/edumeet-media-node)
   - [edumeet-management-server](https://github.com/edumeet/edumeet-management-server)
   - [edumeet-management-client](https://github.com/edumeet/edumeet-management-client)
+
+Setup guide in a video format can be found here: 
+[![Watch the video](https://img.youtube.com/vi/wtsRKQEZv9k/maxresdefault.jpg)](https://youtu.be/wtsRKQEZv9k)
+
+
 
 ### Recommended configuration of VM / server:
 |   | Specs | 
