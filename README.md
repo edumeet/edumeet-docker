@@ -1,10 +1,11 @@
 # ![eduMEET](/images/logo.edumeet.svg) in Docker container
-Docker hub repository: [edumeet](https://hub.docker.com/u/edumeet)
 
-This is "dockerized" version of the [eduMEET](https://github.com/edumeet/edumeet).
+This is "dockerized" version of the [eduMEET](https://github.com/edumeet/edumeet). 
 (Successor of [multiparty meeting](https://github.com/havfo/multiparty-meeting) fork of mediasoup-demo)
 
-It will setup a production eduMEET instance, and help you with setting up a development environment.
+Docker hub repository: [edumeet](https://hub.docker.com/u/edumeet)
+
+It will setup a production eduMEET instance with or without authentication, and help you with setting up a development environment.
 
 For further (more generic) information take a look at [eduMEET repository](https://github.com/edumeet/edumeet)
 _________________
@@ -19,8 +20,12 @@ _________________
 Setup guide in a video format can be found here: 
 [![Watch the video](https://img.youtube.com/vi/wtsRKQEZv9k/maxresdefault.jpg)](https://youtu.be/wtsRKQEZv9k)
 
+> FAQ is at the bottom of this README.md !
 
-
+## Guides :
+<details>
+  <summary>Recommended configuration + introduction</summary>
+  
 ### Recommended configuration of VM / server:
 |   | Specs | 
 | ---- | ----------- |
@@ -30,45 +35,53 @@ Setup guide in a video format can be found here:
 |  network | 1 network adapter (1Gb/s) | 
 | OS | Ubuntu / Debian | 
 || public IP address (without any NAT) |
-|| domain name assigned (for certificates) |
+|| 2 FQDN name assigned (for certificates) |
 
+In edumeet-docker components are linked together via the proxy (nginx) docker image.
 
- # ![General Architecture](/images/general-arch.png)
-
-
-
-
-
-## Guides :
-
-
-<details>
-  <summary>Architecture</summary>
-
-In edumeet-docker components are linked together via the edumeet-client docker image.
-
-The edumeet-client docker image uses an nginx proxy to serve most of the other components.
-
-By default it is using the built in docker networking hostnames to connect/link components.
+By default it is using the docker networking hostnames to connect/link components.
 
 Since some components need the hostname / domain name / IP to function it is included in every config and can be changed depending on the use case.
 
 It also makes certificate renewal easy since on a single domain setup you only need to change the cert in the certs folder.
 
-- "edumeet-management-client:emc"
-- "keycloak:kc"
-- "edumeet-room-server:io"
-- "edumeet-management-server:mgmt"
-- "pgadmin:pgadmin"
+eduMEET client is the frontend, room-server is the backend, management-server is the auth backend, management-client is the frontend for authentication related stuff, media-node is used for everything media related.
 
-Edumeet media node currently uses a certificate indepndently and not through the proxy, in a more direct way because it needs host network see the bottom of the repository.
+ # ![General Architecture](/images/edumeet_general_component_functions.png)
 
- # ![Architecture](/images/arch-white.drawio.png)
+</details>
+
+
+<details>
+  <summary>Architecture</summary>
+eduMEET docker uses the following endpoints for components:
+
+ # ![Architecture](/images/edumeet_endpoints.png)
+
+
+### eduMEET can run from a single host
+
+Components can run on a single machine with docker compose or can be separated.
+
+ # ![Architecture2](/images/edumeet_ways_to_run.png)
+
+### Scaling eduMEET 
+Media nodes can be selected with GeoIP. 
+
+Edumeet-client frontends can run on many different servers.
+
+Management server can host many tenants/domains. The management server database can be clustered.
+
+Keycloak can support a number of Realms.
+
+# ![Architecture3](/images/general-arch.png)
+ 
+
 
 </details>
 
 <details>
-  <summary>Installation ⬅</summary>
+  <summary>Installation ⬅ (Without dependencies, edumeet-docker will probably fail!)</summary>
   
 # Install dependencies
 ```bash
@@ -144,7 +157,7 @@ For example want to separe media node(s) to different servers, or remove the inc
 ## Step 3:
 ### NOTE! Certficates are selfsigned, for a production service you need to set YOUR signed certificate in nginx and  server configuration files:
 
-Certificates are now generated with Let's Encrypt by default.
+Certificates are now generated with Let's Encrypt by default with running the gen_cert.sh
 
 Default certficates are in for applications that are behind proxy but still require one to start:
 `in edumeet-docker/certs/` 
@@ -152,7 +165,6 @@ Default certficates are in for applications that are behind proxy but still requ
 Default cert files:  ( edumeet-demo-cert.pem and edumeet-demo-key.pem)
 
 #### If cert names change you shoud update it in .env:
-
 
 `KC_HTTPS_CERTIFICATE_FILE,
 KC_HTTPS_CERTIFICATE_KEY_FILE`
@@ -235,24 +247,28 @@ By default there is one test user in dev realm :
 |  3479 |  | coturn port | host network | - | |
 |  40000-49999 | tcp/udp | edumeet-media-node ports | host network | - | |
 
+ # ![Network](/images/edumeet_netw.png)
 
   
 </details>
+
+
+
 
 <details>
-  <summary>Architecture (scaling tips)</summary>
-  
-### In general this architecture can be scaled and can consinst of many of the components.
+  <summary>Development</summary>
 
-Media nodes can be selected with GeoIP.
+eduMEET development usualy happens in 2 ways:
+- Running components manualy
+- Running edumeet-docker with components linked into the docker container or passed to the proxy.
 
-Edumeet-client frontends can run on many different servers.
+*Without valid certs you have to allow localhost/local ip to work without certs in the browser.
 
-Management server can host many tenants/domains. The management server database can be clustered.
-
-Keycloak can support a number of Realms.
+# ![Dev](/images/edumeet_dev.png)
 
 </details>
+
+
 
 
 
