@@ -22,7 +22,7 @@ Setup guide in a video format can be found here:
 
 > FAQ is at the bottom of this README.md !
 
-## Guides :
+## Guides (click to open):
 <details>
   <summary>Recommended configuration + introduction</summary>
   
