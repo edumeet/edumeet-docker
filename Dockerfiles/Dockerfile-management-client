@@ -22,7 +22,7 @@ RUN mv  /app/${EDUMEET_MGMT_CLIENT} /usr/src/app/
 WORKDIR /usr/src/app
 RUN yarn install --frozen-lockfile
 RUN NODE_ENV=production yarn run build
-FROM steebchen/nginx-spa:stable
+FROM n7remus/nginx-spa:latest
 ARG EDUMEET_CLIENT
 COPY --from=edumeet-cli-builder /usr/src/app/build/   /app
 EXPOSE 80
