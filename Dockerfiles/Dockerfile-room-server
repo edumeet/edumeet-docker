@@ -15,7 +15,7 @@ RUN git clone --single-branch --branch ${BRANCH_SERVER} ${GIT_SERVER}/${REPOSITO
 
 WORKDIR /app/${EDUMEET_SERVER}
 
-COPY  configs/server/config.json /app/${EDUMEET_SERVER}/config/config.json
+#COPY  configs/server/config.json /app/${EDUMEET_SERVER}/config/config.json
 
 RUN mv  /app/${EDUMEET_SERVER}/ /usr/src/app/
 
