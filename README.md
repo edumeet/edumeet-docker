@@ -231,6 +231,13 @@ By default there is one test user in dev realm :
 5. Visit yourdomain/cli/ and as the logged in user create a room ( You will be assigned as a room owner and gain all permissions after login, but you can also set permissions for other users too. )
 6. Join the room
 
+- For auth you can use any OpenID compatible backend. Keycloak is reccomended for testing, integrating with common third party auth sources and deployments without a central authentication (local users).
+- For federated login with discovery we reccommend using SATOSA.
+- For SATOSA the mgmt service client_secret_basic auth has to be added to oauth tenant auth methods:
+
+"dynamic": [ "key", "secret", "authorize_url", "access_url", "profile_url", "scope_delimiter", "scope", "redirect_uri" ], "token_endpoint_auth_method": "client_secret_basic" } 
+
+In SATOSA redirect uri should be: https://edumeet.example.com/mgmt/oauth/tenant/callback
   
 </details>
 
