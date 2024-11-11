@@ -1,15 +1,14 @@
 name: SonarQube CI
 on: push
 jobs:
-  sonarQubeTrigger:
-    name: SonarQube Trigger
+  sonarqube:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    - name: SonarQube Scan
-      uses: kitabisa/sonarqube-action@v1.2.1
-      with:
-        host: ${{ secrets.SONARQUBE_HOST }}
-        login: ${{ secrets.SONARQUBE_TOKEN }}
+    - name: SonarQube Scaner
+      uses: sonarsource/sonarqube-scan-action@v3.0.0
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
