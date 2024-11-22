@@ -8,7 +8,7 @@
 // eslint-disable-next-line
 var config = {
 	// If ability to log in is enabled.
-	loginEnabled: true,
+	loginEnabled: false,
 
 	managementUrl: "https://edumeet.example.com/mgmt",
 
