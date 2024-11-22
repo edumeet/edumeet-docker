@@ -1,108 +1,28 @@
 services:
-  certbot:
-    image: certbot/certbot
-    restart: unless-stopped
-    volumes:
-     - ./certbot/conf:/etc/letsencrypt
-     - ./certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-  proxy:
-    image: nginx
-    restart: unless-stopped
-    volumes:
-     - ./configs/proxy:/etc/nginx/templates
-     - ./certbot/conf:/etc/letsencrypt
-     - ./certbot/www:/var/www/certbot
-    ports:
-     - "80:80"
-     - "443:443"
-    links:
-     - "edumeet-management-client:edumeet-management-client"
-     - "keycloak:keycloak"
-     - "edumeet-room-server:edumeet-room-server"
-     - "edumeet-management-server:edumeet-management-server"
-     - "edumeet-client:edumeet-client"
-    # - "pgadmin:pgadmin"
-    environment:
-     - MAIN_DOMAIN=${MAIN_DOMAIN}
-     - MEDIA_DOMAIN=${MEDIA_DOMAIN}
-     - LISTEN_IP=${LISTEN_IP}
-    command: "/bin/sh -c 'envsubst \"\\$${MAIN_DOMAIN},\\$${LISTEN_IP},\\$${MEDIA_DOMAIN}\" < /etc/nginx/templates/nginx.conf.template > /etc/nginx/nginx.conf && while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-  turn:
-      image: coturn/coturn
-      restart: unless-stopped
-      network_mode: host
-      command: >
-        -n
-        --min-port=50000
-        --max-port=60000
-        --realm=${MEDIA_DOMAIN}
-        --external-ip=${EXTERNAL_IP}
-        --listening-ip=${LISTEN_IP}
-        --fingerprint
-        --use-auth-secret
-        --static-auth-secret=${MEDIA_SECRET}
-        --no-tls
-        --no-dtls
-        --no-multicast-peers
-        --no-cli
-
-  edumeet-room-server:
+  edumeet-bundle:
     env_file: .env
     restart: unless-stopped
     volumes:
-      - './configs/server:/usr/src/app/config'
-      # If running separately and you need certs
-      # - ./certs:/usr/src/app/certs
-    container_name: edumeet-room-server
-    # Comment out whole build-section to build edumeet-room-server and not pulling from docher-hub
+      - './configs/server:/app/config'
+      - './docker-entrypoint.sh:/entrypoint.sh'
+      - ./configs/proxy:/etc/nginx/sites-enabled
+      - ./certs:/etc/edumeet/certs
+    container_name: edumeet-bundle
     build:
       args:
         - 'GIT_SERVER=${GIT_SERVER}'
         - 'REPOSITORY=${REPOSITORY}'
         - 'EDUMEET_SERVER=${EDUMEET_SERVER}'
         - 'BRANCH_SERVER=${BRANCH_SERVER}'
-      context: .
-      dockerfile: Dockerfiles/Dockerfile-room-server
-    image: '${REPOSITORY}/${EDUMEET_SERVER}:${TAG}'
-    links:
-     - "edumeet-management-server:mgmt"
-
-  edumeet-client:
-    env_file: .env
-    volumes:
-      - './configs/app:/app/config'
-    container_name: edumeet-client
-    build:
-      args:
-        - 'GIT_SERVER=${GIT_SERVER}'
-        - 'REPOSITORY=${REPOSITORY}'
         - 'EDUMEET_CLIENT=${EDUMEET_CLIENT}'
         - 'BRANCH_CLIENT=${BRANCH_CLIENT}'
-      context: .
-      dockerfile: Dockerfiles/Dockerfile-client
-    image: '${REPOSITORY}/${EDUMEET_CLIENT}:${TAG}'
-#    ports:
-#     - "8080:80"
-
-
-  edumeet-media-node:
-    env_file: .env
-    container_name: edumeet-media-node
-    build:
-      args:
-        - 'GIT_SERVER=${GIT_SERVER}'
-        - 'REPOSITORY=${REPOSITORY}'
         - 'EDUMEET_MN_SERVER=${EDUMEET_MN_SERVER}'
         - 'BRANCH_MN_SERVER=${BRANCH_MN_SERVER}'
         - 'LISTEN_IP=${LISTEN_IP}'
         - 'MN_EXTRA_PARAMS=${MN_EXTRA_PARAMS}'
       context: .
-      dockerfile: Dockerfiles/Dockerfile-media-node
-    image: '${REPOSITORY}/${EDUMEET_MN_SERVER}:${TAG}'
-    security_opt:
-      - seccomp:unconfined
-    network_mode: "host"
+      dockerfile: Dockerfiles/Dockerfile-edumeet-bundle
+    image: '${REPOSITORY}/edumeet-bundle:${TAG}'
     command: >
       DEBUG=*
       --listenPort ${LISTEN_PORT}
@@ -111,91 +31,6 @@ services:
       --ip ${LISTEN_IP}
       --secret ${MEDIA_SECRET} 
       --announcedIp ${EXTERNAL_IP}
-    # ${MN_EXTRA_PARAMS}
-    
-    
-#    ports:
-#      - '40000-40249:40000-40249'
-#      - '3000:3000'
-  edumeet-db:
-    env_file: .env
-    image: 'postgres:14.1-alpine'
-    container_name: edumeet-db
-    restart: always
-    volumes:
-      - 'edumeet-db:/var/lib/postgresql/data'
-  edumeet-management-server:
-    env_file: .env
-    container_name: edumeet-management-server
-    volumes:
-      - './configs/mgmt:/usr/src/app/config'
-      - './configs/_mgmt_pwchange/202310300000000_migrate.ts:/usr/src/app/migrations/202310300000000_migrate.ts'
-    build:
-      args:
-        - 'GIT_SERVER=${GIT_SERVER}'
-        - 'REPOSITORY=${REPOSITORY}'
-        - 'EDUMEET_MGMT_SERVER=${EDUMEET_MGMT_SERVER}'
-        - 'BRANCH_MGMT_SERVER=${BRANCH_MGMT_SERVER}'
-        - 'NODE_TLS_REJECT_UNAUTHORIZED=${NODE_TLS_REJECT_UNAUTHORIZED}'
-      context: .
-      dockerfile: Dockerfiles/Dockerfile-management-server
-    image: '${REPOSITORY}/${EDUMEET_MGMT_SERVER}:${TAG}'
-#    ports:
-#      - '3030:3030'
-    depends_on:
-      - edumeet-db
-#  pgadmin:
-#    env_file: .env
-#    image: dpage/pgadmin4
-#    container_name: pgadmin4_container
-#    restart: always
-    #ports:
-    #  - '5050:80'
-#    volumes:
-#      - 'edumeet-db-data:/var/lib/pgadmin'
-  keycloak:
-    env_file: .env
-    container_name: edumeet_keycloak
-    volumes:
-      - './certs:/opt/keycloak/conf'
-      - './configs/kc:/opt/keycloak/data/import'
-    image: 'quay.io/keycloak/keycloak:25.0.6-0'
-    command:
-      - start
-      - '--import-realm'
-    restart: unless-stopped
-  edumeet-management-client:
-    env_file: .env
-    container_name: edumeet-management-client
-    volumes:
-      - ./configs/mgmt-client:/app/config
-    build:
-      args:
-        - GIT_SERVER=${GIT_SERVER}
-        - REPOSITORY=${REPOSITORY}
-        - EDUMEET_MGMT_CLIENT=${EDUMEET_MGMT_CLIENT}
-        - BRANCH_MGMT_CLIENT=${BRANCH_MGMT_CLIENT}
-        - MGMT_CLI_URL=${MGMT_CLI_URL}
-      context: .
-      dockerfile: Dockerfiles/Dockerfile-management-client
-    image: ${REPOSITORY}/${EDUMEET_MGMT_CLIENT}:${TAG}
-    #ports:
-    #    - "3001:3000"
-  #edumeet-translator:
-  #   env_file: .env
-  #   container_name: edumeet-translator
-  #   build:
-  #      args:
-  #       - BASEDIR=${BASEDIR}
-  #       - GIT_SERVER=${GIT_SERVER}
-  #       - REPOSITORY=${REPOSITORY}
-  #       - EDUMEET_CLIENT=${EDUMEET_CLIENT}
-  #       - BRANCH_CLIENT=${BRANCH_CLIENT}
-  #      context: .
-  #      dockerfile: Dockerfiles/Dockerfile-translator
-  #   image: ${REPOSITORY}/edumeet-translator:${TAG}
-volumes:
-  edumeet-db:
-    driver: local
-  edumeet-db-data:
-    driver: local
+    security_opt:
+      - seccomp:unconfined
+    network_mode: "host"

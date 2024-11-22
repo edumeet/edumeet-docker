@@ -1,0 +1,73 @@
+FROM node:20-bookworm-slim AS edumeet-builder
+
+#install server build dependency
+RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq nginx git bash gettext-base;apt-get clean
+
+# Args CLIENT
+ARG EDUMEET_CLIENT
+ARG GIT_SERVER
+ARG REPOSITORY
+ARG BRANCH_CLIENT
+
+WORKDIR /app
+RUN git clone --single-branch --branch ${BRANCH_CLIENT} ${GIT_SERVER}/${REPOSITORY}/${EDUMEET_CLIENT}.git
+WORKDIR /app/${EDUMEET_CLIENT}
+RUN yarn install --frozen-lockfile
+RUN yarn add --dev eslint-config-react-app
+RUN yarn add --dev eslint-plugin-import
+RUN NODE_ENV=production yarn run build
+
+# ROOM_SERVER
+ARG EDUMEET_SERVER
+ARG GIT_SERVER
+ARG REPOSITORY
+ARG BRANCH_SERVER
+WORKDIR /app
+
+RUN git clone --single-branch --branch ${BRANCH_SERVER} ${GIT_SERVER}/${REPOSITORY}/${EDUMEET_SERVER}.git
+WORKDIR /app/${EDUMEET_SERVER}
+COPY  configs/server/config.json /app/${EDUMEET_SERVER}/config/config.json
+RUN yarn install --frozen-lockfile
+RUN yarn run build
+EXPOSE 8443
+
+
+# MEDIA NODE
+ARG EDUMEET_MN_SERVER
+ARG GIT_SERVER
+ARG REPOSITORY
+ARG BRANCH_MN_SERVER
+ARG MEDIA_SECRET
+ARG listenPort=3000
+ENV LISTEN_PORT=$listenPort
+
+ARG rtcMinPort=40000
+ENV RTC_MIN_PORT=$rtcMinPort
+
+ARG rtcMaxPort=40249
+ENV RTC_MAX_PORT=$rtcMaxPort
+ARG LISTEN_IP
+ARG MN_EXTRA_PARAMS
+
+WORKDIR /app
+
+#checkout code
+RUN git clone --single-branch --branch ${BRANCH_MN_SERVER} ${GIT_SERVER}/${REPOSITORY}/${EDUMEET_MN_SERVER}.git
+
+WORKDIR /app/${EDUMEET_MN_SERVER}
+
+RUN yarn install --frozen-lockfile
+RUN yarn run build
+
+EXPOSE ${LISTEN_PORT}
+EXPOSE ${RTC_MIN_PORT}-${RTC_MAX_PORT}/udp
+EXPOSE ${RTC_MIN_PORT}-${RTC_MAX_PORT}/tcp
+
+ARG MN_DEBUG
+
+
+COPY docker-bundle-entrypoint.sh /entrypoint.sh
+EXPOSE 80
+EXPOSE 443
+ENTRYPOINT [ "/entrypoint.sh" ]
+
