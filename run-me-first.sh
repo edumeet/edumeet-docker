@@ -260,6 +260,24 @@ else
     echo "management-client OK"
 fi
 
+echo "generating new secret for media service communication"
+RECOMMENDED_SECRET=`tr -dc A-Za-z0-9 </dev/urandom | head -c 40 ; echo ''`
+sed -i "s/^.*MEDIA_SECRET=.*$/MEDIA_SECRET=${RECOMMENDED_SECRET}/" .env
+echo "MEDIA_SECRET=${RECOMMENDED_SECRET}"
+
+echo 'generating new secret for management serivce communication'
+./create-cert.sh
+MGMT_PUB=`./convert.sh rsa_4096_pub.pem`
+MGMT_PRIV=`./convert.sh rsa_4096_priv.pem`
+MGMT_PUB_ESCAPED=$(echo "$MGMT_PUB" | sed 's%\\n%\\\\n%g')
+MGMT_PRIV_ESCAPED=$(echo "$MGMT_PRIV" | sed 's%\\n%\\\\n%g')
+
+sed -i "s%^.*MGMT_PUB=.*$%MGMT_PUB=${MGMT_PUB_ESCAPED}%" .env
+echo "MGMT_PUB=${MGMT_PUB}"
+sed -i "s%^.*MGMT_PRIV=.*$%MGMT_PRIV=${MGMT_PRIV_ESCAPED}%" .env
+echo "MGMT_PRIV=${MGMT_PRIV}"
+sed -i -e "s%secret\":.*%secret\": \"${MGMT_PRIV_ESCAPED}\",%" configs/mgmt/default.json 
+
 echo "If you want to generate cert(s) with Let's Encrypt run gen-cert.sh"
 echo "You can start the application with gen-cert.sh or docker compose up"
 
