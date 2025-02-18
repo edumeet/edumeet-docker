@@ -139,16 +139,25 @@ Updating TAG version in .env file extracted from edumeet version"
 #VERSION=4.x-$(date '+%Y%m%d')-nightly
 VERSION=$(curl -L --fail -s "https://hub.docker.com/v2/repositories/${REPOSITORY}/${EDUMEET_CLIENT}/tags/?page_size=1000&name=stable" |	jq '.results | .[] | .name' -r | 	sed 's/latest//' | 	sort --version-sort | tail -n 1 | grep 4)
 sed -i "s/^.*TAG.*$/TAG=${VERSION}/" .env
-LISTEN_IP=$(hostname -I | awk '{print $1}')
-sed -i "s/^.*LISTEN_IP.*$/LISTEN_IP=${LISTEN_IP}/" .env
-EXTERNAL_IP=$(hostname -I | awk '{print $1}')
-sed -i "s/^.*EXTERNAL_IP.*$/EXTERNAL_IP=${EXTERNAL_IP}/" .env
+if [ -z "$LISTEN_IP" ]
+then
+    LISTEN_IP=$(hostname -I | awk '{print $1}')
+    echo -e "${GREEN}setting LISTEN_IP to {$LISTEN_IP} ${NOCOLOR}"
+    sed -i "s/^.*LISTEN_IP.*$/LISTEN_IP=${LISTEN_IP}/" .env
+        
+fi
+if [ -z "$EXTERNAL_IP" ]
+then
+    EXTERNAL_IP=$(hostname -I | awk '{print $1}')
+    echo -e "${GREEN}setting EXTERNAL_IP to {$EXTERNAL_IP} ${NOCOLOR}"
+    sed -i "s/^.*EXTERNAL_IP.*$/EXTERNAL_IP=${EXTERNAL_IP}/" .env
+fi
 
 
 
 echo -e "Current tag: ${RED}${VERSION}${NOCOLOR}
-IP set to : ${RED}${LISTEN_IP}${NOCOLOR}
-External IP set to : ${RED}${EXTERNAL_IP}${NOCOLOR}
+IP found : ${RED}${LISTEN_IP}${NOCOLOR}
+External IP found : ${RED}${EXTERNAL_IP}${NOCOLOR}
 ${GREEN}Step 3.${NOCOLOR}
 To get latest images run the following or build it with running \"docker-compose up\":
 
@@ -244,38 +253,32 @@ Do you want to update Keycloak dev realm to your domain : ${MAIN_DOMAIN} from .e
 else
     echo "keycloak dev realm OK"
 fi
-# MGMT-CLIENT
-if grep -Fq 'edumeet.example.com' configs/mgmt-client/config.js
-then
-    read -e -p "
-Do you want to set up edumeet-management-client to https://${MAIN_DOMAIN}/cli from .env file in mgmt-client/config.js (recommended)? [Y/n] " YN
 
-    if  [[ $YN == "y" || $YN == "Y" || $YN == "" ]] 
-    then 
-        sed -i "/"serverApiUrl"/c serverApiUrl: \"https://${MAIN_DOMAIN}/mgmt\","  configs/mgmt-client/config.js
-        sed -i "/"hostname"/c hostname: \"https://${MAIN_DOMAIN}\","  configs/mgmt-client/config.js
-        echo "done"
-    fi
-else
-    echo "management-client OK"
+
+if [ -z "$MEDIA_SECRET" ]
+then
+    echo "generating new secret for media service communication"
+    RECOMMENDED_SECRET=`tr -dc A-Za-z0-9 </dev/urandom | head -c 40 ; echo ''`
+    sed -i "s/^.*MEDIA_SECRET=.*$/MEDIA_SECRET=${RECOMMENDED_SECRET}/" .env
+    echo "MEDIA_SECRET=${RECOMMENDED_SECRET}"
 fi
 
-echo "generating new secret for media service communication"
-RECOMMENDED_SECRET=`tr -dc A-Za-z0-9 </dev/urandom | head -c 40 ; echo ''`
-sed -i "s/^.*MEDIA_SECRET=.*$/MEDIA_SECRET=${RECOMMENDED_SECRET}/" .env
-echo "MEDIA_SECRET=${RECOMMENDED_SECRET}"
 
-echo 'generating new secret for management serivce communication'
 ./create-cert.sh
+
+echo 'generating new secret for management serivce communication [PUB]'
 MGMT_PUB=`./convert.sh rsa_4096_pub.pem`
-MGMT_PRIV=`./convert.sh rsa_4096_priv.pem`
 MGMT_PUB_ESCAPED=$(echo "$MGMT_PUB" | sed 's%\\n%\\\\n%g')
-MGMT_PRIV_ESCAPED=$(echo "$MGMT_PRIV" | sed 's%\\n%\\\\n%g')
 
 sed -i "s%^.*MGMT_PUB=.*$%MGMT_PUB=${MGMT_PUB_ESCAPED}%" .env
 echo "MGMT_PUB=${MGMT_PUB}"
+echo 'generating new secret for management serivce communication [PRIV]'
+MGMT_PRIV=`./convert.sh rsa_4096_priv.pem`
+MGMT_PRIV_ESCAPED=$(echo "$MGMT_PRIV" | sed 's%\\n%\\\\n%g')
+
 sed -i "s%^.*MGMT_PRIV=.*$%MGMT_PRIV=${MGMT_PRIV_ESCAPED}%" .env
 echo "MGMT_PRIV=${MGMT_PRIV}"
+
 sed -i -e "s%secret\":.*%secret\": \"${MGMT_PRIV_ESCAPED}\",%" configs/mgmt/default.json 
 
 echo "If you want to generate cert(s) with Let's Encrypt run gen-cert.sh"
