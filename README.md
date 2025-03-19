@@ -252,7 +252,7 @@ In SATOSA redirect uri should be: https://edumeet.example.com/mgmt/oauth/tenant/
 |  443 | tcp | edumeet-client https webserver and signaling proxy | host network |  / | |
 |  3000 |  | edumeet-media-node port | host network | - | should be limited so only the room-server can access it |
 |  3479 |  | coturn port | host network | - | |
-|  40000-49999 | tcp/udp | edumeet-media-node ports | host network | - | |
+|  40000-40249 | tcp/udp | edumeet-media-node ports | host network | - | |
 
  # ![Network](/images/edumeet_netw.png)
 
