@@ -1,0 +1,5 @@
+FROM node:20-bookworm-slim
+RUN npm install -g bittorrent-tracker
+EXPOSE 8000
+ENTRYPOINT [ "bittorrent-tracker" ]
+CMD [ "--http", "--http-hostname", "0.0.0.0" , "--ws", "--trust-proxy", "--interval", "60000"  

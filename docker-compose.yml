@@ -21,6 +21,7 @@ services:
      - "edumeet-room-server:edumeet-room-server"
      - "edumeet-management-server:edumeet-management-server"
      - "edumeet-client:edumeet-client"
+     - "edumeet-tracker:edumeet-tracker"
     # - "pgadmin:pgadmin"
     environment:
      - MAIN_DOMAIN=${MAIN_DOMAIN}
@@ -66,7 +67,14 @@ services:
     image: '${REPOSITORY}/${EDUMEET_SERVER}:${TAG}'
     links:
      - "edumeet-management-server:mgmt"
-
+  edumeet-tracker:
+    env_file: .env
+    restart: unless-stopped
+    container_name: edumeet-tracker
+    build:
+      context: .
+      dockerfile: Dockerfiles/Dockerfile-tracker
+    image: '${REPOSITORY}/tracker:${TAG}'
   edumeet-client:
     env_file: .env
     volumes:
