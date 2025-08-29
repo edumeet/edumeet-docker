@@ -1,7 +1,7 @@
 FROM node:20-bookworm-slim
 
 #install server build dependency
-RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash gettext-base;apt-get clean
+RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash python3 python3-pip gettext-base;apt-get clean
 
 ARG EDUMEET_SERVER
 ARG GIT_SERVER
@@ -23,7 +23,7 @@ WORKDIR /usr/src/app
 
 COPY docker-entrypoint.sh /entrypoint.sh
 
-RUN yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile --network-concurrency 1 --network-timeout 1000000
 RUN yarn run build
 
 EXPOSE 8443

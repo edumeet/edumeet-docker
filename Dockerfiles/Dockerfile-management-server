@@ -19,7 +19,7 @@ WORKDIR /app/${EDUMEET_MGMT_SERVER}
 RUN mv  /app/${EDUMEET_MGMT_SERVER} /usr/src/app/
 
 WORKDIR /usr/src/app
-RUN yarn
+RUN yarn --network-concurrency 1 --network-timeout 1000000
 RUN rm -fr /usr/src/app/test/
 #COPY configs/mgmt/default.json /usr/src/app/config
 # Compile TypeScript source

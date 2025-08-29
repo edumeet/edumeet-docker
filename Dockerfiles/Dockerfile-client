@@ -14,9 +14,9 @@ WORKDIR /app
 #checkout code
 RUN git clone --single-branch --branch ${BRANCH_CLIENT} ${GIT_SERVER}/${REPOSITORY}/${EDUMEET_CLIENT}.git
 WORKDIR /app/${EDUMEET_CLIENT}
-RUN yarn install --frozen-lockfile
-RUN yarn add --dev eslint-config-react-app
-RUN yarn add --dev eslint-plugin-import
+RUN yarn install --frozen-lockfile --network-concurrency 1 --network-timeout 1000000
+RUN yarn add --dev eslint-config-react-app --network-concurrency 1 --network-timeout 1000000
+RUN yarn add --dev eslint-plugin-import --network-concurrency 1 --network-timeout 1000000
 RUN NODE_ENV=production yarn run build
 FROM n7remus/nginx-spa:latest
 ARG EDUMEET_CLIENT
