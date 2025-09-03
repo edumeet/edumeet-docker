@@ -13,4 +13,5 @@
 !/configs/nginx/*.example.*
 !/configs/redis/*.example.*
 /images
-.env
+config.bat
+node_modules
