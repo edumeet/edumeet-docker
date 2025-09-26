@@ -15,7 +15,6 @@ _________________
   - [edumeet-room-server](https://github.com/edumeet/edumeet-room-server)
   - [edumeet-media-node](https://github.com/edumeet/edumeet-media-node)
   - [edumeet-management-server](https://github.com/edumeet/edumeet-management-server)
-  - [edumeet-management-client](https://github.com/edumeet/edumeet-management-client)
 
 Setup guide in a video format can be found here: 
 [![Watch the video](https://img.youtube.com/vi/wtsRKQEZv9k/maxresdefault.jpg)](https://youtu.be/wtsRKQEZv9k)
@@ -45,7 +44,7 @@ Since some components need the hostname / domain name / IP to function it is inc
 
 It also makes certificate renewal easy since on a single domain setup you only need to change the cert in the certs folder.
 
-eduMEET client is the frontend, room-server is the backend, management-server is the auth backend, management-client is the frontend for authentication related stuff, media-node is used for everything media related.
+eduMEET client is the frontend, room-server is the backend, management-server is the auth backend, media-node is used for everything media related.
 
  # ![General Architecture](/images/edumeet_general_component_functions.png)
 
@@ -142,8 +141,6 @@ done
 Do you want to update Keycloak dev realm to your domain : edumeet.sth.sze.hu from .env file in kc/dev.json (recommended)? [Y/n] y
 done
 
-Do you want to set up edumeet-management-client to https://edumeet.sth.sze.hu/cli from .env file in mgmt-client/config.js (recommended)? [Y/n] y
-done
 ```
 - Additional configuration documentation is located in [edumeet-client](https://github.com/edumeet/edumeet-client/) and [edumeet-room-server](https://github.com/edumeet/edumeet-room-server) repositories.
 
@@ -199,6 +196,23 @@ To build:
   $ sudo docker compose up -d
 ```
 
+</details>
+
+<details>
+  <summary>PGAdmin (optional)</summary>
+
+  ## PGAdmin is disabled by default
+  Steps to enable PGAdmin:
+
+1. Uncomment everything "pgadmin" related in docker-compose.yml
+
+2. Uncomment "pgadmin" section in configs/proxy/nginx.conf.template
+
+3. Visit yourdomain/pgadmin/ and login using credentials in .env files ( PGADMIN_DEFAULT_EMAIL and PGADMIN_DEFAULT_PASSWORD )
+By default these credentials are:
+- Username: edumeet@edu.meet
+- Password: edumeet
+  
 </details>
 
 <details>
