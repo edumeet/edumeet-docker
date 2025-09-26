@@ -132,13 +132,13 @@ done
 Do you want to set host configuration to domain name from .env file and docker hostname to mgmt in server/config.json (recommended)? [Y/n] y
 done
 
-Do you want to set managementUrl to https://edumeet.sth.sze.hu/mgmt from .env file in app/config.js (recommended)? [Y/n] y
+Do you want to set managementUrl to https://yourdomain.com/mgmt from .env file in app/config.js (recommended)? [Y/n] y
 done
 
-Do you want to replace edumeet.example.com domain in management-server config files to edumeet.sth.sze.hu in mgmt/default.json (recommended)?[Y/n] y
+Do you want to replace edumeet.example.com domain in management-server config files to yourdomain.com in mgmt/default.json (recommended)?[Y/n] y
 done
 
-Do you want to update Keycloak dev realm to your domain : edumeet.sth.sze.hu from .env file in kc/dev.json (recommended)? [Y/n] y
+Do you want to update Keycloak dev realm to your domain : yourdomain.com from .env file in kc/dev.json (recommended)? [Y/n] y
 done
 
 ```
@@ -208,7 +208,7 @@ To build:
 
 2. Uncomment "pgadmin" section in configs/proxy/nginx.conf.template
 
-3. Visit yourdomain/pgadmin/ and login using credentials in .env files ( PGADMIN_DEFAULT_EMAIL and PGADMIN_DEFAULT_PASSWORD )
+3. Visit https://yourdomain.com/pgadmin/ and login using credentials in .env files ( PGADMIN_DEFAULT_EMAIL and PGADMIN_DEFAULT_PASSWORD )
 By default these credentials are:
 - Username: edumeet@edu.meet
 - Password: edumeet
@@ -224,14 +224,14 @@ Supported types: OIDC, SAML, Local DB (KeyCloak)
 
 *  Authentication is optional but if you want to enable it, you should remove defualtroom paremeters from the config.json at configs/server/ and follow these steps:
 
-1. visit yourdomain/kc/ and set up your keycloak instance
+1. visit https://yourdomain.com/kc/ and set up your keycloak instance
 By default there is a dev configuration according to https://github.com/edumeet/edumeet-management-server/wiki/Keycloak-setup-(OAuth-openid-connect)
 
 By default there is one test user in dev realm :
 - Username: edumeet
 - Password: edumeet
 
-2. visit yourdomain/cli/ and set up your management server config
+2. visit https://yourdomain.com/mgmt-admin/ and set up your management server config
    - add a tenant
    - add a tenant fqdn / domain
    - add authetntication
@@ -242,7 +242,7 @@ By default there is one test user in dev realm :
     
 3. Logout 
 4. Visit your domain (Login)
-5. Visit yourdomain/cli/ and as the logged in user create a room ( You will be assigned as a room owner and gain all permissions after login, but you can also set permissions for other users too. )
+5. Visit https://yourdomain.com/mgmt-admin/ and as the logged in user create a room ( You will be assigned as a room owner and gain all permissions after login, but you can also set permissions for other users too. )
 6. Join the room
 
 - For auth you can use any OpenID compatible backend. Keycloak is reccomended for testing, integrating with common third party auth sources and deployments without a central authentication (local users).
@@ -251,7 +251,7 @@ By default there is one test user in dev realm :
 
 "dynamic": [ "key", "secret", "authorize_url", "access_url", "profile_url", "scope_delimiter", "scope", "redirect_uri" ], "token_endpoint_auth_method": "client_secret_basic" } 
 
-In SATOSA redirect uri should be: https://edumeet.example.com/mgmt/oauth/tenant/callback
+In SATOSA redirect uri should be: https://yourdomain.com/mgmt/oauth/tenant/callback
   
 </details>
 
