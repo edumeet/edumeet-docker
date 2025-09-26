@@ -61,6 +61,13 @@ http {
 
 			proxy_pass http://keycloak:8080/kc/;
 		}
+		#location /pgadmin/
+		#{
+		#		proxy_set_header X-Script-Name /pgadmin;
+		#		proxy_set_header Host $host;
+		#		proxy_pass http://pgadmin:80/;
+		#		proxy_redirect off;
+		#}
 		location /mgmt/
 		{
 			proxy_pass http://edumeet-management-server:3030/;
