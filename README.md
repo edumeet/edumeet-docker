@@ -232,13 +232,13 @@ By default there is one test user in dev realm :
 - Password: edumeet
 
 2. visit https://yourdomain.com/mgmt-admin/ and set up your management server config
-   - add a tenant
-   - add a tenant fqdn / domain
-   - add authetntication
+   - Create a tenant
+   - Create a tenant fqdn / domain
+   - Add authentication by using the Well Known URL "https://yourdomain.com/kc/realms/ < yourrealm > /.well-known/openid-configuration" and pressing "Update Parameters from URL" or manually as follow: 
  # ![auth](/images/mgmt-client-setup-1.png)
 
-   *  Credential is located in keycloak admin console/ <yourrealm> / clients / <yourclient> / credentials
-   *  Credential is not generated for default dev.json, change it in KeyCloak 
+   *  Secret is located in keycloak admin console/ < yourrealm > / clients / < yourclient > / credentials
+   *  Secret is not generated for default dev.json. Regenerate it in keycloak admin console/ < yourrealm > / clients / < yourclient > / credentials and copy it.
     
 3. Logout 
 4. Visit your domain (Login)
