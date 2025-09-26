@@ -166,7 +166,6 @@ docker pull edumeet/${EDUMEET_MN_SERVER}:${VERSION}
 docker pull edumeet/${EDUMEET_CLIENT}:${VERSION}
 docker pull edumeet/${EDUMEET_SERVER}:${VERSION}
 docker pull edumeet/${EDUMEET_MGMT_SERVER}:${VERSION}
-docker pull edumeet/${EDUMEET_MGMT_CLIENT}:${VERSION}
 
 "
 ACK=$(ack edumeet.example.com --ignore-file=is:README.md --ignore-file=is:run-me-first.sh --ignore-file=is:gen_cert.sh)
