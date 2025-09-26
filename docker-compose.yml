@@ -158,6 +158,7 @@ services:
     volumes:
       - './certs:/opt/keycloak/conf'
       - './configs/kc:/opt/keycloak/data/import'
+      - './keycloak-data:/opt/keycloak/data'
     image: 'quay.io/keycloak/keycloak:25.0.6-0'
     command:
       - start
@@ -182,3 +183,4 @@ volumes:
     driver: local
   edumeet-db-data:
     driver: local
+  keycloak-data:
