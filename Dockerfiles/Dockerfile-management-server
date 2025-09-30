@@ -27,7 +27,7 @@ RUN yarn compile
 
 ARG MGMT_DEBUG
 # Run migrations to set up the database
-ENTRYPOINT yarn migrate && NODE_TLS_REJECT_UNAUTHORIZED=${NODE_TLS_REJECT_UNAUTHORIZED} DEBUG=${MGMT_DEBUG} yarn dev $0 $@
+ENTRYPOINT yarn migrate && NODE_TLS_REJECT_UNAUTHORIZED=${NODE_TLS_REJECT_UNAUTHORIZED} DEBUG=${MGMT_DEBUG} yarn start $0 $@
 
 
 
