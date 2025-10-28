@@ -83,6 +83,8 @@ services:
       context: .
       dockerfile: Dockerfiles/Dockerfile-tracker
     image: '${REPOSITORY}/tracker:${TAG}'
+    networks:
+      - internal_net     # Internal-only network (shared with proxy)
   edumeet-client:
     # nginx container
     # env_file: .env
