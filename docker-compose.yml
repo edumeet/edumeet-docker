@@ -120,15 +120,6 @@ services:
       --announcedIp ${EXTERNAL_IP}
     # ${MN_EXTRA_PARAMS}
 
-  edumeet-db:
-    env_file: .env
-    image: 'postgres:18.0-alpine'
-    container_name: edumeet-db
-    restart: always
-    volumes:
-      - 'edumeet-db:/var/lib/postgresql/data'
-    networks:
-      - private_net                   # Only backend can access
   edumeet-management-server:
     env_file: .env
     container_name: edumeet-management-server
@@ -162,6 +153,16 @@ services:
     networks:
       - internal_net     # Internal-only network (shared with proxy)
 
+  edumeet-db:
+    env_file: .env
+    image: 'postgres:18.0-alpine'
+    container_name: edumeet-db
+    restart: always
+    volumes:
+      - 'edumeet-db:/var/lib/postgresql/data'
+    networks:
+      - private_net                   # Only backend can access
+
 volumes:
   edumeet-db:
     driver: local
@@ -169,7 +170,6 @@ volumes:
     driver: local
   keycloak-data:
     driver: local
-
 
 networks:
   public_net:
