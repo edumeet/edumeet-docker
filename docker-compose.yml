@@ -75,6 +75,14 @@ services:
     image: '${REPOSITORY}/${EDUMEET_SERVER}:${TAG}'
     networks:
      - internal_net                  # Talk to proxy
+  edumeet-tracker:
+    env_file: .env
+    restart: unless-stopped
+    container_name: edumeet-tracker
+    build:
+      context: .
+      dockerfile: Dockerfiles/Dockerfile-tracker
+    image: '${REPOSITORY}/tracker:${TAG}'
   edumeet-client:
     # nginx container
     # env_file: .env
