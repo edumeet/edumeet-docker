@@ -1,4 +1,4 @@
-FROM node:20-bookworm-slim
+FROM node:24-bookworm-slim
 
 #install server build dependency
 RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash gettext-base;apt-get clean
