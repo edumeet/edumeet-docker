@@ -1,4 +1,4 @@
-FROM node:20-bookworm-slim
+FROM node:24-bookworm-slim
 
 #install server build dependency
 RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash gettext-base;apt-get clean
@@ -10,24 +10,29 @@ ARG BRANCH_MGMT_SERVER
 ARG NODE_TLS_REJECT_UNAUTHORIZED
 
 WORKDIR /app
+RUN useradd -m edumeet
+RUN chown -R edumeet:edumeet /app
+RUN mkdir -p /usr/src/app 
+RUN chown -R edumeet:edumeet /usr/src/app
+USER edumeet
 
 #checkout code
 RUN git clone --single-branch --branch ${BRANCH_MGMT_SERVER} ${GIT_SERVER}/${REPOSITORY}/${EDUMEET_MGMT_SERVER}.git
 
 WORKDIR /app/${EDUMEET_MGMT_SERVER}
 
-RUN mv  /app/${EDUMEET_MGMT_SERVER} /usr/src/app/
-
+RUN mv  ./* /usr/src/app/
 WORKDIR /usr/src/app
 RUN yarn
 RUN rm -fr /usr/src/app/test/
 #COPY configs/mgmt/default.json /usr/src/app/config
 # Compile TypeScript source
+RUN ls -la
 RUN yarn compile 
 
 ARG MGMT_DEBUG
 # Run migrations to set up the database
-ENTRYPOINT yarn migrate && NODE_TLS_REJECT_UNAUTHORIZED=${NODE_TLS_REJECT_UNAUTHORIZED} DEBUG=${MGMT_DEBUG} yarn dev $0 $@
+ENTRYPOINT yarn migrate && NODE_TLS_REJECT_UNAUTHORIZED=${NODE_TLS_REJECT_UNAUTHORIZED} DEBUG=${MGMT_DEBUG} yarn start $0 $@
 
 
 
