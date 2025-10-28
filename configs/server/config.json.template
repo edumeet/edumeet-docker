@@ -2,7 +2,7 @@
 	"listenPort": "8443",
 	"listenHost": "0.0.0.0",
 "managementService": {
-	"host": "http://mgmt:3030",
+	"host": "http://edumeet-management-server:3030",
 	"jwtPublicKeys": [
 		"${MGMT_PUB}"
 	]
@@ -27,7 +27,8 @@
 							{ "name": "CREATE_ROOM" },
 							{ "name": "CHANGE_ROOM" }
 					]
-			}
+			},
+			"locked": false
 	},
 	"mediaNodes": [{
 			"hostname": "${LISTEN_IP}",

@@ -21,5 +21,4 @@ ARG EDUMEET_CLIENT
 COPY --from=edumeet-builder /app/${EDUMEET_CLIENT}/build/   /app
 EXPOSE 80
 # Switch to the existing non-root nginx user
-USER nginx
 CMD ["nginx"]

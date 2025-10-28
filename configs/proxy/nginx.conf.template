@@ -49,7 +49,7 @@ http {
 			proxy_set_header			Upgrade $http_upgrade;
 			proxy_set_header			Connection "upgrade";
 		}
-		location /kc/
+		location ^~ /kc
 		{
 			proxy_set_header Host $host;
 			proxy_set_header X-Real-IP $remote_addr;
@@ -59,7 +59,7 @@ http {
 			proxy_set_header X-Forwarded-Port 443;
 			proxy_set_header X-Forwarded-Proto https;
 
-			proxy_pass http://keycloak:8080/kc/;
+			proxy_pass https://keycloak:8443/kc;
 		}
 		#location /pgadmin/
 		#{
@@ -68,9 +68,9 @@ http {
 		#		proxy_pass http://pgadmin:80/;
 		#		proxy_redirect off;
 		#}
-		location /mgmt/
+		location ^~ /mgmt
 		{
-			proxy_pass http://edumeet-management-server:3030/;
+			proxy_pass http://edumeet-management-server:3030;
 			proxy_ssl_verify off;
 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 			proxy_set_header Host $host;
@@ -115,7 +115,8 @@ stream {
 	}
 
 	server {
-		listen 443;
+		listen 443 default_server;
+		server_name _;
 		ssl_preread on;
 		proxy_pass $name;
 		proxy_buffer_size 10m;
