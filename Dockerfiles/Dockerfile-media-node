@@ -20,7 +20,11 @@ ARG LISTEN_IP
 ARG MN_EXTRA_PARAMS
 
 WORKDIR /app
-
+RUN useradd -m edumeet
+RUN chown -R edumeet:edumeet /app
+RUN mkdir -p /usr/src/app 
+RUN chown -R edumeet:edumeet /usr/src/app
+USER edumeet
 #checkout code
 RUN git clone --single-branch --branch ${BRANCH_MN_SERVER} ${GIT_SERVER}/${REPOSITORY}/${EDUMEET_MN_SERVER}.git
 
@@ -28,9 +32,7 @@ WORKDIR /app/${EDUMEET_MN_SERVER}
 
 RUN yarn install --frozen-lockfile
 RUN yarn run build
-
-RUN mv  /app/${EDUMEET_MN_SERVER} /usr/src/app/
-
+RUN mv  ./* /usr/src/app/
 WORKDIR /usr/src/app
 
 EXPOSE ${LISTEN_PORT}

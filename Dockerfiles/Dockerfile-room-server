@@ -9,15 +9,18 @@ ARG REPOSITORY
 ARG BRANCH_SERVER
 
 WORKDIR /app
+RUN useradd -m edumeet
+RUN chown -R edumeet:edumeet /app
+RUN mkdir -p /usr/src/app 
+RUN chown -R edumeet:edumeet /usr/src/app
 
+USER edumeet
 #checkout code
 RUN git clone --single-branch --branch ${BRANCH_SERVER} ${GIT_SERVER}/${REPOSITORY}/${EDUMEET_SERVER}.git
 
 WORKDIR /app/${EDUMEET_SERVER}
 
-#COPY  configs/server/config.json /app/${EDUMEET_SERVER}/config/config.json
-
-RUN mv  /app/${EDUMEET_SERVER}/ /usr/src/app/
+RUN mv  ./* /usr/src/app/
 
 WORKDIR /usr/src/app
 

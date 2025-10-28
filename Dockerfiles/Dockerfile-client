@@ -15,11 +15,11 @@ WORKDIR /app
 RUN git clone --single-branch --branch ${BRANCH_CLIENT} ${GIT_SERVER}/${REPOSITORY}/${EDUMEET_CLIENT}.git
 WORKDIR /app/${EDUMEET_CLIENT}
 RUN yarn install --frozen-lockfile
-RUN yarn add --dev eslint-config-react-app
-RUN yarn add --dev eslint-plugin-import
 RUN NODE_ENV=production yarn run build
 FROM n7remus/nginx-spa:latest
 ARG EDUMEET_CLIENT
 COPY --from=edumeet-builder /app/${EDUMEET_CLIENT}/build/   /app
 EXPOSE 80
+# Switch to the existing non-root nginx user
+USER nginx
 CMD ["nginx"]
