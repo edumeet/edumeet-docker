@@ -9,7 +9,7 @@ services:
      - USE_CERTBOT=${USE_CERTBOT}
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do [ \"$USE_CERTBOT\" = \"true\" ] && (echo \"Running single Certbot renewal.\" && certbot renew); sleep 12h & wait $${!}; done;'"
   proxy:
-    image: nginx
+    image: nginx:1.29-alpine
     restart: unless-stopped
     # user: "101:101"
     # https://man7.org/linux/man-pages/man7/capabilities.7.html

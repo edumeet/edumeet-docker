@@ -71,10 +71,6 @@ http {
 
 			proxy_pass https://keycloak:8443/kc;
 		}
-		
-		location = /mgmt {
- 		   return 301 /mgmt/;
-		}
 		location /mgmt/
 		{
 			proxy_pass http://edumeet-management-server:3030/;
@@ -91,7 +87,9 @@ http {
 			proxy_busy_buffers_size 256M;
 			proxy_set_header Host $host;
 			proxy_redirect off;
-
+		}
+		location = /mgmt {
+ 		   return 301 /mgmt/;
 		}
 		location /auth/callback
 		{
