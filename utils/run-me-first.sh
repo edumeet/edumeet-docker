@@ -35,7 +35,7 @@ mkdir -p examples/app
 curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEET_CLIENT}/${BRANCH_CLIENT}/public/config/config.example.js" -o "examples/app/config.example.js"
 
 mkdir -p examples/server
-curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEET_SERVER}/${BRANCH_CLIENT}/public/config/config.example.js" -o "examples/server/config.example.js"
+curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEET_SERVER}/${BRANCH_SERVER}/config/config.example.js" -o "examples/server/config.example.js"
 
 
 for confDir in {app,nginx,server,mgmt,mgmt-client}
@@ -252,10 +252,10 @@ fi
 
 echo 'generating new secret for management serivce communication [PUB]'
 MGMT_PUB=`./utils/convert.sh rsa_4096_pub.pem`
-MGMT_PUB_ESCAPED=$(echo "$MGMT_PUB" | sed 's%\\n%\\\\n%g')
+MGMT_PUB_ESCAPED=$(echo "$MGMT_PUB" | sed 's%\\n%\\\\\\\\n%g')
 
-sed -i "s%^.*MGMT_PUB=.*$%MGMT_PUB=${MGMT_PUB_ESCAPED}%" .env
-echo "MGMT_PUB=${MGMT_PUB}"
+sed -i "s%^.*MGMT_PUB=.*$%MGMT_PUB=\"${MGMT_PUB_ESCAPED}\"%" .env
+echo "MGMT_PUB=\"${MGMT_PUB}\""
 echo 'generating new secret for management serivce communication [PRIV]'
 MGMT_PRIV=`./utils/convert.sh rsa_4096_priv.pem`
 MGMT_PRIV_ESCAPED=$(echo "$MGMT_PRIV" | sed 's%\\n%\\\\n%g')
