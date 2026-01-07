@@ -25,6 +25,8 @@ services:
       - edumeet-client
       - edumeet-management-server
       - edumeet-room-server
+      - edumeet-tracker
+      - keycloak
     ports:
      - "80:80"
      - "443:443"
