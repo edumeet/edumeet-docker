@@ -102,6 +102,24 @@ http {
 
 		}
 
+		location = /auth/logout-close {
+			proxy_buffer_size 128M;
+			proxy_buffers 4 256M;
+			proxy_busy_buffers_size 256M;
+			proxy_set_header Host $host;
+			proxy_redirect off;
+			proxy_pass http://edumeet-management-server:3030/auth/logout-close;
+		}
+
+		location = /auth/logout {
+			proxy_buffer_size 128M;
+			proxy_buffers 4 256M;
+			proxy_busy_buffers_size 256M;
+			proxy_set_header Host $host;
+			proxy_redirect off;
+			proxy_pass http://edumeet-management-server:3030/auth/logout;
+		}
+
 	}
 }
 
