@@ -5,30 +5,41 @@ services:
     volumes:
      - ./certbot/conf:/etc/letsencrypt
      - ./certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    environment:
+     - USE_CERTBOT=${USE_CERTBOT}
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do [ \"$USE_CERTBOT\" = \"true\" ] && (echo \"Running single Certbot renewal.\" && certbot renew); sleep 12h & wait $${!}; done;'"
   proxy:
-    image: nginx
+    image: nginx:1.29-alpine
     restart: unless-stopped
+    # user: "101:101"
+    # https://man7.org/linux/man-pages/man7/capabilities.7.html
+    #cap_drop:
+    # - ALL
+    #cap_add:
+    # - NET_BIND_SERVICE
     volumes:
-     - ./configs/proxy:/etc/nginx/templates
-     - ./certbot/conf:/etc/letsencrypt
-     - ./certbot/www:/var/www/certbot
+     - ./configs/proxy:/etc/nginx/templates:ro
+     - ./certbot/conf:/etc/letsencrypt:ro
+     - ./certbot/www:/var/www/certbot:ro
+    depends_on:
+      - edumeet-client
+      - edumeet-management-server
+      - edumeet-room-server
+      - edumeet-tracker
+      - keycloak
     ports:
      - "80:80"
      - "443:443"
-    links:
-     - "keycloak:keycloak"
-     - "edumeet-room-server:edumeet-room-server"
-     - "edumeet-management-server:edumeet-management-server"
-     - "edumeet-client:edumeet-client"
-    # - "pgadmin:pgadmin"
     environment:
      - MAIN_DOMAIN=${MAIN_DOMAIN}
      - MEDIA_DOMAIN=${MEDIA_DOMAIN}
      - LISTEN_IP=${LISTEN_IP}
     command: "/bin/sh -c 'envsubst \"\\$${MAIN_DOMAIN},\\$${LISTEN_IP},\\$${MEDIA_DOMAIN}\" < /etc/nginx/templates/nginx.conf.template > /etc/nginx/nginx.conf && while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    networks:
+      - public_net
+      - internal_net                  # Only talks to backend
   turn:
-      image: coturn/coturn
+      image: coturn/coturn:4.7.0-trixie
       restart: unless-stopped
       network_mode: host
       command: >
@@ -64,13 +75,23 @@ services:
       context: .
       dockerfile: Dockerfiles/Dockerfile-room-server
     image: '${REPOSITORY}/${EDUMEET_SERVER}:${TAG}'
-    links:
-     - "edumeet-management-server:mgmt"
-
-  edumeet-client:
+    networks:
+     - internal_net                  # Talk to proxy
+  edumeet-tracker:
     env_file: .env
+    restart: unless-stopped
+    container_name: edumeet-tracker
+    build:
+      context: .
+      dockerfile: Dockerfiles/Dockerfile-tracker
+    image: '${REPOSITORY}/tracker:${TAG}'
+    networks:
+      - internal_net     # Internal-only network (shared with proxy)
+  edumeet-client:
+    # nginx container
+    # env_file: .env
     volumes:
-      - './configs/app:/app/config'
+      - './configs/app:/app/config:ro'
     container_name: edumeet-client
     build:
       args:
@@ -81,9 +102,8 @@ services:
       context: .
       dockerfile: Dockerfiles/Dockerfile-client
     image: '${REPOSITORY}/${EDUMEET_CLIENT}:${TAG}'
-#    ports:
-#     - "8080:80"
-
+    networks:
+     - internal_net                  # Talk to proxy
 
   edumeet-media-node:
     env_file: .env
@@ -100,7 +120,7 @@ services:
       dockerfile: Dockerfiles/Dockerfile-media-node
     image: '${REPOSITORY}/${EDUMEET_MN_SERVER}:${TAG}'
     security_opt:
-      - seccomp:unconfined
+     - no-new-privileges:true
     network_mode: "host"
     command: >
       DEBUG=*
@@ -111,18 +131,7 @@ services:
       --secret ${MEDIA_SECRET} 
       --announcedIp ${EXTERNAL_IP}
     # ${MN_EXTRA_PARAMS}
-    
-    
-#    ports:
-#      - '40000-40249:40000-40249'
-#      - '3000:3000'
-  edumeet-db:
-    env_file: .env
-    image: 'postgres:14.1-alpine'
-    container_name: edumeet-db
-    restart: always
-    volumes:
-      - 'edumeet-db:/var/lib/postgresql/data'
+
   edumeet-management-server:
     env_file: .env
     container_name: edumeet-management-server
@@ -139,48 +148,45 @@ services:
       context: .
       dockerfile: Dockerfiles/Dockerfile-management-server
     image: '${REPOSITORY}/${EDUMEET_MGMT_SERVER}:${TAG}'
-#    ports:
-#      - '3030:3030'
+    networks:
+      - internal_net                  # Talk to proxy
+      - private_net                   # Talk to db
     depends_on:
       - edumeet-db
-#  pgadmin:
-#    env_file: .env
-#    image: dpage/pgadmin4
-#    container_name: pgadmin4_container
-#    restart: always
-    #ports:
-    #  - '5050:80'
-#    volumes:
-#      - 'edumeet-db-data:/var/lib/pgadmin'
   keycloak:
     env_file: .env
-    container_name: edumeet_keycloak
+    container_name: edumeet-keycloak
     volumes:
       - './certs:/opt/keycloak/conf'
-      - './configs/kc:/opt/keycloak/data/import'
-      - './keycloak-data:/opt/keycloak/data'
-    image: 'quay.io/keycloak/keycloak:25.0.6-0'
+    image: 'quay.io/keycloak/keycloak:26.4'
     command:
       - start
-      - '--import-realm'
     restart: unless-stopped
- 
-  #edumeet-translator:
-  #   env_file: .env
-  #   container_name: edumeet-translator
-  #   build:
-  #      args:
-  #       - BASEDIR=${BASEDIR}
-  #       - GIT_SERVER=${GIT_SERVER}
-  #       - REPOSITORY=${REPOSITORY}
-  #       - EDUMEET_CLIENT=${EDUMEET_CLIENT}
-  #       - BRANCH_CLIENT=${BRANCH_CLIENT}
-  #      context: .
-  #      dockerfile: Dockerfiles/Dockerfile-translator
-  #   image: ${REPOSITORY}/edumeet-translator:${TAG}
+    networks:
+      - internal_net     # Internal-only network (shared with proxy)
+
+  edumeet-db:
+    env_file: .env
+    image: 'postgres:18.0-alpine'
+    container_name: edumeet-db
+    restart: always
+    volumes:
+      - 'edumeet-db:/var/lib/postgresql/data'
+    networks:
+      - private_net                   # Only backend can access
+
 volumes:
   edumeet-db:
     driver: local
   edumeet-db-data:
     driver: local
   keycloak-data:
+    driver: local
+
+networks:
+  public_net:
+  internal_net:
+    driver: bridge
+  private_net:
+    driver: bridge
+    internal: true                    # Isolates it from host access

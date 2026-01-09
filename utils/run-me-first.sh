@@ -26,15 +26,17 @@ source .env
 
 echo -e "
 ${GREEN}Step 1.${NOCOLOR}
-Updating configuration example files can be done from https://github.com/edumeet components repository."
+Updating configuration example files can be done from https://github.com/edumeet components repository.
+CHANGELOG is UPDATED at CHANGELOG.md"
 
-# Update example configurations
-# edumeet-client
-#curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEET_CLIENT}/${BRANCH_CLIENT}/public/config/config.example.js" -o "configs/app/config.example.js"
-#echo -e "Updating configuration example files from upstream ${EDUMEET_CLIENT}/${BRANCH_CLIENT} repository.
-#"
-## edumeet-room-server
-#curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEET_SERVER}/${BRANCH_SERVER}/config/config.example.json" -o "configs/server/config.example.json"
+curl -s "https://raw.githubusercontent.com/edumeet/edumeet/refs/heads/main/CHANGELOG.md" -o "CHANGELOG.md"
+
+mkdir -p examples/app
+curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEET_CLIENT}/${BRANCH_CLIENT}/public/config/config.example.js" -o "examples/app/config.example.js"
+
+mkdir -p examples/server
+curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEET_SERVER}/${BRANCH_SERVER}/config/config.example.js" -o "examples/server/config.example.js"
+
 
 for confDir in {app,nginx,server,mgmt,mgmt-client}
 do
@@ -114,22 +116,6 @@ sed -i "s/^.*KEYCLOAK_ADMIN_PASSWORD=.*$/KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMI
 
 regex="^(([-a-zA-Z0-9\!#\$%\&\'*+/=?^_\`{\|}~]+|(\"([][,:;<>\&@a-zA-Z0-9\!#\$%\&\'*+/=?^_\`{\|}~-]|(\\\\[\\ \"]))+\"))\.)*([-a-zA-Z0-9\!#\$%\&\'*+/=?^_\`{\|}~]+|(\"([][,:;<>\&@a-zA-Z0-9\!#\$%\&\'*+/=?^_\`{\|}~-]|(\\\\[\\ \"]))+\"))@\w((-|\w)*\w)*\.(\w((-|\w)*\w)*\.)*\w{2,4}$"
 
-
-#while [ -z "$PGADMIN_DEFAULT_EMAIL" ] || [ $PGADMIN_DEFAULT_EMAIL == "edumeet@edu.meet" ] || [[ ! "$PGADMIN_DEFAULT_EMAIL" =~ $regex ]]; do
-#    read -e -p "
-#UPDATE PGADMIN_DEFAULT_EMAIL user: " PGADMIN_DEFAULT_EMAIL
-#done
-#while [ -z $PGADMIN_DEFAULT_PASSWORD ] || [ $PGADMIN_DEFAULT_PASSWORD == "edumeet" ]; do
-#    RECOMMENDED_PW=`tr -dc A-Za-z0-9 </dev/urandom | head -c 13 ; echo ''`
-#    read -e -p "
-#UPDATE PGADMIN_DEFAULT_PASSWORD (supersecret ->reccommended: ${RECOMMENDED_PW}): " PGADMIN_DEFAULT_PASSWORD
-#    if [ -z $PGADMIN_DEFAULT_PASSWORD ]
-#    then
-#        PGADMIN_DEFAULT_PASSWORD=$RECOMMENDED_PW
-#    fi
-#done
-#sed -i "s/^.*PGADMIN_DEFAULT_EMAIL=.*$/PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}/" .env
-#sed -i "s/^.*PGADMIN_DEFAULT_PASSWORD=.*$/PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}/" .env
 
 echo -e "
 
@@ -262,21 +248,20 @@ then
     echo "MEDIA_SECRET=${RECOMMENDED_SECRET}"
 fi
 
-
-./create-cert.sh
+./utils/create-cert.sh
 
 echo 'generating new secret for management serivce communication [PUB]'
-MGMT_PUB=`./convert.sh rsa_4096_pub.pem`
-MGMT_PUB_ESCAPED=$(echo "$MGMT_PUB" | sed 's%\\n%\\\\n%g')
+MGMT_PUB=`./utils/convert.sh rsa_4096_pub.pem`
+MGMT_PUB_ESCAPED=$(echo "$MGMT_PUB" | sed 's%\\n%\\\\\\\\n%g')
 
-sed -i "s%^.*MGMT_PUB=.*$%MGMT_PUB=${MGMT_PUB_ESCAPED}%" .env
-echo "MGMT_PUB=${MGMT_PUB}"
+sed -i "s%^.*MGMT_PUB=.*$%MGMT_PUB=\"${MGMT_PUB_ESCAPED}\"%" .env
+echo "MGMT_PUB=\"${MGMT_PUB}\""
 echo 'generating new secret for management serivce communication [PRIV]'
-MGMT_PRIV=`./convert.sh rsa_4096_priv.pem`
+MGMT_PRIV=`./utils/convert.sh rsa_4096_priv.pem`
 MGMT_PRIV_ESCAPED=$(echo "$MGMT_PRIV" | sed 's%\\n%\\\\n%g')
 
-sed -i "s%^.*MGMT_PRIV=.*$%MGMT_PRIV=${MGMT_PRIV_ESCAPED}%" .env
-echo "MGMT_PRIV=${MGMT_PRIV}"
+sed -i "s%^.*MGMT_PRIV=.*$%MGMT_PRIV=\"${MGMT_PRIV_ESCAPED}\"%" .env
+echo "MGMT_PRIV=\"${MGMT_PRIV}\""
 
 sed -i -e "s%secret\":.*%secret\": \"${MGMT_PRIV_ESCAPED}\",%" configs/mgmt/default.json 
 

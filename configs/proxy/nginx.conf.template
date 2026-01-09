@@ -1,5 +1,5 @@
 events {
-	worker_connections 1024;
+	worker_connections 8192;
 }
 
 http {
@@ -49,7 +49,17 @@ http {
 			proxy_set_header			Upgrade $http_upgrade;
 			proxy_set_header			Connection "upgrade";
 		}
-		location /kc/
+
+        # Should be generated so bots do not try to use it. 
+		location /trackerURL {
+				proxy_pass                              http://edumeet-tracker:8000;
+				proxy_http_version                      1.1;
+				proxy_set_header                        X-Forwarded-For $proxy_protocol_addr;
+				proxy_set_header                        Upgrade $http_upgrade;
+				proxy_set_header                        Connection "upgrade";
+		}
+
+		location ^~ /kc
 		{
 			proxy_set_header Host $host;
 			proxy_set_header X-Real-IP $remote_addr;
@@ -59,15 +69,8 @@ http {
 			proxy_set_header X-Forwarded-Port 443;
 			proxy_set_header X-Forwarded-Proto https;
 
-			proxy_pass http://keycloak:8080/kc/;
+			proxy_pass https://keycloak:8443/kc;
 		}
-		#location /pgadmin/
-		#{
-		#		proxy_set_header X-Script-Name /pgadmin;
-		#		proxy_set_header Host $host;
-		#		proxy_pass http://pgadmin:80/;
-		#		proxy_redirect off;
-		#}
 		location /mgmt/
 		{
 			proxy_pass http://edumeet-management-server:3030/;
@@ -84,7 +87,9 @@ http {
 			proxy_busy_buffers_size 256M;
 			proxy_set_header Host $host;
 			proxy_redirect off;
-
+		}
+		location = /mgmt {
+ 		   return 301 /mgmt/;
 		}
 		location /auth/callback
 		{
@@ -95,6 +100,24 @@ http {
 			proxy_redirect off;
 			proxy_pass http://edumeet-management-server:3030/auth/callback;
 
+		}
+
+		location = /auth/logout-close {
+			proxy_buffer_size 128M;
+			proxy_buffers 4 256M;
+			proxy_busy_buffers_size 256M;
+			proxy_set_header Host $host;
+			proxy_redirect off;
+			proxy_pass http://edumeet-management-server:3030/auth/logout-close;
+		}
+
+		location = /auth/logout {
+			proxy_buffer_size 128M;
+			proxy_buffers 4 256M;
+			proxy_busy_buffers_size 256M;
+			proxy_set_header Host $host;
+			proxy_redirect off;
+			proxy_pass http://edumeet-management-server:3030/auth/logout;
 		}
 
 	}
@@ -115,7 +138,8 @@ stream {
 	}
 
 	server {
-		listen 443;
+		listen 443 default_server;
+		server_name _;
 		ssl_preread on;
 		proxy_pass $name;
 		proxy_buffer_size 10m;

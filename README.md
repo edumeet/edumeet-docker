@@ -16,11 +16,8 @@ _________________
   - [edumeet-media-node](https://github.com/edumeet/edumeet-media-node)
   - [edumeet-management-server](https://github.com/edumeet/edumeet-management-server)
 
-Setup guide in a video format can be found here: 
-[![Watch the video](https://img.youtube.com/vi/wtsRKQEZv9k/maxresdefault.jpg)](https://youtu.be/wtsRKQEZv9k)
 
-> FAQ is at the bottom of this README.md !
-
+# Getting started
 ## Guides (click to open):
 <details>
   <summary>Recommended configuration + introduction</summary>
@@ -50,216 +47,30 @@ eduMEET client is the frontend, room-server is the backend, management-server is
 
 </details>
 
-
-<details>
-  <summary>Architecture</summary>
-eduMEET docker uses the following endpoints for components:
-
- # ![Architecture](/images/edumeet_endpoints.png)
-
-
-### eduMEET can run from a single host
-
-Components can run on a single machine with docker compose or can be separated.
-
- # ![Architecture2](/images/edumeet_ways_to_run.png)
-
-### Scaling eduMEET 
-Media nodes can be selected with GeoIP. 
-
-Edumeet-client frontends can run on many different servers.
-
-Management server can host many tenants/domains. The management server database can be clustered.
-
-Keycloak can support a number of Realms.
-
-# ![Architecture3](/images/general-arch.png)
- 
-
-
-</details>
-
-<details>
-  <summary>Installation ⬅ (Without dependencies, edumeet-docker will probably fail!)</summary>
-  
-# Install dependencies
+## Install dependencies
 ```bash
 sudo apt install jq ack
 ```
-Install docker V2
+Install docker compose V2: https://docs.docker.com/engine/install/debian/#install-using-the-repository
 
-```bash
-https://docs.docker.com/engine/install/debian/#install-using-the-repository
-```
 Optional (add current user to docker group )
 ```bash
 sudo groupadd docker
 sudo usermod -aG docker $USER
 ```
 
+Download repo:
 
-# Update, configure, build and run.
-## Clone repository to your (docker) host, and cd into the folder:
 ```bash
 git clone https://github.com/edumeet/edumeet-docker.git
 cd edumeet-docker
-git checkout <branch>
 ```
 
+## Changelog
+For latest changes and releases see: 
+https://github.com/edumeet/edumeet/blob/main/CHANGELOG.md
 
-##  Update, configure
-### Step 1: 
-* start `run-me-first.sh` script. This script will download newest Dockerfile(s) and config.example.* files from the repository.
-```
-./run-me-first.sh
-```
-
-#### By running run-me-first.sh your domain names + your IP (you might have to change it it is not your public IP) will be set in the .env file
-```
-SET DOMAIN NAME (edumeet.example.com): yourdomain.com
-```
-
-The run-me-first.sh will scan for files with the default example domain/localhost occurances that shoud be changed:   
-```
-configs/app/config.js:11:       managementUrl: 'http://localhost:3030',
-...
-```
-There are automated steps to change the configs:
-```
-Do you want to remove tls option from server/config.json (recommended)? [Y/n] y
-done
-
-Do you want to set host configuration to domain name from .env file and docker hostname to mgmt in server/config.json (recommended)? [Y/n] y
-done
-
-Do you want to set managementUrl to https://yourdomain.com/mgmt from .env file in app/config.js (recommended)? [Y/n] y
-done
-
-Do you want to replace edumeet.example.com domain in management-server config files to yourdomain.com in mgmt/default.json (recommended)?[Y/n] y
-done
-
-Do you want to update Keycloak dev realm to your domain : yourdomain.com from .env file in kc/dev.json (recommended)? [Y/n] y
-done
-
-```
-- Additional configuration documentation is located in [edumeet-client](https://github.com/edumeet/edumeet-client/) and [edumeet-room-server](https://github.com/edumeet/edumeet-room-server) repositories.
-
-## Step 2 (Optional): 
-### Set your desired release branch in .env file if you wish to run an other branch.
-Branch names (for example 4.0) should match for client and server side.
-
-### Edit docker-compose.yml for services that you want.
-For example want to separe media node(s) to different servers, or remove the included pgadmin interface.
-
-## Step 3:
-### NOTE! Certficates are selfsigned, for a production service you need to set YOUR signed certificate in nginx and  server configuration files:
-
-Certificates are now generated with Let's Encrypt by default with running the gen_cert.sh
-
-Default certficates are in for applications that are behind proxy but still require one to start:
-`in edumeet-docker/certs/` 
-
-Default cert files:  ( edumeet-demo-cert.pem and edumeet-demo-key.pem)
-
-#### If cert names change you shoud update it in .env:
-
-`KC_HTTPS_CERTIFICATE_FILE,
-KC_HTTPS_CERTIFICATE_KEY_FILE`
-
-and 
-
-`MN_EXTRA_PARAMS='--cert ./certs/edumeet-demo-cert.pem --key ./certs/edumeet-demo-key.pem'`
-
-For proxy certs can be changed in the nginx proxy file:
-
-`in configs/proxy/nginx.conf.template` :
-```bash
-  server_name  edumeet.example.com; 
-  ssl_certificate     /etc/edumeet/edumeet-demo-cert.pem;
-  ssl_certificate_key /etc/edumeet/edumeet-demo-key.pem; 
-```
-
-## Step 4 Run:
-Run with `docker compose` 
-
-```sh
-  $ sudo docker compose up --detach
-```
-*without the detach option you will see the logs
-
-To build: 
-1. Change TAG in .env file to your desired name.
-2. In .env file set to your desired BRANCH.
-3. Build and run:
-```sh
-  $ sudo docker compose build
-  $ sudo docker compose up -d
-```
-
-</details>
-
-<details>
-  <summary>PGAdmin (optional)</summary>
-
-  ## PGAdmin is disabled by default
-  Steps to enable PGAdmin:
-
-1. Uncomment everything "pgadmin" related in docker-compose.yml
-
-2. Uncomment "pgadmin" section in configs/proxy/nginx.conf.template
-
-3. Visit https://yourdomain.com/pgadmin/ and login using credentials in .env files ( PGADMIN_DEFAULT_EMAIL and PGADMIN_DEFAULT_PASSWORD )
-By default these credentials are:
-- Username: edumeet@edu.meet
-- Password: edumeet
-  
-</details>
-
-<details>
-  <summary>Authentication (optional)</summary>
-
-  ## Initial setup after first run
-
-Supported types: OIDC, SAML, Local DB (KeyCloak)
-
-*  Authentication is optional but if you want to enable it, you should remove defualtroom paremeters from the config.json at configs/server/ and follow these steps:
-
-1. visit https://yourdomain.com/kc/ and set up your keycloak instance
-By default there is a dev configuration according to https://github.com/edumeet/edumeet-management-server/wiki/Keycloak-setup-(OAuth-openid-connect)
-
-By default there is one test user in dev realm :
-- Username: edumeet
-- Password: edumeet
-
-2. visit https://yourdomain.com/mgmt-admin/ and set up your management server config
-   - Create a tenant
-   - Create a tenant fqdn / domain
-   - Add authentication by using the Well Known URL "https://yourdomain.com/kc/realms/ < yourrealm > /.well-known/openid-configuration" and pressing "Update Parameters from URL" or manually as follow: 
- # ![auth](/images/mgmt-client-setup-1.png)
-
-   *  Secret is located in keycloak admin console/ < yourrealm > / clients / < yourclient > / credentials
-   *  Secret is not generated for default dev.json. Regenerate it in keycloak admin console/ < yourrealm > / clients / < yourclient > / credentials and copy it.
-    
-3. Logout 
-4. Visit your domain (Login)
-5. Visit https://yourdomain.com/mgmt-admin/ and as the logged in user create a room ( You will be assigned as a room owner and gain all permissions after login, but you can also set permissions for other users too. )
-6. Join the room
-
-- For auth you can use any OpenID compatible backend. Keycloak is reccomended for testing, integrating with common third party auth sources and deployments without a central authentication (local users).
-- For federated login with discovery we reccommend using SATOSA.
-- For SATOSA the mgmt service client_secret_basic auth has to be added to oauth tenant auth methods:
-
-"dynamic": [ "key", "secret", "authorize_url", "access_url", "profile_url", "scope_delimiter", "scope", "redirect_uri" ], "token_endpoint_auth_method": "client_secret_basic" } 
-
-In SATOSA redirect uri should be: https://yourdomain.com/mgmt/oauth/tenant/callback
-  
-</details>
-
-
-<details>
-  <summary>Firewall ports and recommendations</summary>
-
-  ## Default ports for firewall setting
+## Firewall ports and recommendations
 | Port | protocol | description | network | path | firewall advice | 
 | ---- | ----------- | ----------- | ----------- | ----------- |--------------|
 |  80 | tcp | edumeet-client webserver (redirect to 443) | host network | / | |
@@ -270,47 +81,94 @@ In SATOSA redirect uri should be: https://yourdomain.com/mgmt/oauth/tenant/callb
 
  # ![Network](/images/edumeet_netw.png)
 
-  
-</details>
+
+## Configs
+
+Configure:
+```
+./utils/run-me-first.sh
+```
+You can do this manually  as well. Changes need to be done in the .env file, and in the config directory.
+
+This will create the initial setup, so the service can start, the authentication has to be configured in 2 components. 
+
+In this setup you will have :
+- Your management service UI avaliable at: yourdomain/mgmt-admin
+- Your keycloak instance running at yourdomain/kc/
+
+We currently only support OIDC authentication.
+We include keycloak to have the ablility to administer local users in case you do not already have any OIDC provider application.
+
+## Certificates
+
+Generate certs (for development): 
+```
+./utils/gen_dev_cert.sh
+```
+
+Generate certs (with Let’s Encrypt): 
+```
+./utils/gen_cert.sh
+```
+You can add your prod certs into the certs directory manually, but then you need to modify the nginx config as well.
+## Running the services
+Start services:
+```
+docker compose up -d
+```
+Check running services
+```
+docker ps
+```
+Stop services
+```
+docker compose down
+```
+
+## Configure authentication
+
+### Initial setup after first run
+
+Authentication is optional but if you want to enable it, you should remove defualtroom paremeters from the config.json at configs/server/ and follow these steps.
+
+For auth you can use any OpenID compatible backend. Keycloak is reccomended for testing, integrating with common third party auth sources and deployments without a central authentication (local users).
+
+For federated login with discovery we reccommend using SATOSA.
+
+1. visit https://yourdomain.com/kc/ and set up your keycloak instance
+configuration according to https://github.com/edumeet/edumeet-management-server/wiki/Keycloak-setup-(OAuth-openid-connect)
+
+At this step you can create a test user for example:
+- Username: edumeet
+- Password: edumeet
+
+2. visit https://yourdomain.com/mgmt-admin/ and set up your management server config
+   - Create a tenant
+   - Create a tenant fqdn / domain
+   - Add authentication by using the Well Known URL "https://yourdomain.com/kc/realms/ < yourrealm > /.well-known/openid-configuration" and pressing "Update Parameters from URL" or manually as follows: 
+ # ![auth](/images/mgmt-client-setup-1.png)
+
+   * Secret is located in keycloak admin console/ < yourrealm > / clients / < yourclient > / credentials
+   *  Key is < yourclient >
+
+    
+3. Logout 
+4. Visit your domain/fqdn that has been configured (Login with your test user)
+5. Visit https://yourdomain.com/mgmt-admin/ and as the logged in user create a room ( You will be assigned as a room owner and gain all permissions after login, but you can also set permissions for other users too. )
+6. Join the room
 
 
 
+## Logs
+To see logs (add -f for tailing the logs):
+```
+docker compose logs
+```
 
-<details>
-  <summary>Development</summary>
-
-eduMEET development usualy happens in 2 ways:
-- Running components manualy
-- Running edumeet-docker with components linked into the docker container or passed to the proxy.
-
-*Without valid certs you have to allow localhost/local ip to work without certs in the browser.
-
-# ![Dev](/images/edumeet_dev.png)
-
-</details>
-
-
-
-
-
-## Docker networking
-edumeet-media-node container works in "host" network mode, because bridge mode has the following issue: ["Docker hangs when attempting to bind a large number of ports"](https://success.docker.com/article/docker-compose-and-docker-run-hang-when-binding-a-large-port-range)
-
-## FAQ
-Q: I get "Cannot find module erros" regarding config files
-
-A: You are probably having a relative path issue with docker check if you are in the correct directory. (edumeet-docker folder)
-_________________
-
-Q: Docker-compose started, but some components are restarting.
-
-A: You are probably having a config or permission problem. Try starting with "docker compose" without the detach parameter to see logs.
-
-
-Or alternatively with:
-
-
-```docker logs -f <edumeet_container_name>```
+To see logs of a component:
+```
+docker logs -f <component>
+```
 
 In the .env file there are a few log variables:
 
@@ -323,22 +181,78 @@ MGMT_CLIENT_DEBUG=
 MN_DEBUG=
 
 Changing them to * will provide extended logs that can help  debugging problems.
-_________________
 
-Q: KeyCloak won't start
+## Uninstall
+Remove unused images (After stopping services):
+```
+docker system prune -a
+```
+Remove unused volumes/database data
+```
+docker volume prune -a
+```
 
-A: KeyCloak is sensitive to permission settings on cert files. Please check 
-_________________
+## Backup/restore
+### Database backup:
+```
+docker compose exec edumeet-db pg_dumpall -U edumeet > pgdump.sql
+```
+### Database restore:
+Drop previous tables  (This will delete data make sure you have a backup!)
+```
+docker exec -i  edumeet-db psql -U edumeet -d edumeet -c "DO \$\$ DECLARE r RECORD; BEGIN FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = 'public') LOOP EXECUTE 'DROP TABLE IF EXISTS ' || quote_ident(r.tablename) || ' CASCADE'; END LOOP; END \$\$;"
+```
+Load data back
+```
+cat pgdump.sql | docker exec -i  edumeet-db psql -U edumeet -d edumeet
+```
 
-Q: I get network conflicts with docker
+## Development
 
-A: You will most likely running an old version of docker, that doesn't handle links between containers
-_________________
+Build your own branches:
+```
+docker compose build --no-cache
+```
 
-Q: I get network problems with room-server and media node  within docker when using ufw
+For individual components:
+```
+docker compose build --no-cache <component name>
+```
 
-A: ufw by default blocks incoming traffic, and  thinks that media control port is accessed outside of the network.
-Firewall can also cause issues with component internal communication.
 
+eduMEET development usualy happens in 2 ways:
+- Running components manualy
+- Running edumeet-docker with components linked into the docker container or passed to the proxy.
 
+*Without valid certs you have to allow localhost/local ip to work without certs in the browser. Once for the website, once more for the socket.io connection (replace wss:// with https:// and accept there as well).
 
+# ![Dev](/images/edumeet_dev.png)
+
+## Database debug
+
+### To check the database:
+Get into the container:
+```
+docker exec -it edumeet-db bash
+```
+Go into postgres account:
+```
+354337e15cfa:/# su postgres
+```
+Connect to database:
+```
+$ psql -U edumeet
+psql (18.0)
+Type "help" for help.
+
+edumeet=# \dt
+                 List of tables
+ Schema |         Name         | Type  |  Owner  
+--------+----------------------+-------+---------
+ public | groupUsers           | table | edumeet
+ public | groups               | table | edumeet
+ public | knex_migrations      | table | edumeet
+ public | knex_migrations_lock | table | edumeet
+...
+
+```
