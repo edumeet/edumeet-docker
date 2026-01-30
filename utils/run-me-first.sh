@@ -29,16 +29,13 @@ ${GREEN}Step 1.${NOCOLOR}
 Updating configuration example files can be done from https://github.com/edumeet components repository.
 CHANGELOG is UPDATED at CHANGELOG.md"
 
-# get example config from the edumeet
 curl -s "https://raw.githubusercontent.com/edumeet/edumeet/refs/heads/main/CHANGELOG.md" -o "CHANGELOG.md"
 
-# get example config from the branch
 mkdir -p examples/app
 curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEET_CLIENT}/${BRANCH_CLIENT}/public/config/config.example.js" -o "examples/app/config.example.js"
 
-# get example config from the branch
 mkdir -p examples/server
-curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEET_SERVER}/${BRANCH_SERVER}/config/config.example.json" -o "examples/server/config.example.json"
+curl -s "https://raw.githubusercontent.com/${REPOSITORY}/${EDUMEET_SERVER}/${BRANCH_SERVER}/config/config.example.js" -o "examples/server/config.example.js"
 
 
 for confDir in {app,nginx,server,mgmt,mgmt-client}

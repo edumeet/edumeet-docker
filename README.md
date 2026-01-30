@@ -209,6 +209,17 @@ cat pgdump.sql | docker exec -i  edumeet-db psql -U edumeet -d edumeet
 
 ## Development
 
+Build your own branches:
+```
+docker compose build --no-cache
+```
+
+For individual components:
+```
+docker compose build --no-cache <component name>
+```
+
+
 eduMEET development usualy happens in 2 ways:
 - Running components manualy
 - Running edumeet-docker with components linked into the docker container or passed to the proxy.
@@ -244,4 +255,4 @@ edumeet=# \dt
  public | knex_migrations_lock | table | edumeet
 ...
 
-```
+
