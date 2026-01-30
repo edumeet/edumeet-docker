@@ -136,7 +136,7 @@ services:
     env_file: .env
     container_name: edumeet-management-server
     volumes:
-      - './configs/mgmt/config.json.template:/usr/src/app/config/config.json.template:ro'
+      - './configs/mgmt/default.json:/usr/src/app/config/default.json:ro'
       - './configs/_mgmt_pwchange/202310300000000_migrate.ts:/usr/src/app/migrations/202310300000000_migrate.ts:ro'
     build:
       args:
