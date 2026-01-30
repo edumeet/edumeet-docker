@@ -11,12 +11,6 @@ services:
   proxy:
     image: nginx:1.29-alpine
     restart: unless-stopped
-    # user: "101:101"
-    # https://man7.org/linux/man-pages/man7/capabilities.7.html
-    #cap_drop:
-    # - ALL
-    #cap_add:
-    # - NET_BIND_SERVICE
     volumes:
      - ./configs/proxy:/etc/nginx/templates:ro
      - ./certbot/conf:/etc/letsencrypt:ro
@@ -59,7 +53,7 @@ services:
     env_file: .env
     restart: unless-stopped
     volumes:
-      - './configs/server:/usr/src/app/config'
+      - './configs/server/config.json.template:/usr/src/app/config/config.json.template:ro'
       # If running separately and you need certs
       # - ./certs:/usr/src/app/certs
     container_name: edumeet-room-server
@@ -134,8 +128,8 @@ services:
     env_file: .env
     container_name: edumeet-management-server
     volumes:
-      - './configs/mgmt:/usr/src/app/config'
-      - './configs/_mgmt_pwchange/202310300000000_migrate.ts:/usr/src/app/migrations/202310300000000_migrate.ts'
+      - './configs/mgmt/config.json.template:/usr/src/app/config/config.json.template:ro'
+      - './configs/_mgmt_pwchange/202310300000000_migrate.ts:/usr/src/app/migrations/202310300000000_migrate.ts:ro'
     build:
       args:
         - 'GIT_SERVER=${GIT_SERVER}'
