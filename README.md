@@ -255,4 +255,4 @@ edumeet=# \dt
  public | knex_migrations_lock | table | edumeet
 ...
 
-```
+
