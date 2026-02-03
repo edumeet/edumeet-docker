@@ -84,7 +84,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfiles/Dockerfile-tracker
-    image: '${REPOSITORY}/tracker:${TAG}'
+    image: '${REPOSITORY}/tracker:4.2'
     networks:
       - internal_net     # Internal-only network (shared with proxy)
   edumeet-client:
