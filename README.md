@@ -16,6 +16,14 @@ _________________
   - [edumeet-media-node](https://github.com/edumeet/edumeet-media-node)
   - [edumeet-management-server](https://github.com/edumeet/edumeet-management-server)
 
+Releases are docker images with the 'stable' tag ending:
+| Component    | Docker images |
+| -------- | ------- |
+| edumeet-client  | ![Docker Image for client (latest)](https://img.shields.io/docker/v/edumeet/edumeet-client)   |
+| edumeet-room-server | ![Docker Image for room-server (latest)](https://img.shields.io/docker/v/edumeet/edumeet-room-server)     |
+| edumeet-media-node    | ![Docker Image for room-server (latest)](https://img.shields.io/docker/v/edumeet/edumeet-media-node)    |
+| edumeet-management-server    | ![Docker Image for room-server (latest)](https://img.shields.io/docker/v/edumeet/edumeet-management-server)    |
+
 
 # Getting started
 ## Guides (click to open):
