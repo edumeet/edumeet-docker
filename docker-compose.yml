@@ -75,6 +75,9 @@ services:
       context: .
       dockerfile: Dockerfiles/Dockerfile-room-server
     image: '${REPOSITORY}/${EDUMEET_SERVER}:${TAG}'
+    #to expose prometheus on localhost
+    #ports:
+    # - "127.0.0.1:3081:3080"
     networks:
      - internal_net                  # Talk to proxy
   edumeet-tracker:
