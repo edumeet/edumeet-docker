@@ -13,5 +13,3 @@
 !/configs/nginx/*.example.*
 !/configs/redis/*.example.*
 /images
-config.bat
-node_modules
