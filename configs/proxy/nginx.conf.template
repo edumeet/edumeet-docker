@@ -25,8 +25,10 @@ http {
 	}
 
 	server {
+        resolver_timeout 5s;
+
 		listen 4443 ssl proxy_protocol;
-		server_name ${MAIN_DOMAIN};
+		server_name _;
 		server_tokens off;
 
 		ssl_certificate /etc/letsencrypt/live/${MAIN_DOMAIN}/fullchain.pem;
