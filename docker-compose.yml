@@ -21,12 +21,6 @@ services:
      - ./configs/proxy:/etc/nginx/templates:ro
      - ./certbot/conf:/etc/letsencrypt:ro
      - ./certbot/www:/var/www/certbot:ro
-    depends_on:
-      - edumeet-client
-      - edumeet-management-server
-      - edumeet-room-server
-      - edumeet-tracker
-      - keycloak
     ports:
      - "80:80"
      - "443:443"
@@ -34,12 +28,12 @@ services:
      - MAIN_DOMAIN=${MAIN_DOMAIN}
      - MEDIA_DOMAIN=${MEDIA_DOMAIN}
      - LISTEN_IP=${LISTEN_IP}
-    command: "/bin/sh -c 'envsubst \"\\$${MAIN_DOMAIN},\\$${LISTEN_IP},\\$${MEDIA_DOMAIN}\" < /etc/nginx/templates/nginx.conf.template > /etc/nginx/nginx.conf && while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    command: "/bin/sh -c 'envsubst \"\\$${MAIN_DOMAIN},\\$${LISTEN_IP},\\$${MEDIA_DOMAIN}\" < /etc/nginx/templates/nginx.conf.template > /etc/nginx/nginx.conf && while :; do nginx -s reload; sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     networks:
       - public_net
       - internal_net                  # Only talks to backend
   turn:
-      image: coturn/coturn:4.7.0-trixie
+      image: coturn/coturn:4.9.0-trixie
       restart: unless-stopped
       network_mode: host
       command: >
