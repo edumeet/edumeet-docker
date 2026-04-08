@@ -23,7 +23,7 @@ WORKDIR /app/${EDUMEET_MGMT_SERVER}
 
 RUN mv  ./* /usr/src/app/
 WORKDIR /usr/src/app
-RUN yarn install --frozen-lockfile
+RUN corepack enable && yarn install --immutable
 RUN rm -fr /usr/src/app/test/
 #COPY configs/mgmt/default.json /usr/src/app/config
 # Compile TypeScript source

@@ -14,7 +14,7 @@ WORKDIR /app
 #checkout code
 RUN git clone --single-branch --branch ${BRANCH_CLIENT} ${GIT_SERVER}/${REPOSITORY}/${EDUMEET_CLIENT}.git
 WORKDIR /app/${EDUMEET_CLIENT}
-RUN yarn install --frozen-lockfile
+RUN corepack enable && yarn install --immutable
 RUN NODE_ENV=production yarn run build
 
 #FROM n7remus/nginx-spa:latest

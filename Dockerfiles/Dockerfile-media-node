@@ -30,7 +30,7 @@ RUN git clone --single-branch --branch ${BRANCH_MN_SERVER} ${GIT_SERVER}/${REPOS
 
 WORKDIR /app/${EDUMEET_MN_SERVER}
 
-RUN yarn install --frozen-lockfile
+RUN corepack enable && yarn install --immutable
 RUN yarn run build
 RUN mv  ./* /usr/src/app/
 WORKDIR /usr/src/app
