@@ -23,7 +23,7 @@ RUN git clone --single-branch --branch ${BRANCH_MGMT_SERVER} ${GIT_SERVER}/${REP
 
 WORKDIR /app/${EDUMEET_MGMT_SERVER}
 
-RUN mv  ./* /usr/src/app/
+RUN mv ./* ./.yarnrc.yml /usr/src/app/
 WORKDIR /usr/src/app
 RUN yarn install --immutable
 RUN rm -fr /usr/src/app/test/

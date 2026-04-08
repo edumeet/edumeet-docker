@@ -22,7 +22,7 @@ RUN git clone --single-branch --branch ${BRANCH_SERVER} ${GIT_SERVER}/${REPOSITO
 
 WORKDIR /app/${EDUMEET_SERVER}
 
-RUN mv  ./* /usr/src/app/
+RUN mv ./* ./.yarnrc.yml /usr/src/app/
 
 WORKDIR /usr/src/app
 

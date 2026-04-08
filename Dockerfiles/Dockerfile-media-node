@@ -34,7 +34,7 @@ WORKDIR /app/${EDUMEET_MN_SERVER}
 
 RUN yarn install --immutable
 RUN yarn run build
-RUN mv  ./* /usr/src/app/
+RUN mv ./* ./.yarnrc.yml /usr/src/app/
 WORKDIR /usr/src/app
 
 EXPOSE ${LISTEN_PORT}
