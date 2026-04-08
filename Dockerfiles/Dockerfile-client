@@ -2,6 +2,7 @@ FROM node:24-bookworm-slim AS edumeet-builder
 
 #install server build dependency
 RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash gettext-base;apt-get clean
+RUN corepack enable
 
 # Args
 ARG EDUMEET_CLIENT
@@ -14,7 +15,7 @@ WORKDIR /app
 #checkout code
 RUN git clone --single-branch --branch ${BRANCH_CLIENT} ${GIT_SERVER}/${REPOSITORY}/${EDUMEET_CLIENT}.git
 WORKDIR /app/${EDUMEET_CLIENT}
-RUN corepack enable && yarn install --immutable
+RUN yarn install --immutable
 RUN NODE_ENV=production yarn run build
 
 #FROM n7remus/nginx-spa:latest

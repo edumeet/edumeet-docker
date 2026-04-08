@@ -2,6 +2,7 @@ FROM node:24-bookworm-slim
 
 #install server build dependency
 RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash gettext-base;apt-get clean
+RUN corepack enable
 
 ARG EDUMEET_MGMT_SERVER
 ARG GIT_SERVER
@@ -23,7 +24,7 @@ WORKDIR /app/${EDUMEET_MGMT_SERVER}
 
 RUN mv  ./* /usr/src/app/
 WORKDIR /usr/src/app
-RUN corepack enable && yarn install --immutable
+RUN yarn install --immutable
 RUN rm -fr /usr/src/app/test/
 #COPY configs/mgmt/default.json /usr/src/app/config
 # Compile TypeScript source

@@ -2,6 +2,7 @@ FROM node:24-bookworm-slim
 
 #install server build dependency
 RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash gettext-base;apt-get clean
+RUN corepack enable
 
 ARG EDUMEET_SERVER
 ARG GIT_SERVER
@@ -26,7 +27,7 @@ WORKDIR /usr/src/app
 
 COPY docker-entrypoint.sh /entrypoint.sh
 
-RUN corepack enable && yarn install --immutable
+RUN yarn install --immutable
 RUN yarn run build
 
 EXPOSE 8443

@@ -2,6 +2,7 @@ FROM node:24-bookworm-slim
 
 #install server build dependency
 RUN apt-get update;DEBIAN_FRONTEND=noninteractive apt-get install -yq git bash gettext-base;apt-get clean
+RUN corepack enable
 
 ARG EDUMEET_MN_SERVER
 ARG GIT_SERVER
@@ -30,7 +31,7 @@ RUN git clone --single-branch --branch ${BRANCH_MN_SERVER} ${GIT_SERVER}/${REPOS
 
 WORKDIR /app/${EDUMEET_MN_SERVER}
 
-RUN corepack enable && yarn install --immutable
+RUN yarn install --immutable
 RUN yarn run build
 RUN mv  ./* /usr/src/app/
 WORKDIR /usr/src/app
