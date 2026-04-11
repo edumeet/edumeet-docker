@@ -129,6 +129,7 @@ services:
       --announcedIp ${EXTERNAL_IP}
       --availableUpload ${MN_AVAILABLE_UPLOAD}
       --availableDownload ${MN_AVAILABLE_DOWNLOAD}
+      --imageTag ${TAG}
     # ${MN_EXTRA_PARAMS}
 
   edumeet-management-server:
