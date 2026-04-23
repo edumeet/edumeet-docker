@@ -208,6 +208,8 @@ Invite workers boot automatically for that tenant — no restart needed.
 
 If IMAP is left blank, invites still work: attendees receive the ICS and can RSVP from their calendar client. The only thing missing is per-attendee RSVP status surfaced in the edumeet admin UI. Within the same provider (Google↔Google, Outlook↔Outlook) attendees still see each other's status natively. Tenants on Gmail/M365 that can't provide basic-auth IMAP can skip it.
 
+> **RSVPs from Thunderbird + Google Calendar are unreliable.** When Thunderbird's calendar event comes from a Google Calendar (via CalDAV / Provider for Google), accepting or declining the invite in Thunderbird writes the new response to Google via CalDAV but does **not** send an iMIP REPLY email. Because Google is not the meeting organizer in this setup, Google will not proxy an RSVP email either. The change is invisible to edumeet and the attendee stays as NEEDS-ACTION in the admin UI. For a reliable RSVP, respond on [calendar.google.com](https://calendar.google.com) directly — that path does send an iMIP REPLY.
+
 ### Landing page
 
 Logged-in users see a calendar icon button next to the login/logout button in the landing, join, and lobby dialogs. The button is only visible when the user's tenant has invites enabled. Clicking opens a dialog listing upcoming meetings (both organized by and invited to the user) with inline Join buttons, a refresh button, and a shortcut to the full management page.
