@@ -167,6 +167,51 @@ At this step you can create a test user for example:
 
 
 
+## Calendar invites
+
+edumeet can send ICS calendar invites (RFC 5545 / RFC 6047 iTIP) for meetings scheduled in existing rooms. Attendees receive the invite in Gmail/Outlook/Apple Calendar, RSVP natively from their mail client, and the response flows back into edumeet via IMAP. Recurring meetings are supported.
+
+### Prerequisites
+
+Each tenant that wants to send invites needs a **dedicated SMTP mailbox on their domain** (e.g. `invites@tenantA.com`). The same mailbox is used to send invites *and* (optionally) receive RSVP replies via IMAP, so it must not be a human inbox — the poller marks processed messages as seen and ignores non-iTIP mail.
+
+For best deliverability, ensure the mailbox's domain has valid **SPF and DKIM** records. Without them, invites will land in spam.
+
+### Fresh install
+
+`./utils/run-me-first.sh` already generates the two required secrets (`invites.encryptionKey` for AES-256-GCM encryption of stored SMTP/IMAP passwords, and `invites.rsvpTokenSecret` for HMAC-SHA256 RSVP tokens) and writes them into `configs/mgmt/default.json`. Nothing extra to do at deploy time.
+
+### Existing install
+
+Run:
+```
+./utils/gen-invite-secrets.sh
+```
+This prints an `"invites": { ... }` JSON block. Paste it at the top level of `configs/mgmt/default.json` (next to the existing `"authentication"` block) and restart the management server:
+```
+docker compose restart edumeet-management-server
+```
+
+> **Do not rotate these secrets** after tenants have configured invite credentials. The `encryptionKey` is required to decrypt previously stored SMTP/IMAP passwords. Rotation would invalidate every stored tenant invite config.
+
+### Per-tenant configuration (via management UI)
+
+1. Log in to `https://yourdomain.com/mgmt-admin/` as a tenant admin or tenant owner.
+2. Go to **Tenants**, click the tenant row to open the edit dialog.
+3. Expand the **Invite email (SMTP/IMAP)** accordion.
+4. Fill in the organizer address (the From: line, e.g. `invites@tenantA.com`), organizer display name, SMTP block (host, port, TLS, user, password) and optionally IMAP block.
+5. Apply.
+
+Invite workers boot automatically for that tenant — no restart needed.
+
+### IMAP is optional
+
+If IMAP is left blank, invites still work: attendees receive the ICS and can RSVP from their calendar client. The only thing missing is per-attendee RSVP status surfaced in the edumeet admin UI. Within the same provider (Google↔Google, Outlook↔Outlook) attendees still see each other's status natively. Tenants on Gmail/M365 that can't provide basic-auth IMAP can skip it.
+
+### Landing page
+
+Logged-in users see a calendar icon button next to the login/logout button in the landing, join, and lobby dialogs. The button is only visible when the user's tenant has invites enabled. Clicking opens a dialog listing upcoming meetings (both organized by and invited to the user) with inline Join buttons, a refresh button, and a shortcut to the full management page.
+
 ## Logs
 To see logs (add -f for tailing the logs):
 ```
