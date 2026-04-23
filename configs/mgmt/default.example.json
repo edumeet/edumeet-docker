@@ -46,6 +46,7 @@
 	"invites": {
 		"encryptionKey": "REPLACE_ME_invite_encryption_key",
 		"rsvpTokenSecret": "REPLACE_ME_invite_rsvp_token_secret",
-		"imapPollIntervalMs": 60000
+		"imapPollIntervalMs": 60000,
+		"imapRetentionDays": 30
 	}
 }

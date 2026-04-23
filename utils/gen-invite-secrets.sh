@@ -30,7 +30,8 @@ echo
 echo '	"invites": {'
 echo "		\"encryptionKey\": \"${ENC_KEY}\","
 echo "		\"rsvpTokenSecret\": \"${RSVP_KEY}\","
-echo '		"imapPollIntervalMs": 60000'
+echo '		"imapPollIntervalMs": 60000,'
+echo '		"imapRetentionDays": 30'
 echo '	}'
 echo
 echo -e "${RED}IMPORTANT:${NOCOLOR} keep these values safe and do NOT rotate them after"
