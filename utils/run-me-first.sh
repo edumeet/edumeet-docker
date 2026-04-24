@@ -263,7 +263,21 @@ MGMT_PRIV_ESCAPED=$(echo "$MGMT_PRIV" | sed 's%\\n%\\\\n%g')
 sed -i "s%^.*MGMT_PRIV=.*$%MGMT_PRIV=\"${MGMT_PRIV_ESCAPED}\"%" .env
 echo "MGMT_PRIV=\"${MGMT_PRIV}\""
 
-sed -i -e "s%secret\":.*%secret\": \"${MGMT_PRIV_ESCAPED}\",%" configs/mgmt/default.json 
+sed -i -e "s%secret\":.*%secret\": \"${MGMT_PRIV_ESCAPED}\",%" configs/mgmt/default.json
+
+# Generate invite worker secrets (AES-256-GCM key + HMAC secret for RSVP tokens)
+if grep -Fq 'REPLACE_ME_invite_encryption_key' configs/mgmt/default.json
+then
+    echo 'generating new secret for invite credential encryption'
+    INVITES_ENC=`tr -dc A-Fa-f0-9 </dev/urandom | head -c 64`
+    sed -i "s%\"encryptionKey\": \"REPLACE_ME_invite_encryption_key\"%\"encryptionKey\": \"${INVITES_ENC}\"%" configs/mgmt/default.json
+fi
+if grep -Fq 'REPLACE_ME_invite_rsvp_token_secret' configs/mgmt/default.json
+then
+    echo 'generating new secret for invite RSVP tokens'
+    INVITES_HMAC=`tr -dc A-Za-z0-9 </dev/urandom | head -c 64`
+    sed -i "s%\"rsvpTokenSecret\": \"REPLACE_ME_invite_rsvp_token_secret\"%\"rsvpTokenSecret\": \"${INVITES_HMAC}\"%" configs/mgmt/default.json
+fi
 
 echo "If you want to generate cert(s) with Let's Encrypt run gen-cert.sh"
 echo "You can start the application with gen-cert.sh or docker compose up"
