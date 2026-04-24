@@ -194,6 +194,16 @@ docker compose restart edumeet-management-server
 
 > **Do not rotate these secrets** after tenants have configured invite credentials. The `encryptionKey` is required to decrypt previously stored SMTP/IMAP passwords. Rotation would invalidate every stored tenant invite config.
 
+### Optional invite settings
+
+The `"invites"` block supports two optional tuning knobs:
+
+- **`imapPollIntervalMs`** (default `60000`) — how often the poller checks each tenant's IMAP inbox for new RSVP replies, in milliseconds.
+- **`imapRetentionDays`** (default `30`) — how long processed RSVP emails stay in the tenant mailbox before the poller deletes them. Only `\Seen` messages (those the poller successfully processed) are touched; any unprocessed mail (welcome emails, junk, messages without a valid ICS) is never deleted. Values:
+  - `0` — delete immediately after processing (no audit trail)
+  - positive integer (e.g. `30`) — keep for N days, then delete
+  - `-1` — fully disable cleanup; nothing is ever deleted
+
 ### Per-tenant configuration (via management UI)
 
 1. Log in to `https://yourdomain.com/mgmt-admin/` as a tenant admin or tenant owner.
