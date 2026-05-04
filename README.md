@@ -224,6 +224,14 @@ If IMAP is left blank, invites still work: attendees receive the ICS and can RSV
 
 Logged-in users see a calendar icon button next to the login/logout button in the landing, join, and lobby dialogs. The button is only visible when the user's tenant has invites enabled. Clicking opens a dialog listing upcoming meetings (both organized by and invited to the user) with inline Join buttons, a refresh button, and a shortcut to the full management page.
 
+## Login throttle
+
+The management server has a per-IP brute-force throttle on the local-strategy login (`POST /authentication`, used by the super-admin login form and by room servers via `MANAGEMENT_USERNAME`/`MANAGEMENT_PASSWORD`). After 10 failed attempts from one IP within 15 minutes, that IP is blocked with HTTP 429 for 15 minutes. Failures are logged via winston at `warn` with `{ip, email, ua, failures}` for visibility/alerting. Successful logins are not counted, so a correctly configured room server never accumulates failures.
+
+For the throttle to attribute attempts to the real client IP — rather than to the proxy that fronts the management server — the env var `TRUST_PROXY=true` must be set. With it on, the rightmost entry of `X-Forwarded-For` is used (this is the IP the proxy itself observed as the client peer; only the rightmost entry is non-forgeable). Without it, the throttle uses the TCP peer.
+
+The docker stack always runs the management server behind nginx, so `TRUST_PROXY=true` is set in `.env` by default and should remain so. If you ever run the management server with port 3030 exposed directly to the internet without a trusted proxy in front, you must set `TRUST_PROXY=false` — otherwise an attacker can spoof `X-Forwarded-For` and bypass the throttle entirely.
+
 ## Logs
 To see logs (add -f for tailing the logs):
 ```
