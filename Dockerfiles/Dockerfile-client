@@ -1,3 +1,4 @@
+ARG NGINX_IMAGE
 FROM node:24-bookworm-slim AS edumeet-builder
 
 #install server build dependency
@@ -19,8 +20,7 @@ WORKDIR /app/${EDUMEET_CLIENT}
 RUN yarn install --immutable
 RUN NODE_ENV=production yarn run build
 
-#FROM n7remus/nginx-spa:latest
-FROM nginx:1.29-alpine
+FROM ${NGINX_IMAGE}
 ARG EDUMEET_CLIENT
 RUN sed -i '1idaemon off;' /etc/nginx/nginx.conf
 COPY Dockerfiles/extra/nginx.conf /etc/nginx/conf.d/default.conf
