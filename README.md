@@ -173,7 +173,9 @@ edumeet can send ICS calendar invites (RFC 5545 / RFC 6047 iTIP) for meetings sc
 
 ### Prerequisites
 
-Each tenant that wants to send invites needs a **dedicated SMTP mailbox on their domain** (e.g. `invites@tenantA.com`). The same mailbox is used to send invites *and* (optionally) receive RSVP replies via IMAP, so it must not be a human inbox — the poller marks processed messages as seen and ignores non-iTIP mail.
+Each tenant that wants to send invites needs an **SMTP mailbox** (e.g. `invites@tenantA.com`). The same mailbox is used to send invites *and* (optionally) receive RSVP replies via IMAP, so it must not be a human inbox — the poller marks processed messages as seen and ignores non-iTIP mail. (Opening the mailbox in a mail client marks messages read and hides them from the poller, so leave it untouched.)
+
+**Sharing one mailbox across tenants is supported.** Several tenants can point at the same `invitation@…` account — the reply poller deduplicates by mailbox (host:port:user) and runs a single poller per unique mailbox, so RSVPs are processed once and routed to the correct meeting regardless of which tenant owns it. This lets you offer invites to tenants who don't want to provision their own mailbox.
 
 For best deliverability, ensure the mailbox's domain has valid **SPF and DKIM** records. Without them, invites will land in spam.
 
@@ -213,6 +215,14 @@ The `"invites"` block supports two optional tuning knobs:
 5. Apply.
 
 Invite workers boot automatically for that tenant — no restart needed.
+
+Enabling invites is **validated**: if the *Invites enabled* box is ticked, the save is rejected unless the organizer address and SMTP host/port/user/password are present (an IMAP host, if given, also requires its user/password). This prevents an "enabled-but-unusable" config that would silently never send. If the **server-level secrets** (`invites.encryptionKey` / `invites.rsvpTokenSecret`) are missing, the dialog and the Meetings tab show a warning banner — invites won't send until an administrator adds them (see *Fresh/Existing install* above).
+
+The **From:** line is `"Organizer Name via Tenant Name" <invites@tenantA.com>`, so attendees can tell invites apart even when several tenants share one mailbox. The **meeting organizer is automatically added as an accepted attendee and also receives the invite** — creating a meeting in edumeet does not put the event in the organizer's own Gmail/Outlook calendar, so the iMIP email is the only path there.
+
+Each meeting picks an **invite language** (the email subject/body locale). All bundled UI languages have a template; anything without one falls back to English. Date/times in the body are rendered in the meeting's chosen timezone.
+
+Sends are **pooled and rate-limited** (one SMTP connection per mailbox, ≤10 messages/second) so a large attendee list won't trip provider concurrency limits. This smooths bursts but does **not** enforce per-day provider quotas.
 
 ### IMAP is optional
 
