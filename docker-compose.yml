@@ -174,7 +174,7 @@ services:
     container_name: edumeet-db
     restart: always
     volumes:
-      - 'edumeet-db:/var/lib/postgresql/data'
+      - 'edumeet-db:/var/lib/postgresql'
     networks:
       - private_net                   # Only backend can access
 
