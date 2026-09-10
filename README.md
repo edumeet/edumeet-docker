@@ -202,7 +202,7 @@ The `"invites"` block supports two optional tuning knobs:
 
 - **`imapPollIntervalMs`** (default `60000`) — how often the poller checks each tenant's IMAP inbox for new RSVP replies, in milliseconds.
 - **`imapRetentionDays`** (default `30`) — how long processed RSVP emails stay in the tenant mailbox before the poller deletes them. Only `\Seen` messages (those the poller successfully processed) are touched; any unprocessed mail (welcome emails, junk, messages without a valid ICS) is never deleted. Values:
-  - `0` — delete immediately after processing (no audit trail)
+  - `0` — delete on the first cycle of the following day (no audit trail). IMAP `SEARCH BEFORE` compares dates rather than instants, so today's processed mail is not purged until tomorrow
   - positive integer (e.g. `30`) — keep for N days, then delete
   - `-1` — fully disable cleanup; nothing is ever deleted
 
