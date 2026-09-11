@@ -234,6 +234,17 @@ If IMAP is left blank, invites still work: attendees receive the ICS and can RSV
 
 Logged-in users see a calendar icon button next to the login/logout button in the landing, join, and lobby dialogs. The button is only visible when the user's tenant has invites enabled. Clicking opens a dialog listing upcoming meetings (both organized by and invited to the user) with inline Join buttons, a refresh button, and a shortcut to the full management page.
 
+## Meetings-only rooms
+
+A room owner can restrict a managed room to scheduled meetings. Every meeting receives a **meeting token** when it is created (12 characters, shown in the Meetings table of `/mgmt-admin` and embedded in the invitation link as `?meetingToken=...`). With **Meetings only** enabled on the room (in the room settings dialog of the meeting UI or in the Rooms table of `/mgmt-admin`), the room server admits only people who present the token of a meeting scheduled for that room. This applies to the room owner too, and nobody reaches the lobby without a token.
+
+- The first person to enter binds the room to that meeting. Everyone after them has to present the same token until the room empties again. A token of another meeting of the same room is refused.
+- Without a token, or with a wrong one, the join dialog shows an error and a **Meeting token** field for manual entry.
+- Invitations for meetings in such a room carry the token in the join link and in the ICS `LOCATION`. Switching the setting on or off re-sends the invitation with the updated link to attendees who had already received one, for meetings that are not over yet; past meetings are left alone.
+- Switching the setting takes effect immediately for newcomers. People already in the room are not affected. Deleting a meeting revokes its token.
+- Tokens never expire and are never rotated, so a sent invitation keeps working.
+- Unmanaged rooms never have this restriction.
+
 ## Login throttle
 
 The management server has a per-IP brute-force throttle on the local-strategy login (`POST /authentication`, used by the super-admin login form and by room servers via `MANAGEMENT_USERNAME`/`MANAGEMENT_PASSWORD`). After 10 failed attempts from one IP within 15 minutes, that IP is blocked with HTTP 429 for 15 minutes. Failures are logged via winston at `warn` with `{ip, email, ua, failures}` for visibility/alerting. Successful logins are not counted, so a correctly configured room server never accumulates failures.
