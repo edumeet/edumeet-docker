@@ -119,6 +119,18 @@ Generate certs (with Let’s Encrypt):
 ./utils/gen_cert.sh
 ```
 You can add your prod certs into the certs directory manually, but then you need to modify the nginx config as well.
+
+## HTTPS only (HSTS)
+
+For a production deployment with valid certificates, enable HSTS by uncommenting this line in the HTTPS server block of `configs/proxy/nginx.conf.template`:
+```
+add_header Strict-Transport-Security "max-age=31536000" always;
+```
+If you run your own nginx in front of eduMEET, add the same line to the HTTPS server block of every tenant domain.
+
+Why: signing in hands the access token to the tenant's own site, and the management server accepts that site over `http` as well as `https`. The redirect from port 80 to HTTPS protects normal visits, but not against someone who controls the user's network (for example a hostile Wi-Fi): they answer the plain HTTP request themselves before it ever reaches nginx. With HSTS the browser never makes that request again after its first HTTPS visit.
+
+Leave it off while testing over plain HTTP, with development certificates from `gen_dev_cert.sh`, or on a domain you may switch back to HTTP. Browsers remember the header for `max-age` seconds and then refuse the site without valid HTTPS, with no way to click through a certificate warning. When trying it the first time, start with a short value such as `max-age=300`. Do not add `includeSubDomains` or `preload` unless every subdomain is served over HTTPS.
 ## Running the services
 Start services:
 ```
