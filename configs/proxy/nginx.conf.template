@@ -114,6 +114,7 @@ http {
 		}
 
 		location = /auth/logout {
+			access_log off;
 			proxy_buffer_size 128M;
 			proxy_buffers 4 256M;
 			proxy_busy_buffers_size 256M;
