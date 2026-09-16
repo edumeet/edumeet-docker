@@ -47,9 +47,7 @@ services:
         --use-auth-secret
         --static-auth-secret=${MEDIA_SECRET}
         --no-tls
-        --no-dtls
         --no-multicast-peers
-        --no-cli
 
   edumeet-room-server:
     env_file: .env
