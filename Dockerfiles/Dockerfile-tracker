@@ -1,4 +1,4 @@
-FROM node:24-bookworm-slim
+FROM node:24-trixie-slim
 RUN npm install -g bittorrent-tracker
 EXPOSE 8000
 ENTRYPOINT [ "bittorrent-tracker" ]
