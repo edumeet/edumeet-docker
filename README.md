@@ -315,6 +315,8 @@ cat pgdump.sql | docker exec -i  edumeet-db psql -U edumeet -d edumeet
 
 ## Development
 
+To develop eduMEET itself (running the client, room server, media node and management server from source), see the [developer setup guide](https://github.com/edumeet/edumeet/blob/main/DEVELOPMENT.md) and [its VS Code version](https://github.com/edumeet/edumeet/blob/main/DEVELOPMENT-VSCODE.md). This section covers building and running your own branches in this docker setup.
+
 Build your own branches:
 ```
 docker compose build --no-cache
