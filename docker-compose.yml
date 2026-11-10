@@ -74,6 +74,12 @@ services:
           --denied-peer-ip=fe80::-febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff
           --allowed-peer-ip=${EXTERNAL_IP}
           --user-quota=12
+          "$$@"
+        - turnserver
+      # Options in a command: of this service (for example in docker-compose.override.yml) are
+      # added after these, so they can change or add settings, for example:
+      #   command: --min-port=50000 --max-port=50249
+      # Leave out -n and --static-auth-secret: the secret comes from the file above.
 
   edumeet-room-server:
     env_file: .env
