@@ -24,6 +24,9 @@ fi
 
 source .env
 
+# .env holds the secrets this script writes into it: only its owner may read it.
+chmod 600 .env
+
 echo -e "
 ${GREEN}Step 1.${NOCOLOR}
 Updating configuration example files can be done from https://github.com/edumeet components repository.

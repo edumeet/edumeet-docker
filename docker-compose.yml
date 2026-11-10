@@ -36,36 +36,44 @@ services:
       image: "${COTURN_IMAGE}"
       restart: unless-stopped
       network_mode: host
+      environment:
+        - MEDIA_SECRET=${MEDIA_SECRET}
+      # The shared secret goes into a configuration file in the container, not onto the command
+      # line, which every account on the host can read in the process list.
       # LOCAL_IP is this host's own address, the private one behind NAT. coturn maps EXTERNAL_IP to
       # it and allows it as a peer, so the media node on this host stays reachable. It must never be
       # 0.0.0.0: coturn then allows every peer.
-      command: >
-        -n
-        --min-port=50000
-        --max-port=60000
-        --realm=${MEDIA_DOMAIN}
-        --external-ip=${EXTERNAL_IP}/${LOCAL_IP:-${EXTERNAL_IP}}
-        --external-ip=${EXTERNAL_IP}
-        --listening-ip=${LISTEN_IP}
-        --fingerprint
-        --use-auth-secret
-        --static-auth-secret=${MEDIA_SECRET}
-        --no-tls
-        --no-multicast-peers
-        --no-tcp-relay
-        --denied-peer-ip=0.0.0.0-0.255.255.255
-        --denied-peer-ip=10.0.0.0-10.255.255.255
-        --denied-peer-ip=100.64.0.0-100.127.255.255
-        --denied-peer-ip=127.0.0.0-127.255.255.255
-        --denied-peer-ip=169.254.0.0-169.254.255.255
-        --denied-peer-ip=172.16.0.0-172.31.255.255
-        --denied-peer-ip=192.168.0.0-192.168.255.255
-        --denied-peer-ip=::1
-        --denied-peer-ip=::ffff:0.0.0.0-::ffff:255.255.255.255
-        --denied-peer-ip=fc00::-fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
-        --denied-peer-ip=fe80::-febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff
-        --allowed-peer-ip=${EXTERNAL_IP}
-        --user-quota=12
+      entrypoint:
+        - /bin/sh
+        - -c
+        - >-
+          umask 077 &&
+          printf 'static-auth-secret=%s\n' "$$MEDIA_SECRET" > /tmp/turnserver.conf &&
+          exec turnserver -c /tmp/turnserver.conf
+          --min-port=50000
+          --max-port=60000
+          --realm=${MEDIA_DOMAIN}
+          --external-ip=${EXTERNAL_IP}/${LOCAL_IP:-${EXTERNAL_IP}}
+          --external-ip=${EXTERNAL_IP}
+          --listening-ip=${LISTEN_IP}
+          --fingerprint
+          --use-auth-secret
+          --no-tls
+          --no-multicast-peers
+          --no-tcp-relay
+          --denied-peer-ip=0.0.0.0-0.255.255.255
+          --denied-peer-ip=10.0.0.0-10.255.255.255
+          --denied-peer-ip=100.64.0.0-100.127.255.255
+          --denied-peer-ip=127.0.0.0-127.255.255.255
+          --denied-peer-ip=169.254.0.0-169.254.255.255
+          --denied-peer-ip=172.16.0.0-172.31.255.255
+          --denied-peer-ip=192.168.0.0-192.168.255.255
+          --denied-peer-ip=::1
+          --denied-peer-ip=::ffff:0.0.0.0-::ffff:255.255.255.255
+          --denied-peer-ip=fc00::-fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+          --denied-peer-ip=fe80::-febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+          --allowed-peer-ip=${EXTERNAL_IP}
+          --user-quota=12
 
   edumeet-room-server:
     env_file: .env
