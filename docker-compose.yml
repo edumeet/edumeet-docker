@@ -36,11 +36,15 @@ services:
       image: "${COTURN_IMAGE}"
       restart: unless-stopped
       network_mode: host
+      # LOCAL_IP is this host's own address, the private one behind NAT. coturn maps EXTERNAL_IP to
+      # it and allows it as a peer, so the media node on this host stays reachable. It must never be
+      # 0.0.0.0: coturn then allows every peer.
       command: >
         -n
         --min-port=50000
         --max-port=60000
         --realm=${MEDIA_DOMAIN}
+        --external-ip=${EXTERNAL_IP}/${LOCAL_IP:-${EXTERNAL_IP}}
         --external-ip=${EXTERNAL_IP}
         --listening-ip=${LISTEN_IP}
         --fingerprint
@@ -61,7 +65,6 @@ services:
         --denied-peer-ip=fc00::-fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
         --denied-peer-ip=fe80::-febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff
         --allowed-peer-ip=${EXTERNAL_IP}
-        --allowed-peer-ip=${LISTEN_IP}
         --user-quota=12
 
   edumeet-room-server:
