@@ -24,6 +24,9 @@ fi
 
 source .env
 
+# .env holds the secrets this script writes into it: only its owner may read it.
+chmod 600 .env
+
 echo -e "
 ${GREEN}Step 1.${NOCOLOR}
 Updating configuration example files can be done from https://github.com/edumeet components repository.
@@ -137,6 +140,18 @@ then
     EXTERNAL_IP=$(hostname -I | awk '{print $1}')
     echo -e "${GREEN}setting EXTERNAL_IP to {$EXTERNAL_IP} ${NOCOLOR}"
     sed -i "s/^.*EXTERNAL_IP.*$/EXTERNAL_IP=${EXTERNAL_IP}/" .env
+fi
+if [ -z "$LOCAL_IP" ]
+then
+    LOCAL_IP=$(ip -4 route get 1.1.1.1 2>/dev/null | awk '{for (i = 1; i < NF; i++) if ($i == "src") print $(i + 1)}')
+    [ -z "$LOCAL_IP" ] && LOCAL_IP=$(hostname -I | awk '{print $1}')
+    echo -e "${GREEN}setting LOCAL_IP to {$LOCAL_IP} ${NOCOLOR}"
+    if grep -q "^LOCAL_IP=" .env
+    then
+        sed -i "s/^LOCAL_IP=.*$/LOCAL_IP=${LOCAL_IP}/" .env
+    else
+        echo "LOCAL_IP=${LOCAL_IP}" >> .env
+    fi
 fi
 
 
