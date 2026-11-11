@@ -154,6 +154,9 @@ then
     fi
 fi
 
+# The media node's own TLS key and certificate, which the room-server pins
+./utils/media-node-cert.sh || exit 1
+
 
 
 echo -e "Current tag: ${RED}${VERSION}${NOCOLOR}

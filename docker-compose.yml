@@ -86,6 +86,8 @@ services:
     restart: unless-stopped
     volumes:
       - './configs/server/config.json.template:/usr/src/app/config/config.json.template:ro'
+      # The media node's certificate, pinned as its "ca" in the template (utils/media-node-cert.sh).
+      - './certs/media-node:/certs/media-node:ro'
       # If running separately and you need certs
       # - ./certs:/usr/src/app/certs
     container_name: edumeet-room-server
@@ -151,8 +153,13 @@ services:
     security_opt:
      - no-new-privileges:true
     network_mode: "host"
+    volumes:
+      # Key and certificate made for this install by utils/media-node-cert.sh, not the published demo ones.
+      - './certs/media-node:/certs/media-node:ro'
     command: >
       DEBUG=*
+      --cert /certs/media-node/cert.pem
+      --key /certs/media-node/key.pem
       --listenPort ${LISTEN_PORT}
       --rtcMinPort ${RTC_MIN_PORT}
       --rtcMaxPort ${RTC_MAX_PORT}

@@ -5,6 +5,7 @@ configs/kc/dev.json
 configs/mgmt/default.json
 configs/server/config.json
 certbot
+certs/media-node/
 rsa_*.pem
 CHANGELOG.md
 
