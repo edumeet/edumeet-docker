@@ -79,13 +79,31 @@ For latest changes and releases see:
 https://github.com/edumeet/edumeet/blob/main/CHANGELOG.md
 
 ## Firewall ports and recommendations
-| Port | protocol | description | network | path | firewall advice | 
-| ---- | ----------- | ----------- | ----------- | ----------- |--------------|
-|  80 | tcp | edumeet-client webserver (redirect to 443) | host network | / | |
-|  443 | tcp | edumeet-client https webserver and signaling proxy | host network |  / | |
-|  3000 |  | edumeet-media-node port | host network | - | should be limited so only the room-server can access it |
-|  3479 |  | coturn port | host network | - | |
-|  40000-40249 | tcp/udp | edumeet-media-node ports | host network | - | |
+The public firewall is the firewall on your server or cloud provider that controls
+connections from the internet. For the default Docker Compose setup, allow:
+
+| Port(s) | Protocol | Purpose | Public firewall recommendation |
+| ---- | ---- | ---- | ---- |
+| 80 | TCP | Redirects website visitors to HTTPS and serves the certificate challenge. | Allow if you want the HTTP redirect or use HTTP certificate validation. |
+| 443 | TCP | Website, signaling, and TURN-over-TLS traffic. | Allow; this is the main public entry point. |
+| 40000-40249 | TCP and UDP | Media traffic to the media node (default range). | Allow for calls and media to work. |
+| 50000-60000 | UDP | TURN relay media traffic (default coturn range). | Allow so calls can use the TURN relay when a direct media connection cannot be made. |
+
+These are the default media and TURN ranges; if you change them in the configuration,
+make the matching firewall rule changes too.
+
+The following ports are used by services but should not normally be open to the
+public internet:
+
+| Port | Purpose | Recommendation |
+| ---- | ---- | ---- |
+| 3000 | Media-node service API used by the room server. | Restrict access to the room server; do not allow general internet access. |
+| 3478 | Coturn listener reached by the local Nginx proxy. | Keep direct public access blocked; allow the proxy-to-coturn connection. |
+| 3479 | Nginx's internal TURN proxy listener in the Docker setup. | Do not open this port on the host firewall. Public TURN-over-TLS arrives on 443/TCP instead. |
+
+In short: open **80/TCP**, **443/TCP**, **40000-40249/TCP+UDP**, and
+**50000-60000/UDP** to the internet. Keep **3000**, **3478**, and **3479**
+restricted as described above.
 
  # ![Network](/images/edumeet_netw.png)
 
