@@ -107,6 +107,8 @@ restricted as described above.
 
 ![Default eduMEET Docker network paths and ports](images/edumeet-network-ports.svg)
 
+The [editable draw.io diagram](images/edumeet-network-ports.drawio) can be opened
+in diagrams.net. After editing it, update the SVG above as well.
 
 ## Configs
 
