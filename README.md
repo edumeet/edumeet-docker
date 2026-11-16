@@ -105,7 +105,7 @@ In short: open **80/TCP**, **443/TCP**, **40000-40249/TCP+UDP**, and
 **50000-60000/UDP** to the internet. Keep **3000**, **3478**, and **3479**
 restricted as described above.
 
- # ![Network](/images/edumeet_netw.png)
+![Default eduMEET Docker network paths and ports](images/edumeet-network-ports.svg)
 
 
 ## Configs
