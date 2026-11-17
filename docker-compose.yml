@@ -118,6 +118,7 @@ services:
       - internal_net     # Internal-only network (shared with proxy)
   edumeet-client:
     # nginx container
+    restart: unless-stopped
     # env_file: .env
     volumes:
       - './configs/app:/app/config:ro'
