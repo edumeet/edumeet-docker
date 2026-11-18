@@ -165,6 +165,17 @@ Stop services
 docker compose down
 ```
 
+### Upgrading from 4.2-20261113-stable or older: keep Keycloak's users
+Up to 4.2-20261113-stable, Keycloak kept its database (realms, clients, local users) inside its container. Since 4.2-20261118-stable it is kept in the `keycloak-data` volume, so it survives when the container is recreated. The first `docker compose up -d` after `git pull` recreates Keycloak with that new, empty volume, and the old database would be lost. Copy it over once, after `git pull` and before `docker compose up -d`:
+```
+docker compose stop keycloak
+docker cp -a edumeet-keycloak:/opt/keycloak/data ./keycloak-data-backup
+docker compose create keycloak
+docker cp -a ./keycloak-data-backup/. edumeet-keycloak:/opt/keycloak/data/
+docker compose up -d
+```
+Check that your realm is there at `https://yourdomain/kc/`, then delete `keycloak-data-backup`. Skip this only if Keycloak uses an external database (`KC_DB` set in `.env`).
+
 ## Configure authentication
 
 ### Initial setup after first run
