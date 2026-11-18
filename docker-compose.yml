@@ -198,8 +198,9 @@ services:
     container_name: edumeet-keycloak
     environment:
       # CVE-2026-114938 (Java4Shell): disable the AVX-512 Base64 intrinsic
-      # until the JDK in the Keycloak image is fixed.
-      JAVA_OPTS_APPEND: "-XX:-UseBASE64Intrinsics"
+      # until the JDK in the Keycloak image is fixed. A JAVA_OPTS_APPEND set
+      # in .env is kept (appended).
+      JAVA_OPTS_APPEND: "-XX:-UseBASE64Intrinsics ${JAVA_OPTS_APPEND:-}"
     volumes:
       - './certs:/opt/keycloak/conf'
       # Keep the H2 database (users, realms) when the container is recreated
