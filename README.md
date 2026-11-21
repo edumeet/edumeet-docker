@@ -281,11 +281,13 @@ Logged-in users see a calendar icon button next to the login/logout button in th
 
 A room owner can restrict a managed room to scheduled meetings. Every meeting receives a **meeting token** when it is created (12 characters, shown in the Meetings table of `/mgmt-admin` and embedded in the invitation link as `?meetingToken=...`). With **Meetings only** enabled on the room (in the room settings dialog of the meeting UI or in the Rooms table of `/mgmt-admin`), the room server admits only people who present the token of a meeting scheduled for that room. This applies to the room owner too, and nobody reaches the lobby without a token.
 
-- The first person to enter binds the room to that meeting. Everyone after them has to present the same token until the room empties again. A token of another meeting of the same room is refused.
+- The first person to enter binds the room to that meeting. While the setting is on, everyone after them has to present the same token until the room empties again; a token of another meeting of the same room is refused. Switching the setting off and on again does not release the room from its meeting.
 - Without a token, or with a wrong one, the join dialog shows an error and a **Meeting token** field for manual entry.
 - Invitations for meetings in such a room carry the token in the join link and in the ICS `LOCATION`. Switching the setting on or off re-sends the invitation with the updated link to attendees who had already received one, for meetings that are not over yet; past meetings are left alone.
 - Switching the setting takes effect immediately for newcomers. People already in the room are not affected. Deleting a meeting revokes its token.
-- Tokens never expire and are never rotated, so a sent invitation keeps working.
+- A token works from an hour before its meeting starts until an hour after it ends; for a series, around each occurrence. Too early, the join dialog shows when the meeting starts. Too late, it says the meeting is over.
+- A meeting that runs over keeps its token: the hour starts when the room empties, not at the scheduled end. If everyone leaves early, the token still works until an hour after the scheduled end. Whoever enters during that hour starts it again when the room empties.
+- Tokens are never rotated, so a sent invitation keeps working for every occurrence of its meeting, also after the meeting is moved to another time.
 - Unmanaged rooms never have this restriction.
 
 ## Login throttle
