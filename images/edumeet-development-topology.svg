@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="520" viewBox="0 0 1120 520" role="img" aria-labelledby="title description">
+  <title id="title">eduMEET development topology</title>
+  <desc id="description">A developer runs the component being changed from source and connects it to the other services in a local test stack. A browser tests the chosen client entry point. The exact topology depends on the component under development.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#334155"/>
+    </marker>
+    <marker id="arrow-start" markerWidth="10" markerHeight="10" refX="1" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M10,0 L0,5 L10,10 Z" fill="#334155"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: Arial, Helvetica, sans-serif; fill: #172033; }
+    .title { font-size: 30px; font-weight: 700; }
+    .subtitle { font-size: 18px; fill: #475569; }
+    .group-title { font-size: 21px; font-weight: 700; }
+    .box-title { font-size: 19px; font-weight: 700; }
+    .detail { font-size: 16px; fill: #475569; }
+    .line { fill: none; stroke: #334155; stroke-width: 2.5; marker-end: url(#arrow); }
+    .both { fill: none; stroke: #334155; stroke-width: 2.5; marker-start: url(#arrow-start); marker-end: url(#arrow); }
+    .optional { fill: none; stroke: #6b4ca5; stroke-width: 2.5; stroke-dasharray: 8 6; marker-start: url(#arrow-start); marker-end: url(#arrow); }
+    .group { fill: #f8fafc; stroke: #94a3b8; stroke-width: 2; stroke-dasharray: 9 6; }
+    .source { fill: #e8f2ff; stroke: #3974b8; stroke-width: 2; }
+    .service { fill: #ffffff; stroke: #64748b; stroke-width: 2; }
+    .stack { fill: #fff7e6; stroke: #b7791f; stroke-width: 2; }
+  </style>
+
+  <rect width="1120" height="520" fill="#ffffff"/>
+  <text x="40" y="48" class="title">eduMEET development topology</text>
+  <text x="40" y="78" class="subtitle">Run the component under change from source; use a test stack for the services it depends on.</text>
+
+  <rect x="35" y="115" width="470" height="320" rx="14" class="group"/>
+  <text x="60" y="153" class="group-title">Developer workstation</text>
+  <rect x="75" y="205" width="180" height="95" rx="10" class="source"/>
+  <text x="165" y="243" text-anchor="middle" class="box-title">Component source</text>
+  <text x="165" y="272" text-anchor="middle" class="detail">build and run locally</text>
+  <rect x="290" y="205" width="170" height="95" rx="10" class="service"/>
+  <text x="375" y="243" text-anchor="middle" class="box-title">Browser</text>
+  <text x="375" y="272" text-anchor="middle" class="detail">manual or automated tests</text>
+  <text x="270" y="385" text-anchor="middle" class="detail">Choose which component runs from source.</text>
+
+  <rect x="615" y="115" width="470" height="320" rx="14" class="group"/>
+  <text x="640" y="153" class="group-title">Local test stack</text>
+  <rect x="655" y="205" width="170" height="95" rx="10" class="service"/>
+  <text x="740" y="243" text-anchor="middle" class="box-title">Entry point</text>
+  <text x="740" y="272" text-anchor="middle" class="detail">proxy or local service</text>
+  <rect x="865" y="205" width="180" height="95" rx="10" class="stack"/>
+  <text x="955" y="243" text-anchor="middle" class="box-title">Supporting services</text>
+  <text x="955" y="272" text-anchor="middle" class="detail">other components and data</text>
+  <text x="850" y="385" text-anchor="middle" class="detail">Keep dependencies needed by the test.</text>
+
+  <path d="M255 252 V340 H955 V300" class="both"/>
+  <path d="M460 252 H655" class="optional"/>
+  <text x="370" y="185" text-anchor="middle" class="detail">browser target varies</text>
+  <text x="410" y="325" text-anchor="middle" class="detail">service links</text>
+  <text x="40" y="485" class="detail">This is a conceptual view; addresses, certificates, and which services run locally are setup-specific.</text>
+</svg>

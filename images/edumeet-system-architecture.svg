@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1360" height="700" viewBox="0 0 1360 700" role="img" aria-labelledby="title description">
+  <title id="title">eduMEET component architecture</title>
+  <desc id="description">Browsers use the web client and communicate with the room and management servers through a reverse proxy. The room server coordinates media nodes, while browsers send media directly to them. The management server stores data in PostgreSQL and can use an optional OIDC identity provider.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#334155"/>
+    </marker>
+    <marker id="arrow-start" markerWidth="10" markerHeight="10" refX="1" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M10,0 L0,5 L10,10 Z" fill="#334155"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: Arial, Helvetica, sans-serif; fill: #172033; }
+    .title { font-size: 30px; font-weight: 700; }
+    .subtitle { font-size: 18px; fill: #475569; }
+    .box-title { font-size: 19px; font-weight: 700; }
+    .detail { font-size: 15px; fill: #475569; }
+    .line { fill: none; stroke: #334155; stroke-width: 2.5; marker-end: url(#arrow); }
+    .both { fill: none; stroke: #334155; stroke-width: 2.5; marker-start: url(#arrow-start); marker-end: url(#arrow); }
+    .optional { fill: none; stroke: #6b4ca5; stroke-width: 2.5; stroke-dasharray: 8 6; marker-start: url(#arrow-start); marker-end: url(#arrow); }
+    .optional-out { fill: none; stroke: #6b4ca5; stroke-width: 2.5; stroke-dasharray: 8 6; marker-end: url(#arrow); }
+    .browser { fill: #e8f2ff; stroke: #3974b8; stroke-width: 2; }
+    .service { fill: #ffffff; stroke: #64748b; stroke-width: 2; }
+    .core { fill: #fff7e6; stroke: #b7791f; stroke-width: 2; }
+    .data { fill: #eaf7ed; stroke: #43834f; stroke-width: 2; }
+    .optional-box { fill: #f5f0ff; stroke: #6b4ca5; stroke-width: 2; stroke-dasharray: 7 5; }
+  </style>
+
+  <rect width="1360" height="700" fill="#ffffff"/>
+  <text x="40" y="48" class="title">eduMEET: component architecture</text>
+  <text x="40" y="78" class="subtitle">Logical responsibilities and connections; ports and deployment-specific settings are documented separately.</text>
+
+  <rect x="40" y="270" width="190" height="100" rx="10" class="browser"/>
+  <text x="135" y="310" text-anchor="middle" class="box-title">Browser</text>
+  <text x="135" y="338" text-anchor="middle" class="detail">meeting and admin UI</text>
+
+  <rect x="310" y="270" width="210" height="100" rx="10" class="service"/>
+  <text x="415" y="310" text-anchor="middle" class="box-title">Reverse proxy</text>
+  <text x="415" y="338" text-anchor="middle" class="detail">public web entry point</text>
+
+  <rect x="620" y="120" width="230" height="90" rx="10" class="service"/>
+  <text x="735" y="156" text-anchor="middle" class="box-title">Web client</text>
+  <text x="735" y="184" text-anchor="middle" class="detail">meeting and management views</text>
+
+  <rect x="620" y="270" width="230" height="100" rx="10" class="core"/>
+  <text x="735" y="310" text-anchor="middle" class="box-title">Room server</text>
+  <text x="735" y="338" text-anchor="middle" class="detail">rooms, signaling, permissions</text>
+
+  <rect x="620" y="450" width="230" height="100" rx="10" class="core"/>
+  <text x="735" y="490" text-anchor="middle" class="box-title">Management server</text>
+  <text x="735" y="518" text-anchor="middle" class="detail">managed rooms and accounts</text>
+
+  <rect x="960" y="270" width="220" height="100" rx="10" class="service"/>
+  <text x="1070" y="310" text-anchor="middle" class="box-title">Media node(s)</text>
+  <text x="1070" y="338" text-anchor="middle" class="detail">real-time audio and video</text>
+
+  <rect x="960" y="470" width="200" height="90" rx="10" class="data"/>
+  <text x="1060" y="506" text-anchor="middle" class="box-title">PostgreSQL</text>
+  <text x="1060" y="534" text-anchor="middle" class="detail">management data</text>
+
+  <rect x="620" y="590" width="230" height="70" rx="10" class="optional-box"/>
+  <text x="735" y="620" text-anchor="middle" class="box-title">OIDC provider (optional)</text>
+  <text x="735" y="644" text-anchor="middle" class="detail">identity provider</text>
+
+  <path d="M230 320 H310" class="both"/>
+  <text x="270" y="300" text-anchor="middle" class="detail">web requests</text>
+  <path d="M520 290 C560 250 570 165 620 165" class="line"/>
+  <text x="570" y="220" text-anchor="middle" class="detail">serves UI</text>
+  <path d="M520 320 H620" class="both"/>
+  <text x="570" y="300" text-anchor="middle" class="detail">signaling</text>
+  <path d="M520 350 C560 390 570 500 620 500" class="both"/>
+  <text x="570" y="430" text-anchor="middle" class="detail">management API</text>
+  <path d="M850 320 H960" class="both"/>
+  <text x="905" y="300" text-anchor="middle" class="detail">media control</text>
+  <path d="M850 500 H960" class="both"/>
+  <text x="905" y="480" text-anchor="middle" class="detail">stored data</text>
+  <path d="M735 550 V590" class="optional-out"/>
+  <text x="805" y="578" text-anchor="middle" class="detail">OIDC login</text>
+
+  <text x="40" y="685" class="detail">Browsers send media directly to media nodes when possible; TURN may relay it when direct connectivity fails.</text>
+</svg>
