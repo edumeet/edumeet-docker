@@ -27,6 +27,9 @@ source .env
 # .env holds the secrets this script writes into it: only its owner may read it.
 chmod 600 .env
 
+# Older versions of .env switched TLS certificate verification off for the Node services.
+sed -i '/^NODE_TLS_REJECT_UNAUTHORIZED=/d; /^# for internal http communication between components$/d' .env
+
 echo -e "
 ${GREEN}Step 1.${NOCOLOR}
 Updating configuration example files can be done from https://github.com/edumeet components repository.

@@ -140,6 +140,14 @@ Generate certs (with Let’s Encrypt):
 ```
 You can add your prod certs into the certs directory manually, but then you need to modify the nginx config as well.
 
+### Certificate verification
+
+The room server, media node and management server verify the TLS certificate of every server they connect to: the identity provider of a tenant, the SMTP/IMAP servers for calendar invites, bot providers and upload targets. `docker-compose.yml` sets `NODE_TLS_REJECT_UNAUTHORIZED=1` for them, and a value in `.env` does not change that.
+
+If one of those servers has a certificate from a private or self-signed CA, trust that CA instead of switching verification off: put its certificate (PEM) in `certs/extra-ca/`, set `NODE_EXTRA_CA_CERTS=/certs/extra-ca/<file>` in `.env` and run `docker compose up -d`. `./utils/gen_dev_cert.sh` copies its development certificate there and prints the line to set; without it, signing in through the Keycloak of this setup fails with a development certificate.
+
+Upgrading from 4.2-20261118-stable or older: `.env` used to contain `NODE_TLS_REJECT_UNAUTHORIZED=0`, which accepted any certificate, so anyone able to intercept the connection to the identity provider could sign in as any user of the tenant. Delete that line from your `.env`. If sign-in, invite mail or a bot provider fails afterwards with a certificate error (`unable to verify the first certificate`, `self-signed certificate`), that server needs a valid certificate or its CA in `certs/extra-ca/` as described above.
+
 ## HTTPS only (HSTS)
 
 For a production deployment with valid certificates, enable HSTS by uncommenting this line in the HTTPS server block of `configs/proxy/nginx.conf.template`:

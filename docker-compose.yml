@@ -83,11 +83,17 @@ services:
 
   edumeet-room-server:
     env_file: .env
+    environment:
+      # Node verifies TLS certificates. Set here, so a NODE_TLS_REJECT_UNAUTHORIZED=0 left in an
+      # older .env cannot switch that off. For a private CA see NODE_EXTRA_CA_CERTS in .env.
+      - NODE_TLS_REJECT_UNAUTHORIZED=1
     restart: unless-stopped
     volumes:
       - './configs/server/config.json.template:/usr/src/app/config/config.json.template:ro'
       # The media node's certificate, pinned as its "ca" in the template (utils/media-node-cert.sh).
       - './certs/media-node:/certs/media-node:ro'
+      # Certificates of private CAs to trust, see NODE_EXTRA_CA_CERTS in .env.
+      - './certs/extra-ca:/certs/extra-ca:ro'
       # If running separately and you need certs
       # - ./certs:/usr/src/app/certs
     container_name: edumeet-room-server
@@ -108,6 +114,9 @@ services:
      - internal_net                  # Talk to proxy
   edumeet-tracker:
     env_file: .env
+    environment:
+      # As for the other Node services: not switched off by an older .env.
+      - NODE_TLS_REJECT_UNAUTHORIZED=1
     restart: unless-stopped
     container_name: edumeet-tracker
     build:
@@ -138,6 +147,10 @@ services:
 
   edumeet-media-node:
     env_file: .env
+    environment:
+      # Node verifies TLS certificates. Set here, so a NODE_TLS_REJECT_UNAUTHORIZED=0 left in an
+      # older .env cannot switch that off. For a private CA see NODE_EXTRA_CA_CERTS in .env.
+      - NODE_TLS_REJECT_UNAUTHORIZED=1
     container_name: edumeet-media-node
     restart: unless-stopped
     build:
@@ -157,6 +170,8 @@ services:
     volumes:
       # Key and certificate made for this install by utils/media-node-cert.sh, not the published demo ones.
       - './certs/media-node:/certs/media-node:ro'
+      # Certificates of private CAs to trust, see NODE_EXTRA_CA_CERTS in .env.
+      - './certs/extra-ca:/certs/extra-ca:ro'
     command: >
       DEBUG=*
       --cert /certs/media-node/cert.pem
@@ -174,18 +189,23 @@ services:
 
   edumeet-management-server:
     env_file: .env
+    environment:
+      # Node verifies TLS certificates. Set here, so a NODE_TLS_REJECT_UNAUTHORIZED=0 left in an
+      # older .env cannot switch that off. For a private CA see NODE_EXTRA_CA_CERTS in .env.
+      - NODE_TLS_REJECT_UNAUTHORIZED=1
     container_name: edumeet-management-server
     restart: unless-stopped
     volumes:
       - './configs/mgmt/default.json:/usr/src/app/config/default.json:ro'
       - './configs/_mgmt_pwchange/202310300000000_migrate.ts:/usr/src/app/migrations/202310300000000_migrate.ts:ro'
+      # Certificates of private CAs to trust, see NODE_EXTRA_CA_CERTS in .env.
+      - './certs/extra-ca:/certs/extra-ca:ro'
     build:
       args:
         - 'GIT_SERVER=${GIT_SERVER}'
         - 'REPOSITORY=${REPOSITORY}'
         - 'EDUMEET_MGMT_SERVER=${EDUMEET_MGMT_SERVER}'
         - 'BRANCH_MGMT_SERVER=${BRANCH_MGMT_SERVER}'
-        - 'NODE_TLS_REJECT_UNAUTHORIZED=${NODE_TLS_REJECT_UNAUTHORIZED}'
       context: .
       dockerfile: Dockerfiles/Dockerfile-management-server
     image: '${REPOSITORY}/${EDUMEET_MGMT_SERVER}:${TAG}'
