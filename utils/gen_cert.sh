@@ -53,8 +53,28 @@ docker compose run --rm --entrypoint "\
 echo
 
 
-echo "### Starting proxy ..."
+# nginx looks up the services it proxies to when it starts and exits if one of them
+# is not running, so they are started before the proxy.
+echo "### Starting the services ..."
+docker compose up -d
 docker compose up --force-recreate -d proxy
+echo
+
+echo "### Waiting for the proxy ..."
+proxy_up=""
+for _ in $(seq 1 60); do
+  # Asked inside the container, so that no other web server can answer for it.
+  if docker compose exec -T proxy sh -c 'wget -S -T 3 -O /dev/null http://127.0.0.1/ 2>&1 || curl -sI -m 3 http://127.0.0.1/ 2>&1' | grep -q "HTTP/"; then
+    proxy_up=yes
+    break
+  fi
+  sleep 2
+done
+if [ -z "$proxy_up" ]; then
+  echo "Error: the proxy does not answer on port 80. Its last log lines:" >&2
+  docker compose logs --tail 20 proxy >&2
+  exit 1
+fi
 echo
 
 echo "### Deleting dummy certificate for $domains ..."
