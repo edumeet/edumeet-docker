@@ -47,8 +47,8 @@ there before starting the services.
 
 Follow [certificates](certificates.md) to set up a trusted production
 certificate or local HTTPS for testing. The included development script creates
-only a temporary placeholder, not a certificate usable for the configured
-domains. For the included Let's Encrypt flow, after DNS and firewall setup:
+a self-signed certificate, which browsers do not trust. For the included Let's
+Encrypt flow, after DNS and firewall setup:
 
 ```bash
 ./utils/gen_cert.sh

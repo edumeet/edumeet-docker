@@ -32,23 +32,46 @@ For automatic renewal, set `USE_CERTBOT=true` in `.env` and start or recreate
 the Compose services. The certbot container checks for renewals every 12 hours;
 check its logs and confirm renewal works in your environment.
 
-## Development placeholder
+## Development certificate
 
-The helper is only for bootstrapping the proxy:
+For a test setup without a certificate from a public CA:
 
 ```bash
 ./utils/gen_dev_cert.sh
 ```
 
-The script creates a one-day self-signed placeholder certificate with
-`CN=localhost`; it does not create a certificate for your configured domains or
-make browsers trust it. Do not use it as a production certificate. To use local
-HTTPS, provide a certificate with subject alternative names for both domains
-and trust that certificate or its signing CA on the test clients. TURN over TLS
-clients must trust the certificate presented by the proxy too.
+The script creates a self-signed certificate that names both configured
+domains and is valid for 30 days. Browsers do not trust it, so do not use it in
+production. To use it for local HTTPS, trust the certificate on the test
+clients; TURN over TLS clients must trust it too. The script also copies the
+certificate to `certs/extra-ca/dev-cert.pem` and prints the
+`NODE_EXTRA_CA_CERTS` line to set in `.env`; without that line, signing in
+through the Keycloak of this setup fails with this certificate. See
+[certificate verification](#certificate-verification).
 
 The media node uses a separate certificate pinned by the room server. See
 [addresses and NAT](networking.md#addresses-and-nat) when its listen IP changes.
+
+## Certificate verification
+
+The room server, media node and management server verify the TLS certificate of
+every server they connect to: the identity provider of a tenant, the SMTP/IMAP
+servers for calendar invites, bot providers and upload targets.
+`docker-compose.yml` sets `NODE_TLS_REJECT_UNAUTHORIZED=1` for them, and a value
+in `.env` does not change that.
+
+If one of those servers has a certificate from a private or self-signed CA,
+trust that CA instead of switching verification off: put its certificate (PEM)
+in `certs/extra-ca/`, set `NODE_EXTRA_CA_CERTS=/certs/extra-ca/<file>` in `.env`
+and run `docker compose up -d`.
+
+Upgrading from 4.2-20261118-stable or older: `.env` used to contain
+`NODE_TLS_REJECT_UNAUTHORIZED=0`, which accepted any certificate, so anyone able
+to intercept the connection to the identity provider could sign in as any user
+of the tenant. Delete that line from your `.env`. If sign-in, invite mail or a
+bot provider fails afterwards with a certificate error (`unable to verify the
+first certificate`, `self-signed certificate`), that server needs a valid
+certificate or its CA in `certs/extra-ca/` as described above.
 
 ## HTTPS only (HSTS)
 

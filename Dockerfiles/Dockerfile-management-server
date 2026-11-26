@@ -9,7 +9,6 @@ ARG EDUMEET_MGMT_SERVER
 ARG GIT_SERVER
 ARG REPOSITORY
 ARG BRANCH_MGMT_SERVER
-ARG NODE_TLS_REJECT_UNAUTHORIZED
 
 WORKDIR /app
 RUN useradd -m edumeet
@@ -34,7 +33,7 @@ RUN yarn compile
 
 ARG MGMT_DEBUG
 # Run migrations to set up the database
-ENTRYPOINT yarn migrate && NODE_TLS_REJECT_UNAUTHORIZED=${NODE_TLS_REJECT_UNAUTHORIZED} DEBUG=${MGMT_DEBUG} yarn start $0 $@
+ENTRYPOINT yarn migrate && DEBUG=${MGMT_DEBUG} yarn start $0 $@
 
 
 

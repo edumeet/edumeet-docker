@@ -6,6 +6,8 @@ configs/mgmt/default.json
 configs/server/config.json
 certbot
 certs/media-node/
+certs/extra-ca/*
+!certs/extra-ca/.gitkeep
 rsa_*.pem
 CHANGELOG.md
 
