@@ -48,6 +48,25 @@ in `oauthPrivateHosts`; only allow hosts you trust.
 Provider screens and field labels vary. Use the callback URI above and the
 provider's current discovery metadata or endpoint values.
 
+## Address of the bundled Keycloak
+
+The bundled Keycloak uses `https://<main-domain>/kc` as its own address in its
+pages, in the e-mails it sends and in its tokens. It does not take the address
+from the `Host` header of a request, which the sender chooses. `KC_HOSTNAME` and
+`KC_HOSTNAME_STRICT` in `docker-compose.yml` set this, and the proxy passes the
+main domain on to Keycloak for every request under `/kc`.
+
+If Keycloak is reached under another address, set `KC_HOSTNAME` in `.env` to
+that address as a full URL, for example `https://keycloak.example.com/kc`.
+
+**Upgrading from `4.2-20261126-stable` or older:** an older `.env` has the
+lines `KC_HOSTNAME_STRICT='false'` and `KC_HOSTNAME_STRICT_HTTPS='false'`. They
+no longer have an effect; delete them. Before, Keycloak answered under every
+name the proxy serves, such as the domain of a tenant. It now sends everyone to
+the main domain. If a tenant's provider settings use a discovery URL under
+another name, change it to the main domain and use **Update Parameters from
+URL** again.
+
 ## Check login
 
 In a private browser window, visit the tenant domain and sign in with a

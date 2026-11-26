@@ -236,6 +236,11 @@ services:
       # until the JDK in the Keycloak image is fixed. A JAVA_OPTS_APPEND set
       # in .env is kept (appended).
       JAVA_OPTS_APPEND: "-XX:-UseBASE64Intrinsics ${JAVA_OPTS_APPEND:-}"
+      # The address Keycloak uses in its pages, e-mails and tokens. Without it Keycloak takes
+      # the address from the Host header of each request, which the sender chooses. Set here,
+      # so an older .env cannot switch that off. For another address see KC_HOSTNAME in .env.
+      KC_HOSTNAME: "${KC_HOSTNAME:-https://${MAIN_DOMAIN}/kc}"
+      KC_HOSTNAME_STRICT: "true"
     volumes:
       - './certs:/opt/keycloak/conf'
       # Keep the H2 database (users, realms) when the container is recreated
