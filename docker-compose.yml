@@ -183,6 +183,10 @@ services:
       - './certs/media-node:/certs/media-node:ro'
       # Certificates of private CAs to trust, see NODE_EXTRA_CA_CERTS in .env.
       - './certs/extra-ca:/certs/extra-ca:ro'
+    # No --secret here: the media node reads MEDIA_SECRET from its environment (env_file above).
+    # On the command line, every account on the host could read it in the process list. This
+    # needs a media node image of 4.2-20261118-stable or later: an older one does not read the
+    # variable and would run without a secret.
     command: >
       DEBUG=*
       --cert /certs/media-node/cert.pem
@@ -191,7 +195,6 @@ services:
       --rtcMinPort ${RTC_MIN_PORT}
       --rtcMaxPort ${RTC_MAX_PORT}
       --ip ${LISTEN_IP}
-      --secret ${MEDIA_SECRET}
       --announcedIp ${EXTERNAL_IP}
       --availableUpload ${MN_AVAILABLE_UPLOAD}
       --availableDownload ${MN_AVAILABLE_DOWNLOAD}
