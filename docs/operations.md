@@ -15,6 +15,53 @@ Set `SERVER_DEBUG_LEVEL=debug` in `.env` for room-server application logs, or
 the change with `docker compose up -d`. Library `*_DEBUG` variables are not a
 substitute for these application log levels.
 
+## Files with secrets
+
+Keys and passwords are in several files of the installation, not only in `.env`:
+
+- `.env`: the admin passwords, the media secret, the signing key.
+- `configs/mgmt/default.json`: the key that signs every login, the keys for
+  invitations, the database password. Whoever reads it can sign in as anyone.
+- `certs/` and `certbot/`: the TLS keys.
+
+`utils/run-me-first.sh` therefore closes the whole installation directory to the
+other accounts of the host (`chmod go-rwx .`). The containers are not affected:
+each gets its files mounted and reads them as before. Do not open the directory
+again; give a second administrator access through `sudo` or a shared account.
+A copy or backup of the directory needs the same care.
+
+**Upgrading from `4.2-20261126-stable` or older:** the setup script used to write
+the admin password into `configs/_mgmt_pwchange/202310300000000_migrate.ts`, and
+it left the directory open. Put that file back before you pull, and close the
+directory:
+
+```bash
+git checkout configs/_mgmt_pwchange/202310300000000_migrate.ts
+git pull
+chmod go-rwx .
+```
+
+Without the first command `git pull` stops, because the file was changed
+locally. The new file reads the password from the environment and contains no
+secret. If other people have accounts on the host, treat the admin password and
+the signing key as known to them: set a new password (below), create a new key
+by running `utils/run-me-first.sh` again, and restart with `docker compose up -d`.
+Everyone who is signed in then has to sign in again.
+
+### Admin password
+
+When the database is created, the management server gives its first user the
+address and password of `MANAGEMENT_USERNAME` and `MANAGEMENT_PASSWORD` in
+`.env`. The room server signs in with the same two values. To change the
+password later:
+
+```bash
+docker compose exec -it edumeet-management-server yarn set-password <address>
+```
+
+Then write the new password to `MANAGEMENT_PASSWORD` in `.env` and run
+`docker compose up -d` so that the room server uses it.
+
 ## Backup and restore
 
 Back up the database **and** the configuration and secrets needed to use it:
