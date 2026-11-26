@@ -14,6 +14,10 @@ is reachable for HTTP validation. Then run:
 ./utils/gen_cert.sh
 ```
 
+The script starts all services, because the proxy only starts when the services
+it forwards to are running, and waits until the proxy answers before it requests
+the certificate.
+
 The script can replace existing certificate data after confirmation; back it up
 before rerunning the script. It uses the lowercase shell variable `email` when
 choosing a Certbot email argument; check the resulting Certbot registration
