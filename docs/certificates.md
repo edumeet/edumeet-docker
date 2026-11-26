@@ -75,18 +75,54 @@ certificate or its CA in `certs/extra-ca/` as described above.
 
 ## HTTPS only (HSTS)
 
-With valid production certificates, you can enable HSTS by uncommenting this
-line in the HTTPS server block of `configs/proxy/nginx.conf.template`:
+The proxy sends this header with every HTTPS answer, from the HTTPS server block of
+`configs/proxy/nginx.conf.template`:
 
 ```nginx
 add_header Strict-Transport-Security "max-age=31536000" always;
 ```
 
-HSTS tells browsers that have visited over HTTPS to use HTTPS on later visits.
-This helps protect later visits from an attacker intercepting an HTTP request
-before the redirect, but it does not protect the first visit. Start with a
-shorter value such as `max-age=300` while testing. Leave it off for development certificates or
-domains that may need HTTP: browsers remember the policy and will not let users
-bypass certificate errors. Do not add `includeSubDomains` or `preload` unless
-every affected domain is ready for HTTPS. If another proxy fronts eduMEET,
-configure HSTS there for each tenant domain as well.
+HSTS tells browsers that have visited over HTTPS to use HTTPS on later visits, for a year.
+Without it, an attacker on the visitor's network can answer a plain HTTP request for the site
+with a page of their own, before the redirect to HTTPS. It does not protect the first visit.
+
+### What it changes for you
+
+A browser stores the policy for the host name at its first visit over HTTPS and keeps it for a
+year after its last visit. For that browser:
+
+- **Nothing on this host name opens over plain HTTP any more, on any port.** The browser
+  changes `http://<name>:<port>/` to `https://<name>:<port>/` before it sends anything. If
+  another service is reached as `http://<the same name>:<port>` (a monitoring page, another
+  application), give it HTTPS or another host name before you upgrade, or switch the header off
+  as described below.
+- **A certificate error cannot be passed.** If the certificate expires or does not match, the
+  browser shows an error without the button to continue. Check that the renewal works: see the
+  log of the `certbot` service, and renew in time if you use your own certificate.
+- **Going back to HTTP takes time.** Removing the header does not make browsers forget the
+  policy; see below.
+
+Not affected:
+
+- A self-signed development certificate. A browser ignores the header when it does not trust
+  the certificate. A development certificate from a CA that the browser trusts is affected.
+- Other host names, also subdomains: the header does not carry `includeSubDomains`. Do not add
+  `includeSubDomains` or `preload` unless every affected domain is ready for HTTPS.
+- Programs that are not browsers, such as the Let's Encrypt validation on port 80.
+
+Keycloak sends its own HSTS header on the pages under `/kc`, by default with
+`includeSubDomains`. A site that offers sign-in through the bundled Keycloak has had the policy
+in the browsers of its users before this change. The realm setting is under *Realm settings*,
+*Security defenses*.
+
+### Switching it off
+
+- **Before any browser has seen it:** comment the `add_header` line out in
+  `configs/proxy/nginx.conf.template` and restart the proxy (`docker compose restart proxy`).
+- **After browsers have seen it:** set the value to `max-age=0`, restart the proxy and leave it
+  like that for as long as visitors may come back. A browser drops the policy when it receives
+  this value over HTTPS. Only then comment the line out.
+- **To try it first:** use a short value such as `max-age=300`.
+
+An installation with its own copy of the template gets the header only when it takes the line
+over. If another proxy fronts eduMEET, configure HSTS there for each tenant domain as well.

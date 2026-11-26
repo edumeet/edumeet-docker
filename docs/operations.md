@@ -90,6 +90,7 @@ been verified by this test. Do not run these commands against production.
 | --- | --- |
 | Website unavailable | DNS, proxy status and logs, and ports 80/443 in [networking](networking.md). |
 | Certificate errors | Both domain names, the proxy certificate and the [certificate guide](certificates.md). |
+| Browser shows a certificate error without a way to continue, or changes `http://` to `https://` for another service on the same host name | The proxy sends an HSTS header; see [HTTPS only (HSTS)](certificates.md#https-only-hsts). |
 | Page loads but media fails | The announced public IP, media ranges, NAT forwarding and media-node logs. |
 | Login fails | Tenant FQDN, identity-provider configuration and [authentication](authentication.md). |
 

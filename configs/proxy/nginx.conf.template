@@ -1,3 +1,6 @@
+# One worker per CPU core. Without this line nginx runs a single worker.
+worker_processes auto;
+
 events {
 	worker_connections 8192;
 }
@@ -36,8 +39,15 @@ http {
 		include /etc/letsencrypt/options-ssl-nginx.conf;
 		ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
-		# Production with valid certificates: uncomment, see "HTTPS only (HSTS)" in README.md
-		# add_header Strict-Transport-Security "max-age=31536000" always;
+		# Browsers that have been here use https from then on, see "HTTPS only (HSTS)" in
+		# docs/certificates.md. A browser ignores the header on a certificate it does not trust.
+		add_header Strict-Transport-Security "max-age=31536000" always;
+
+		# For answers with large headers (sign-in redirects, cookies). These buffers are per
+		# request, so keep them small: nginx sets them aside for every request it forwards.
+		proxy_buffer_size 16k;
+		proxy_buffers 8 16k;
+		proxy_busy_buffers_size 32k;
 
 		set_real_ip_from				proxy;
 		real_ip_header					proxy_protocol;
@@ -87,9 +97,6 @@ http {
 			proxy_set_header Upgrade $http_upgrade;
 			proxy_set_header Connection "upgrade";
 
-			proxy_buffer_size 128M;
-			proxy_buffers 4 256M;
-			proxy_busy_buffers_size 256M;
 			proxy_set_header Host $host;
 			proxy_redirect off;
 		}
@@ -98,9 +105,6 @@ http {
 		}
 		location /auth/callback
 		{
-			proxy_buffer_size 128M;
-			proxy_buffers 4 256M;
-			proxy_busy_buffers_size 256M;
 			proxy_set_header Host $host;
 			proxy_redirect off;
 			proxy_pass http://edumeet-management-server:3030/auth/callback;
@@ -108,9 +112,6 @@ http {
 		}
 
 		location = /auth/logout-close {
-			proxy_buffer_size 128M;
-			proxy_buffers 4 256M;
-			proxy_busy_buffers_size 256M;
 			proxy_set_header Host $host;
 			proxy_redirect off;
 			proxy_pass http://edumeet-management-server:3030/auth/logout-close;
@@ -118,9 +119,6 @@ http {
 
 		location = /auth/logout {
 			access_log off;
-			proxy_buffer_size 128M;
-			proxy_buffers 4 256M;
-			proxy_busy_buffers_size 256M;
 			proxy_set_header Host $host;
 			proxy_redirect off;
 			proxy_pass http://edumeet-management-server:3030/auth/logout;
@@ -148,7 +146,8 @@ stream {
 		server_name _;
 		ssl_preread on;
 		proxy_pass $name;
-		proxy_buffer_size 10m;
+		# No proxy_buffer_size here: nginx's default of 16k is enough to pass data on. A large
+		# value is held in memory for every connection whose client does not read.
 		proxy_protocol on;
 	}
 
