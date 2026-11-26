@@ -35,7 +35,10 @@ The interactive script requests domain names and administrator credentials,
 generates secrets and a media-node certificate, and prepares configuration.
 Review `.env` and the files in `configs/` before starting. The script can
 modify existing configuration and secrets; back them up before rerunning it.
-Keep `.env` readable only by its owner.
+
+The script closes the installation directory to the other accounts of the host
+(`chmod go-rwx .`) and `.env` to everyone but its owner. Keep it that way: see
+[files with secrets](operations.md#files-with-secrets).
 
 If the server is behind NAT, verify `LISTEN_IP`, `LOCAL_IP` and `EXTERNAL_IP`
 instead of relying on automatically detected values. See

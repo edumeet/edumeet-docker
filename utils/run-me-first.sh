@@ -22,10 +22,31 @@ if ! [ -x "$(command -v jq)" ]; then
     exit 1
 fi
 
+if ! [ -f .env ] || ! [ -f docker-compose.yml ]; then
+    echo -e "${RED}Error: run this script from the installation directory, as ./utils/run-me-first.sh${NOCOLOR}" >&2
+    exit 1
+fi
+
 source .env
 
 # .env holds the secrets this script writes into it: only its owner may read it.
 chmod 600 .env
+
+# Keys and passwords are in more files than .env: configs/mgmt/default.json has the key that
+# signs every login, certs/ and certbot/ have the TLS keys. No other account of this host may
+# enter the installation. The containers are not affected: each gets its files mounted.
+chmod go-rwx .
+
+# Earlier versions of this script wrote the admin password into this file. It reads the password
+# from the environment now; put the file back as it is in the repository.
+PWCHANGE=configs/_mgmt_pwchange/202310300000000_migrate.ts
+if ! grep -q 'process.env.MANAGEMENT_PASSWORD' "$PWCHANGE"; then
+    if git checkout -- "$PWCHANGE" 2>/dev/null && grep -q 'process.env.MANAGEMENT_PASSWORD' "$PWCHANGE"; then
+        echo -e "${GREEN}${PWCHANGE} no longer contains the admin password${NOCOLOR}"
+    else
+        echo -e "${RED}${PWCHANGE} still contains the admin password. Replace it with the file from the repository.${NOCOLOR}"
+    fi
+fi
 
 # Older versions of .env switched TLS certificate verification off for the Node services.
 sed -i '/^NODE_TLS_REJECT_UNAUTHORIZED=/d; /^# for internal http communication between components$/d' .env
@@ -95,9 +116,8 @@ UPDATE management-server admin user (supersecret ->reccommended: ${RECOMMENDED_P
     fi
 done
 
-sed -i -e "s/edumeet-admin@localhost/${MANAGEMENT_USERNAME}/g" configs/_mgmt_pwchange/202310300000000_migrate.ts
-sed -i -e "s/supersecret2/${MANAGEMENT_PASSWORD}/g" configs/_mgmt_pwchange/202310300000000_migrate.ts
-
+# The management server sets these for the first user when it creates the database, see
+# configs/_mgmt_pwchange/202310300000000_migrate.ts.
 sed -i "s/^.*MANAGEMENT_USERNAME=.*$/MANAGEMENT_USERNAME=${MANAGEMENT_USERNAME}/" .env
 sed -i "s/^.*MANAGEMENT_PASSWORD=.*$/MANAGEMENT_PASSWORD=${MANAGEMENT_PASSWORD}/" .env
 
@@ -270,6 +290,7 @@ then
 fi
 
 ./utils/create-cert.sh
+chmod 600 rsa_4096_priv.pem
 
 echo 'generating new secret for management serivce communication [PUB]'
 MGMT_PUB=`./utils/convert.sh rsa_4096_pub.pem`
@@ -282,7 +303,7 @@ MGMT_PRIV=`./utils/convert.sh rsa_4096_priv.pem`
 MGMT_PRIV_ESCAPED=$(echo "$MGMT_PRIV" | sed 's%\\n%\\\\n%g')
 
 sed -i "s%^.*MGMT_PRIV=.*$%MGMT_PRIV=\"${MGMT_PRIV_ESCAPED}\"%" .env
-echo "MGMT_PRIV=\"${MGMT_PRIV}\""
+echo 'MGMT_PRIV is written to .env (a private key: not shown here)'
 
 sed -i -e "s%secret\":.*%secret\": \"${MGMT_PRIV_ESCAPED}\",%" configs/mgmt/default.json
 
