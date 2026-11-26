@@ -63,10 +63,30 @@ environments only.
 
 ## Proxy and login throttling
 
-The management server limits failed local login attempts per IP address. This
-applies to the super-admin form and the room server's management login. After
-10 failures in 15 minutes, that IP receives HTTP 429 for 15 minutes. Failures
-are logged at `warn`; successful logins are not counted.
+The management server limits failed password logins. This applies to the
+super-admin form and the room server's management login.
+
+- **Per client address:** after 10 failures in 15 minutes, that address
+  receives HTTP 429 for 15 minutes. An IPv6 /64 counts as one address. Attempts
+  that are still being checked count too, so a burst sent at once gets no more
+  than 10 tries.
+- **Per account, for accounts with the super-admin or edumeet-server role:**
+  10 failures in 15 minutes from all addresses together, then password logins
+  to that account are refused for 15 minutes. Other accounts have no limit of
+  their own, because such a limit would let anyone who knows an e-mail address
+  keep its owner out.
+
+Room servers are not held to the account limit, so an attack on the service
+account cannot stop them from signing in. Private addresses are always left
+out, which covers the room server of this stack. If room servers reach the
+management server from public addresses, set `ROOM_SERVER_ADDRESSES` in `.env`
+to their IP addresses or CIDR ranges, comma separated. A wrong entry stops the
+management server at start.
+
+While a super-admin account is under attack, its owner is refused too when
+signing in from a public address that is not listed. Failures are logged at
+`warn`; successful logins are not counted. The counts are kept in memory, so a
+restart of the management server clears them.
 
 In this Docker stack the management server runs behind Nginx, so
 `TRUST_PROXY=true` is set in `.env` by default. With it enabled, the server

@@ -82,25 +82,22 @@ Logged-in users see a calendar icon button next to the login/logout button in th
 
 A room owner can restrict a managed room to scheduled meetings. Every meeting receives a **meeting token** when it is created (12 characters, shown in the Meetings table of `/mgmt-admin` and embedded in the invitation link as `?meetingToken=...`). With **Meetings only** enabled on the room (in the room settings dialog of the meeting UI or in the Rooms table of `/mgmt-admin`), participants entering the room must present the token of a meeting scheduled for that room, including the room owner. A verified reconnect can resume without sending it again.
 
-The behavior below describes the current `4.2-20261118-stable` images. See the
-upcoming-release note below for changes to meeting-token timing and room binding.
-
 - The first participant with a valid token binds the room to that meeting. Subsequent new participants must present the same token until the room empties again; a token for another meeting is refused.
 - Without a token, or with a wrong one, the join dialog shows an error and a **Meeting token** field for manual entry.
 - Invitations for meetings in such a room carry the token in the join link and in the ICS `LOCATION`. Switching the setting on or off re-sends the invitation with the updated link to attendees who had already received one, for meetings that are not over yet; past meetings are left alone.
 - Switching the setting takes effect immediately for newcomers. People already in the room are not affected.
-- Tokens have no automatic expiry or rotation. Deleting a meeting prevents its
-  token from starting a new room session, but an already active room continues
+- Tokens are not rotated; the time during which a token is usable is described
+  below. Deleting a meeting prevents its token from starting a new room session, but an already active room continues
   accepting its bound token until the room closes or Meetings only is disabled.
 - Unmanaged rooms never have this restriction.
 - Verified bots are exempt from the meeting-token check but cannot open an empty
   room. See [bot admission](https://github.com/edumeet/edumeet/blob/main/BOTS.md#how-a-bot-gets-in).
 
-**Upcoming release:** The meeting token is normally usable from one hour before
+**Since 4.2-20261126-stable:** The meeting token is normally usable from one hour before
 the meeting until one hour after it ends, or around each occurrence of a series.
 If the meeting runs over, the hour starts when the room empties; entering during
 that hour starts it again when the room next empties. Before the window the join
 dialog shows the start time; after it, the dialog says the meeting is over.
 Switching Meetings only off and on no longer releases an active room from its
-bound meeting. These changes require updated management server, room server and
-client versions; the current stable image tag predates them.
+bound meeting. This needs the management server, room server and client of that
+release or newer.
