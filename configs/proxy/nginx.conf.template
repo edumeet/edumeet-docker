@@ -76,11 +76,12 @@ http {
 
 		location ^~ /kc
 		{
-			proxy_set_header Host $host;
+			# Keycloak gets the name of this installation, not the Host header the visitor sent.
+			proxy_set_header Host ${MAIN_DOMAIN};
 			proxy_set_header X-Real-IP $remote_addr;
 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-			proxy_set_header X-Forwarded-Host $host;
-			proxy_set_header X-Forwarded-Server $host;
+			proxy_set_header X-Forwarded-Host ${MAIN_DOMAIN};
+			proxy_set_header X-Forwarded-Server ${MAIN_DOMAIN};
 			proxy_set_header X-Forwarded-Port 443;
 			proxy_set_header X-Forwarded-Proto https;
 
