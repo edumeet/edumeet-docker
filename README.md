@@ -21,7 +21,7 @@ Images are published on [Docker Hub](https://hub.docker.com/u/edumeet).
   [Authentication](docs/authentication.md) — managed rooms, OIDC and proxy settings
 - <a name="logs"></a><a name="uninstall"></a><a name="backuprestore"></a>
   <a name="database-backup"></a><a name="database-restore"></a>
-  [Operations](docs/operations.md) — logs, backups, troubleshooting and uninstall
+  [Operations](docs/operations.md) — logs, upgrades, backups, troubleshooting and uninstall
 - <a name="calendar-invites"></a><a name="prerequisites"></a><a name="fresh-install"></a>
   <a name="existing-install"></a><a name="optional-invite-settings"></a>
   <a name="per-tenant-configuration-via-management-ui"></a><a name="imap-is-optional"></a>
