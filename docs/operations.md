@@ -15,6 +15,57 @@ Set `SERVER_DEBUG_LEVEL=debug` in `.env` for room-server application logs, or
 the change with `docker compose up -d`. Library `*_DEBUG` variables are not a
 substitute for these application log levels.
 
+## Upgrading to a new release
+
+Read the section of the release in the
+[changelog](https://github.com/edumeet/edumeet/blob/main/CHANGELOG.md) first, and
+the sections in between if you skip releases. They say what to check before and
+after, and whether the database needs a backup.
+
+```bash
+cp -p .env .env.before-upgrade
+git stash
+git pull
+git stash pop
+grep ^TAG= .env
+docker compose pull
+docker compose up -d
+docker compose restart proxy
+```
+
+- **`git stash` and `git stash pop`:** `.env` holds the values of your
+  installation, and most releases change the shipped `.env` as well, at least
+  `TAG`. A plain `git pull` therefore stops. `git stash` sets your changes aside
+  and `git stash pop` puts them onto the new files.
+- **`grep ^TAG= .env`** prints the release that will run. It should be the
+  release you are upgrading to.
+- **`docker compose restart proxy`:** the proxy reads
+  `configs/proxy/nginx.conf.template` only when it starts, and
+  `docker compose up -d` does not restart it for a changed template. The restart
+  also makes it find the services that were just recreated.
+
+If `git stash pop` reports a conflict in `.env`, you and the release changed the
+same line, usually `TAG`. The file then has both versions between marker lines:
+
+```
+  <<<<<<< Updated upstream
+  TAG=4.2-20261127-stable
+  =======
+  TAG=4.2-20261126-stable
+  >>>>>>> Stashed changes
+```
+
+Keep the upper line, the one of the release, and delete the other line and the
+three marker lines. Then finish with:
+
+```bash
+git reset -q .env
+git stash drop
+```
+
+Your file from before the upgrade is `.env.before-upgrade`. It contains your
+secrets; delete it when the upgrade is done.
+
 ## Files with secrets
 
 Keys and passwords are in several files of the installation, not only in `.env`:
@@ -32,18 +83,27 @@ A copy or backup of the directory needs the same care.
 
 **Upgrading from `4.2-20261126-stable` or older:** the setup script used to write
 the admin password into `configs/_mgmt_pwchange/202310300000000_migrate.ts`, and
-it left the directory open. Put that file back before you pull, and close the
-directory:
+it left the directory open. Put that file back before the
+[upgrade steps](#upgrading-to-a-new-release), and close the directory after them:
 
 ```bash
 git checkout configs/_mgmt_pwchange/202310300000000_migrate.ts
-git pull
+# the upgrade steps, from "cp -p .env .env.before-upgrade" on
 chmod go-rwx .
 ```
 
-Without the first command `git pull` stops, because the file was changed
-locally. The new file reads the password from the environment and contains no
-secret. If other people have accounts on the host, treat the admin password and
+The new file reads the password from the environment and contains no secret.
+Without the first command, `git stash pop` reports a conflict in that file and
+leaves both versions in it, the old one with the password. If that happened,
+take the new file and finish:
+
+```bash
+git checkout HEAD -- configs/_mgmt_pwchange/202310300000000_migrate.ts
+git reset -q
+git stash drop
+```
+
+If other people have accounts on the host, treat the admin password and
 the signing key as known to them: set a new password (below), create a new key
 by running `utils/run-me-first.sh` again, and restart with `docker compose up -d`.
 Everyone who is signed in then has to sign in again.

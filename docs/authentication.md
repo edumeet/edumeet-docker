@@ -65,7 +65,9 @@ no longer have an effect; delete them. Before, Keycloak answered under every
 name the proxy serves, such as the domain of a tenant. It now sends everyone to
 the main domain. If a tenant's provider settings use a discovery URL under
 another name, change it to the main domain and use **Update Parameters from
-URL** again.
+URL** again. Restart the proxy after the upgrade (`docker compose restart proxy`),
+as the [upgrade steps](operations.md#upgrading-to-a-new-release) do: it reads its
+template only when it starts.
 
 ## Check login
 
